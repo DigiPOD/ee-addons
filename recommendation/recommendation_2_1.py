@@ -5,7 +5,7 @@ from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 from execution_engine.omop.vocabulary import SNOMEDCT, standard_vocabulary
 
-from digipod.criterion.preop_patients import PreOperativeAdultBeforeDayOfSurgeryPatients
+from digipod.criterion.preop_patients import preOperativeAdultBeforeDayOfSurgeryPatients
 from digipod.recommendation import package_version
 from digipod.vocabulary import DigiPOD
 
@@ -57,12 +57,7 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPair(
     name="",
     url="",
     base_criterion=base_criterion,
-    population=CriterionCombination(
-        exclude=False,
-        operator=CriterionCombination.Operator(CriterionCombination.Operator.AND),
-        category=CohortCategory.POPULATION,
-        criteria=[PreOperativeAdultBeforeDayOfSurgeryPatients()],
-    ),
+    population=preOperativeAdultBeforeDayOfSurgeryPatients,
     intervention=CriterionCombination(
         exclude=False,
         operator=CriterionCombination.Operator(CriterionCombination.Operator.OR),
@@ -82,6 +77,5 @@ RecCollCheckRFAdultSurgicalPatientsPreoperatively = Recommendation(
     url="",
     version="0.1",
     description="Check Risk Factors in Adult Surgical Patients Preoperatively",
-    recommendation_id=None,
     package_version=package_version,
 )

@@ -5,7 +5,8 @@ from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 from execution_engine.omop.vocabulary import standard_vocabulary
 
-from digipod.criterion.preop_patients import PreOperativePatientsBeforeEndOfSugergery
+from digipod.criterion.preop_patients import preOperativePatientsBeforeEndOfSurgery
+from digipod.recommendation import package_version
 from digipod.vocabulary import DigiPOD
 
 base_criterion = PatientsActiveDuringPeriod()
@@ -69,12 +70,7 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
     name="",
     url="",
     base_criterion=base_criterion,
-    population=CriterionCombination(
-        exclude=False,
-        operator=CriterionCombination.Operator(CriterionCombination.Operator.AND),
-        category=CohortCategory.POPULATION,
-        criteria=[PreOperativePatientsBeforeEndOfSugergery()],
-    ),
+    population=preOperativePatientsBeforeEndOfSurgery,
     intervention=CriterionCombination(
         exclude=False,
         operator=CriterionCombination.Operator(
@@ -100,6 +96,5 @@ rec_0_1_Delirium_Screening = Recommendation(
     url="",
     version="0.1",
     description="Check Risk Factors in Adult Surgical Patients Preoperatively",
-    recommendation_id=None,
-    package_version=None,
+    package_version=package_version,
 )

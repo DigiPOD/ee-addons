@@ -25,7 +25,8 @@ from execution_engine.clients import omopdb
 from execution_engine.omop import cohort
 from execution_engine.settings import get_config, update_config
 
-import digipod
+import digipod.recommendation.recommendation_0_1
+import digipod.recommendation.recommendation_2_1
 
 # enable multiprocessing with all available cores
 # update_config(multiprocessing_use=False, multiprocessing_pool_size=-1)
