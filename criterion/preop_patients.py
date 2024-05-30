@@ -224,21 +224,19 @@ class PreOperativePatientsBeforeEndOfSurgery(Criterion):
 - >= 18 years
 - 42 days until end of day before surgery
 """
-preOperativeAdultBeforeDayOfSurgeryPatients = CriterionCombination(
-    exclude=False,
-    operator=CriterionCombination.Operator(CriterionCombination.Operator.AND),
+preOperativeAdultBeforeDayOfSurgeryPatients = CriterionCombination.And(
+    AdultPatients(),
+    PreOperativePatientsBeforeDayOfSurgery(),
     category=CohortCategory.POPULATION,
-    criteria=[AdultPatients(), PreOperativePatientsBeforeDayOfSurgery()],
 )
 
 """
 - vorstationär OR normalstationär
 """
-preAdmissionOrInpatientPatients = CriterionCombination(
-    exclude=False,
-    operator=CriterionCombination.Operator(CriterionCombination.Operator.OR),
+preAdmissionOrInpatientPatients = CriterionCombination.Or(
+    PreAdmissionPatients(),
+    InpatientPatients(),
     category=CohortCategory.POPULATION,
-    criteria=[PreAdmissionPatients(), InpatientPatients()],
 )
 
 """
@@ -246,13 +244,9 @@ preAdmissionOrInpatientPatients = CriterionCombination(
 - 42 days before day of surgery until end of surgery
 - vorstationär OR normalstationär
 """
-preOperativePatientsBeforeEndOfSurgery = CriterionCombination(
-    exclude=False,
-    operator=CriterionCombination.Operator(CriterionCombination.Operator.AND),
+preOperativePatientsBeforeEndOfSurgery = CriterionCombination.And(
+    AdultPatients(),
+    PreOperativePatientsBeforeEndOfSurgery(),
+    preAdmissionOrInpatientPatients,
     category=CohortCategory.POPULATION,
-    criteria=[
-        AdultPatients(),
-        PreOperativePatientsBeforeEndOfSurgery(),
-        preAdmissionOrInpatientPatients,
-    ],
 )

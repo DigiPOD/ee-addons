@@ -71,20 +71,15 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=preOperativePatientsBeforeEndOfSurgery,
-    intervention=CriterionCombination(
-        exclude=False,
-        operator=CriterionCombination.Operator(
-            CriterionCombination.Operator.AT_LEAST, threshold=1
-        ),
+    intervention=CriterionCombination.AtLeast(
+        NUDESC_documented,
+        DRS_documented,
+        DOS_documented,
+        CAM_documented,
+        AT4_documented,
+        TDCAM_documented,
+        threshold=1,
         category=CohortCategory.INTERVENTION,
-        criteria=[
-            NUDESC_documented,
-            DRS_documented,
-            DOS_documented,
-            CAM_documented,
-            AT4_documented,
-            TDCAM_documented,
-        ],
     ),
 )
 

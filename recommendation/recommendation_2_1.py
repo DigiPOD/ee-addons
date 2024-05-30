@@ -58,11 +58,12 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=preOperativeAdultBeforeDayOfSurgeryPatients,
-    intervention=CriterionCombination(
-        exclude=False,
-        operator=CriterionCombination.Operator(CriterionCombination.Operator.OR),
+    intervention=CriterionCombination.Or(
+        ageDocumented,
+        asaDocumented,
+        cciDocumented,
+        miniCogDocumented,
         category=CohortCategory.INTERVENTION,
-        criteria=[ageDocumented, asaDocumented, cciDocumented, miniCogDocumented],
     ),
 )
 
