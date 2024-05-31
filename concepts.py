@@ -49,3 +49,13 @@ unit_score = Concept(
     vocabulary_id="UCUM",
     concept_class_id="Unit",
 )
+
+
+RASS = Concept(
+    concept_id=36684829,
+    concept_name="Richmond Agitation-Sedation Scale",
+    concept_code="457441000124102",
+    domain_id="Measurement",
+    vocabulary_id="SNOMED",
+    concept_class_id="Staging / Scales",
+)

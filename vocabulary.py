@@ -12,6 +12,14 @@ class DigiPOD(AbstractVocabulary):
     system_uri = "https://www.charite.de/fhir/digipod/CodeSystem/digipod"
     vocab_id = "DIGIPOD"
     map = {
+        "007": Concept(
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 7,
+            concept_name="Date of surgical procedure",
+            concept_code="007",
+            domain_id="Event",
+            vocabulary_id=vocab_id,
+            concept_class_id="Custom",
+        ),
         "009": Concept(
             concept_id=DIGIPOD_CONCEPT_OFFSET + 9,
             concept_name="Result of Charlson Comorbidity Index",

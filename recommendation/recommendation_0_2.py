@@ -1,47 +1,55 @@
-from typing import Sequence, Union
-
 from execution_engine.constants import CohortCategory
 from execution_engine.omop.cohort import PopulationInterventionPair
-from execution_engine.omop.criterion.abstract import Criterion
 from execution_engine.omop.criterion.combination import CriterionCombination
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 
-from digipod.criterion.preop_patients import PreOperativeAdultBeforeDayOfSurgeryPatients
+from digipod.criterion.postop_patients import PostOperativePatientsUntilDay6
 
 base_criterion = PatientsActiveDuringPeriod()
 
+##############################
+# Day0
+##############################
+
+
 p1 = PopulationInterventionPair(
-    name="",
+    name="RecCollDeliriumScreeningOnSurgeryDayMorningShift",
     url="",
     base_criterion=base_criterion,
-    population=CriterionCombination(
-        exclude=False,
-        operator=CriterionCombination.Operator(CriterionCombination.Operator.AND),
+    population=CriterionCombination.And(
+        PostOperativePatientsUntilDay6(),
         category=CohortCategory.POPULATION,
-        criteria=[PreOperativeAdultBeforeDayOfSurgeryPatients()],
     ),
-    intervention=CriterionCombination(
-        exclude=False,
-        operator=CriterionCombination.Operator(CriterionCombination.Operator.AND),
+    intervention=CriterionCombination.And(
+        PostOperativePatientsUntilDay6(),
         category=CohortCategory.POPULATION,
-        criteria=[PreOperativeAdultBeforeDayOfSurgeryPatients()],
     ),
 )
 
+p2 = PopulationInterventionPair(
+    name="RecCollDeliriumScreeningOnSurgeryDayEveningShift",
+    url="",
+    base_criterion=base_criterion,
+    population=CriterionCombination.And(
+        PostOperativePatientsUntilDay6(),
+        category=CohortCategory.POPULATION,
+    ),
+    intervention=CriterionCombination.And(
+        PostOperativePatientsUntilDay6(),
+        category=CohortCategory.POPULATION,
+    ),
+)
 
-class AtLeastTwo(CriterionCombination):
-    """
-    A criterion combination that requires at least two of the given criteria to be met.
-    """
-
-    def __init__(
-        self, criteria: Sequence[Union[Criterion, CriterionCombination]]
-    ) -> None:
-        super().__init__(
-            exclude=False,
-            operator=CriterionCombination.Operator(
-                CriterionCombination.Operator.AT_LEAST, threshold=2
-            ),
-            category=CohortCategory.POPULATION,
-            criteria=criteria,
-        )
+p2 = PopulationInterventionPair(
+    name="RecCollDeliriumScreeningOnSurgeryDayNightShift",
+    url="",
+    base_criterion=base_criterion,
+    population=CriterionCombination.And(
+        PostOperativePatientsUntilDay6(),
+        category=CohortCategory.POPULATION,
+    ),
+    intervention=CriterionCombination.And(
+        PostOperativePatientsUntilDay6(),
+        category=CohortCategory.POPULATION,
+    ),
+)
