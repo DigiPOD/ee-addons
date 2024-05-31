@@ -9,9 +9,11 @@ from execution_engine.omop.criterion.abstract import (
     observation_start_datetime,
 )
 from execution_engine.omop.criterion.combination import CriterionCombination
+from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import VisitOccurrence
 from execution_engine.omop.db.omop.tables import Person, ProcedureOccurrence
 from execution_engine.util.interval import IntervalType
+from execution_engine.util.value import ValueNumber
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
 
@@ -162,6 +164,13 @@ class InpatientPatients(VisitOccurrence):
         )
 
 
+MMSEgte3 = PointInTimeCriterion(
+    category=CohortCategory.POPULATION,
+    concept=concepts.MMSE,
+    value=ValueNumber(value_min=3, unit=concepts.unit_score),
+)
+
+
 class PreOperativePatientsBeforeEndOfSurgery(Criterion):
     """
     Select patients who are pre-operative in the timeframe between 42 days before the surgery and the end of the surgery.
@@ -229,6 +238,19 @@ preOperativeAdultBeforeDayOfSurgeryPatients = CriterionCombination.And(
     PreOperativePatientsBeforeDayOfSurgery(),
     category=CohortCategory.POPULATION,
 )
+
+"""
+- >= 18 years
+- 42 days until end of day before surgery
+- MMSE >= 3
+"""
+preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = CriterionCombination.And(
+    AdultPatients(),
+    PreOperativePatientsBeforeDayOfSurgery(),
+    MMSEgte3,
+    category=CohortCategory.POPULATION,
+)
+
 
 """
 - vorstationär OR normalstationär

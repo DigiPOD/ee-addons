@@ -20,6 +20,14 @@ class DigiPOD(AbstractVocabulary):
             vocabulary_id=vocab_id,
             concept_class_id="Custom",
         ),
+        "012": Concept(
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 12,
+            concept_name="Result of Addenbrooke cognitive examination revised",
+            concept_code="012",
+            domain_id="Measurement",
+            vocabulary_id=vocab_id,
+            concept_class_id="Custom",
+        ),
         "016": Concept(
             concept_id=DIGIPOD_CONCEPT_OFFSET + 16,
             concept_name="Nursing Delirium Screening Scale (NU-DESC) score",

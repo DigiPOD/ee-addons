@@ -5,7 +5,10 @@ from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 from execution_engine.omop.vocabulary import SNOMEDCT, standard_vocabulary
 
-from digipod.criterion.preop_patients import preOperativeAdultBeforeDayOfSurgeryPatients
+from digipod.criterion.preop_patients import (
+    preOperativeAdultBeforeDayOfSurgeryPatients,
+    preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
+)
 from digipod.recommendation import package_version
 from digipod.vocabulary import DigiPOD
 
@@ -49,12 +52,40 @@ miniCogDocumented = PointInTimeCriterion(
     override_value_required=False,
 )
 
+# $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
+mocaDocumented = PointInTimeCriterion(
+    category=CohortCategory.INTERVENTION,
+    concept=standard_vocabulary.get_concept(
+        SNOMEDCT.system_uri, "1255891005"
+    ),  # $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
+    override_value_required=False,
+)
+
+# $cs-digipod#012 "Result of Addenbrooke cognitive examination revised"
+acerDocumented = PointInTimeCriterion(
+    category=CohortCategory.INTERVENTION,
+    concept=standard_vocabulary.get_concept(
+        DigiPOD.system_uri, "012"
+    ),  # $cs-digipod#012 "Result of Addenbrooke cognitive examination revised"
+    override_value_required=False,
+)
+
+# $sct#447316007 "Mini-mental state examination score (observable entity)"
+mmseDocumented = PointInTimeCriterion(
+    category=CohortCategory.INTERVENTION,
+    concept=standard_vocabulary.get_concept(
+        SNOMEDCT.system_uri, "447316007"
+    ),  # $sct#447316007 "Mini-mental state examination score (observable entity)"
+    override_value_required=False,
+)
+
+
 #############
 # PI Pairs
 #############
 
 _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPair(
-    name="",
+    name="RecPlanCheckRiskFactorsAgeASACCIMiniCog",
     url="",
     base_criterion=base_criterion,
     population=preOperativeAdultBeforeDayOfSurgeryPatients,
@@ -67,11 +98,28 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPair(
     ),
 )
 
+_RecPlanCheckRiskFactorsMoCAACERMMSE = PopulationInterventionPair(
+    name="RecPlanCheckRiskFactorsMoCAACERMMSE",
+    url="",
+    base_criterion=base_criterion,
+    population=preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
+    intervention=CriterionCombination.AtLeast(
+        mocaDocumented,
+        acerDocumented,
+        mmseDocumented,
+        threshold=1,
+        category=CohortCategory.INTERVENTION,
+    ),
+)
+
 #############################
 # Recommendation collections
 #############################
 RecCollCheckRFAdultSurgicalPatientsPreoperatively = Recommendation(
-    pi_pairs=[_RecPlanCheckRiskFactorsAgeASACCIMiniCog],
+    pi_pairs=[
+        _RecPlanCheckRiskFactorsAgeASACCIMiniCog,
+        _RecPlanCheckRiskFactorsMoCAACERMMSE,
+    ],
     base_criterion=base_criterion,
     name="CheckRFAdultSurgicalPatientsPreoperatively",
     title="Check Risk Factors in Adult Surgical Patients Preoperatively",

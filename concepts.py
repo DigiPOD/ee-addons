@@ -12,6 +12,7 @@ IntensiveCare = Concept(
     vocabulary_id="Custom",
     concept_class_id="Custom",
 )
+
 InpatientVisit = Concept(
     concept_id=INPATIENT_VISIT,
     concept_name="Inpatient Visit",
@@ -20,6 +21,7 @@ InpatientVisit = Concept(
     vocabulary_id="Custom",
     concept_class_id="Custom",
 )
+
 OutpatientVisit = Concept(
     concept_id=OUTPATIENT_VISIT,
     concept_name="Outpatient Visit",
@@ -27,4 +29,23 @@ OutpatientVisit = Concept(
     domain_id="Visit",
     vocabulary_id="Custom",
     concept_class_id="Custom",
+)
+
+MMSE = Concept(
+    concept_id=3229634,
+    concept_name="Mini-Cog brief cognitive screening test score",
+    concept_code="713408000",
+    domain_id="Observation",
+    vocabulary_id="Nebraska Lexicon",
+    concept_class_id="Observable Entity",
+)
+
+
+unit_score = Concept(
+    concept_id=44777566,
+    concept_name="score",
+    concept_code="score",
+    domain_id="Unit",
+    vocabulary_id="UCUM",
+    concept_class_id="Unit",
 )
