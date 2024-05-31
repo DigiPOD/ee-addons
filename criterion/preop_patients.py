@@ -266,7 +266,7 @@ preAdmissionOrInpatientPatients = CriterionCombination.Or(
 - 42 days before day of surgery until end of surgery
 - vorstationär OR normalstationär
 """
-preOperativePatientsBeforeEndOfSurgery = CriterionCombination.And(
+adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = CriterionCombination.And(
     AdultPatients(),
     PreOperativePatientsBeforeEndOfSurgery(),
     preAdmissionOrInpatientPatients,

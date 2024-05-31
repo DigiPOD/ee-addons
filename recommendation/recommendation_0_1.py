@@ -5,7 +5,9 @@ from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 from execution_engine.omop.vocabulary import standard_vocabulary
 
-from digipod.criterion.preop_patients import preOperativePatientsBeforeEndOfSurgery
+from digipod.criterion.preop_patients import (
+    adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
+)
 from digipod.recommendation import package_version
 from digipod.vocabulary import DigiPOD
 
@@ -70,7 +72,7 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
     name="",
     url="",
     base_criterion=base_criterion,
-    population=preOperativePatientsBeforeEndOfSurgery,
+    population=adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
     intervention=CriterionCombination.AtLeast(
         NUDESC_documented,
         DRS_documented,
