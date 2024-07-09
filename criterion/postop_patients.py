@@ -8,7 +8,7 @@ from digipod.criterion.patients import PatientsInTimeFrame
 
 class PostOperativePatientsUntilDay6(PatientsInTimeFrame):
     """
-    Select patients who are pre-surgical in the timeframe between 42 days before the surgery and the day of the surgery.
+    Select patients who are post-surgical in the timeframe between the day of the surgery and 6 days after the surgery.
     """
 
     def _create_query(self) -> Select:

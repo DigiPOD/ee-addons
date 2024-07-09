@@ -26,6 +26,7 @@ from execution_engine.omop import cohort
 from execution_engine.settings import get_config, update_config
 
 import digipod.recommendation.recommendation_0_1
+import digipod.recommendation.recommendation_0_2
 import digipod.recommendation.recommendation_2_1
 
 # enable multiprocessing with all available cores
@@ -90,6 +91,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 # we'll rather build recommendations
 # TODO: we need to register the recommendations in the database, if they haven't been registered!
 recommendations: list[cohort.Recommendation] = [
+    digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening,
     digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
     digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
 ]

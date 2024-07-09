@@ -1,6 +1,8 @@
 from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import column_interval_type
-from execution_engine.omop.criterion.combination import CriterionCombination
+from execution_engine.omop.criterion.combination.logical import (
+    LogicalCriterionCombination,
+)
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import VisitOccurrence
 from execution_engine.util.interval import IntervalType
@@ -71,6 +73,19 @@ class InpatientPatients(VisitOccurrence):
         )
 
 
+class IntensiveCarePatients(VisitOccurrence):
+    """
+    Select patients who have an inpatient visit ("normalstationär").
+    """
+
+    def __init__(self) -> None:
+        super().__init__(
+            exclude=False,
+            category=CohortCategory.POPULATION,
+            concept=concepts.IntensiveCare,
+        )
+
+
 MMSEgte3 = PointInTimeCriterion(
     category=CohortCategory.POPULATION,
     concept=concepts.MMSE,
@@ -111,7 +126,7 @@ class PreOperativePatientsBeforeEndOfSurgery(PatientsInTimeFrame):
 - >= 18 years
 - 42 days until end of day before surgery
 """
-preOperativeAdultBeforeDayOfSurgeryPatients = CriterionCombination.And(
+preOperativeAdultBeforeDayOfSurgeryPatients = LogicalCriterionCombination.And(
     AdultPatients(),
     PreOperativePatientsBeforeDayOfSurgery(),
     category=CohortCategory.POPULATION,
@@ -122,7 +137,7 @@ preOperativeAdultBeforeDayOfSurgeryPatients = CriterionCombination.And(
 - 42 days until end of day before surgery
 - MMSE >= 3
 """
-preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = CriterionCombination.And(
+preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = LogicalCriterionCombination.And(
     AdultPatients(),
     PreOperativePatientsBeforeDayOfSurgery(),
     MMSEgte3,
@@ -133,7 +148,7 @@ preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = CriterionCombination.And(
 """
 - vorstationär OR normalstationär
 """
-preAdmissionOrInpatientPatients = CriterionCombination.Or(
+preAdmissionOrInpatientPatients = LogicalCriterionCombination.Or(
     PreAdmissionPatients(),
     InpatientPatients(),
     category=CohortCategory.POPULATION,
@@ -144,9 +159,11 @@ preAdmissionOrInpatientPatients = CriterionCombination.Or(
 - 42 days before day of surgery until end of surgery
 - vorstationär OR normalstationär
 """
-adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = CriterionCombination.And(
-    AdultPatients(),
-    PreOperativePatientsBeforeEndOfSurgery(),
-    preAdmissionOrInpatientPatients,
-    category=CohortCategory.POPULATION,
+adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = (
+    LogicalCriterionCombination.And(
+        AdultPatients(),
+        PreOperativePatientsBeforeEndOfSurgery(),
+        preAdmissionOrInpatientPatients,
+        category=CohortCategory.POPULATION,
+    )
 )
