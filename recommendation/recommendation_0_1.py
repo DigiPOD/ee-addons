@@ -20,19 +20,6 @@ from digipod.recommendation import package_version
 
 base_criterion = PatientsActiveDuringPeriod()
 
-# $cs-digipod#016 "Nursing Delirium Screening Scale (NU-DESC) score"
-
-# $cs-digipod#019 "Delirium Rating Scale score"
-
-# $cs-digipod#020 "Delirium Observation Scale score"
-
-# $cs-digipod#018 "Confusion Assessment Method score"
-
-# $cs-digipod#017 "4AT score"
-
-# $cs-digipod#021 "3-minute Diagnostic Interview for CAM-defined Delirium score"
-
-
 _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
     name="",
     url="",
