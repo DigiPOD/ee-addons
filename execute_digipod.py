@@ -16,7 +16,7 @@ os.environ["ENV_FILE"] = os.path.join(current_dir, "digipod.env")
 
 from execution_engine.omop.vocabulary import standard_vocabulary
 
-from digipod.vocabulary import DigiPOD
+from digipod.terminology.vocabulary import DigiPOD
 
 standard_vocabulary.register(DigiPOD)
 

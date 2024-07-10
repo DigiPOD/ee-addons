@@ -12,7 +12,7 @@ from digipod.criterion.preop_patients import (
     preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
 )
 from digipod.recommendation import package_version
-from digipod.vocabulary import DigiPOD
+from digipod.terminology.vocabulary import DigiPOD
 
 #############
 # criteria

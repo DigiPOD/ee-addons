@@ -84,6 +84,30 @@ class DigiPOD(AbstractVocabulary):
             vocabulary_id=vocab_id,
             concept_class_id="Custom",
         ),
+        "022": Concept(
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 22,
+            concept_name="Confusion Assessment Method for the Intensive Care Unit score",
+            concept_code="022",
+            domain_id="Measurement",
+            vocabulary_id=vocab_id,
+            concept_class_id="Custom",
+        ),
+        "023": Concept(
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 23,
+            concept_name="Delirium Detection Score score",
+            concept_code="023",
+            domain_id="Measurement",
+            vocabulary_id=vocab_id,
+            concept_class_id="Custom",
+        ),
+        "024": Concept(
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 24,
+            concept_name="Intensive Care Delirium Screening Checklist score",
+            concept_code="024",
+            domain_id="Measurement",
+            vocabulary_id=vocab_id,
+            concept_class_id="Custom",
+        ),
     }
 
     @classmethod
