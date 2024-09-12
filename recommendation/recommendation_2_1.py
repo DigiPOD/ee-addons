@@ -49,7 +49,7 @@ cciDocumented = PointInTimeCriterion(
 miniCogDocumented = PointInTimeCriterion(
     category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
-        SNOMEDCT.system_uri, "713408000"
+        SNOMEDCT.system_uri, "713408000", standard=False
     ),  # $sct#713408000 "Mini-Cog brief cognitive screening test score (observable entity)"
     override_value_required=False,
 )
@@ -76,7 +76,7 @@ acerDocumented = PointInTimeCriterion(
 mmseDocumented = PointInTimeCriterion(
     category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
-        SNOMEDCT.system_uri, "447316007"
+        SNOMEDCT.system_uri, "447316007", standard=False
     ),  # $sct#447316007 "Mini-mental state examination score (observable entity)"
     override_value_required=False,
 )

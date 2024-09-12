@@ -78,9 +78,6 @@ end_datetime = pendulum.parse("2023-05-31 23:59:59+01:00")
 
 
 builder = ExecutionEngineBuilder()
-# builder.set_characteristic_converters([VentilatorManagementAction])
-# builder.set_action_converters([VentilatorManagementAction])
-# builder.set_goal_converters([VentilatorManagementAction])
 
 # Build the ExecutionEngine
 engine = builder.build()
@@ -95,23 +92,6 @@ recommendations: list[cohort.Recommendation] = [
     digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
     digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
 ]
-
-# open questions
-# - how do we check daily coverage? possibly as different PI pairs
-# - values per shift should be determined by
-#   - one criterion that gets the actual value
-#   - shift criteria that are just valid for one shift per day (in principle we do not need sql for that, but the current
-#     implementation of the Task.handle_criterion function always executes sql - we could change that
-#  >> actually the problem is that these criteria would be valid for 8 hours and NO_DATA or NEGATIVE for the rest, and
-#     we don't have a method to determine temporal counts (i.e. >= two out of three non-overlapping events)
-#     thus, I think we need shift-value criteria, that check if the value is there within a timeframe (the shift) and
-#     then set the whole day as POSITIVE or NEGATIVE -> then we can handle 2 out of 3 per day
-# todo: - make a definitive overview of how intervals are combined within P, I, and between P&I and across PI pairs
-#       - documentation on how to make custom criteria
-#       - possibly: add a per-shift "extension" to criteria that just checks filters value inside time frames ?
-#           -> implications have to be thought through
-#       - implement rec2.1 and 0.1, 0.2
-#       - run these
 
 for recommendation in recommendations:
     print(recommendation.name)
