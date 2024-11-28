@@ -3,6 +3,8 @@ from execution_engine.omop.vocabulary import AbstractVocabulary
 
 DIGIPOD_CONCEPT_OFFSET = 2000000000
 
+OMOP_SURGICAL_PROCEDURE = 4301351  # OMOP surgical procedure
+
 
 class DigiPOD(AbstractVocabulary):
     """

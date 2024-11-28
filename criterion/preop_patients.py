@@ -1,3 +1,6 @@
+from digipod import concepts
+from digipod.criterion.patients import AdultPatients, PatientsInTimeFrame
+from digipod.terminology.vocabulary import OMOP_SURGICAL_PROCEDURE
 from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import column_interval_type
 from execution_engine.omop.criterion.combination.logical import (
@@ -10,9 +13,6 @@ from execution_engine.util.value import ValueNumber
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
 
-from digipod import concepts
-from digipod.criterion.patients import AdultPatients, PatientsInTimeFrame
-
 
 class PreOperativePatientsBeforeDayOfSurgery(PatientsInTimeFrame):
     """
@@ -23,9 +23,6 @@ class PreOperativePatientsBeforeDayOfSurgery(PatientsInTimeFrame):
         """
         Get the SQL Select query for data required by this criterion.
         """
-
-        # Define the concept ID for the surgical procedure
-        surgical_procedure_concept_id = 4322976  # OMOP procedure
 
         query = select(
             self._table.c.person_id,
@@ -38,7 +35,7 @@ class PreOperativePatientsBeforeDayOfSurgery(PatientsInTimeFrame):
                 func.date_trunc("day", self._table.c.procedure_datetime)
                 - func.cast(func.concat(1, "day"), Interval)
             ).label("interval_end"),
-        ).where(self._table.c.procedure_concept_id == surgical_procedure_concept_id)
+        ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
 
         query = self._filter_base_persons(query)
         query = self._filter_datetime(query)
@@ -103,9 +100,6 @@ class PreOperativePatientsBeforeEndOfSurgery(PatientsInTimeFrame):
         Get the SQL Select query for data required by this criterion.
         """
 
-        # Define the concept ID for the surgical procedure
-        surgical_procedure_concept_id = 4322976  # OMOP procedure
-
         query = select(
             self._table.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
@@ -114,7 +108,7 @@ class PreOperativePatientsBeforeEndOfSurgery(PatientsInTimeFrame):
                 - func.cast(func.concat(42, "day"), Interval)
             ).label("interval_start"),
             self._table.c.procedure_end_datetime.label("interval_end"),
-        ).where(self._table.c.procedure_concept_id == surgical_procedure_concept_id)
+        ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
 
         query = self._filter_base_persons(query)
         query = self._filter_datetime(query)

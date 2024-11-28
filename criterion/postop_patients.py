@@ -1,3 +1,5 @@
+from digipod.criterion.patients import PatientsInTimeFrame
+from digipod.terminology.vocabulary import OMOP_SURGICAL_PROCEDURE
 from execution_engine.omop.criterion.abstract import (
     SQL_ONE_SECOND,
     column_interval_type,
@@ -5,8 +7,6 @@ from execution_engine.omop.criterion.abstract import (
 from execution_engine.util.interval import IntervalType
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
-
-from digipod.criterion.patients import PatientsInTimeFrame
 
 
 class PostOperativePatientsUntilDay0(PatientsInTimeFrame):
@@ -20,10 +20,6 @@ class PostOperativePatientsUntilDay0(PatientsInTimeFrame):
         """
         Get the SQL Select query for data required by this criterion.
         """
-
-        # Define the concept ID for the surgical procedure
-        surgical_procedure_concept_id = 4322976  # OMOP procedure
-
         query = select(
             self._table.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
@@ -35,7 +31,7 @@ class PostOperativePatientsUntilDay0(PatientsInTimeFrame):
                 + func.cast(func.concat(self.postoperative_days + 1, "day"), Interval)
                 - SQL_ONE_SECOND
             ).label("interval_end"),
-        ).where(self._table.c.procedure_concept_id == surgical_procedure_concept_id)
+        ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
 
         query = self._filter_base_persons(query)
         query = self._filter_datetime(query)
