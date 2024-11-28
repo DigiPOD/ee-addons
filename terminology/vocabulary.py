@@ -21,7 +21,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "009": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 9,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 3,
             concept_name="Result of Charlson Comorbidity Index",
             concept_code="009",
             domain_id="Measurement",
@@ -29,7 +29,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "012": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 12,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 100012,
             concept_name="Result of Addenbrooke cognitive examination revised",
             concept_code="012",
             domain_id="Measurement",
@@ -37,7 +37,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "016": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 16,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 12,
             concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
             concept_code="016",
             domain_id="Measurement",
@@ -45,7 +45,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "017": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 100017,
             concept_name="4AT score",
             concept_code="017",
             domain_id="Measurement",
@@ -53,7 +53,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "018": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 18,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 13,
             concept_name="Confusion Assessment Method score",
             concept_code="018",
             domain_id="Measurement",
@@ -61,7 +61,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "019": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 19,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 15,
             concept_name="Delirium Rating Scale score",
             concept_code="019",
             domain_id="Measurement",
@@ -69,7 +69,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "020": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 20,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 16,
             concept_name="Delirium Observation Scale score",
             concept_code="020",
             domain_id="Measurement",
@@ -77,7 +77,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "021": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 21,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
             concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
             concept_code="021",
             domain_id="Measurement",
@@ -85,7 +85,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "022": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 22,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
             concept_name="Confusion Assessment Method for the Intensive Care Unit score",
             concept_code="022",
             domain_id="Measurement",
@@ -93,7 +93,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "023": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 23,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 19,
             concept_name="Delirium Detection Score score",
             concept_code="023",
             domain_id="Measurement",
@@ -101,7 +101,7 @@ class DigiPOD(AbstractVocabulary):
             concept_class_id="Custom",
         ),
         "024": Concept(
-            concept_id=DIGIPOD_CONCEPT_OFFSET + 24,
+            concept_id=DIGIPOD_CONCEPT_OFFSET + 18,
             concept_name="Intensive Care Delirium Screening Checklist score",
             concept_code="024",
             domain_id="Measurement",
