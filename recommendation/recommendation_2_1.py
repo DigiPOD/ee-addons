@@ -123,7 +123,7 @@ RecCollCheckRFAdultSurgicalPatientsPreoperatively = Recommendation(
         _RecPlanCheckRiskFactorsMoCAACERMMSE,
     ],
     base_criterion=base_criterion,
-    name="CheckRFAdultSurgicalPatientsPreoperatively",
+    name="Rec 2.1: CheckRFAdultSurgicalPatientsPreoperatively",
     title="Check Risk Factors in Adult Surgical Patients Preoperatively",
     url="",
     version="0.1",
