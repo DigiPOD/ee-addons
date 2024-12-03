@@ -1,5 +1,3 @@
-from digipod.criterion.patients import PatientsInTimeFrame
-from digipod.terminology.vocabulary import OMOP_SURGICAL_PROCEDURE
 from execution_engine.omop.criterion.abstract import (
     SQL_ONE_SECOND,
     column_interval_type,
@@ -7,6 +5,9 @@ from execution_engine.omop.criterion.abstract import (
 from execution_engine.util.interval import IntervalType
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
+
+from digipod.concepts import OMOP_SURGICAL_PROCEDURE
+from digipod.criterion.patients import PatientsInTimeFrame
 
 
 class PostOperativePatientsUntilDay0(PatientsInTimeFrame):

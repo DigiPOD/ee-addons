@@ -1,6 +1,3 @@
-from digipod import concepts
-from digipod.criterion.patients import AdultPatients, PatientsInTimeFrame
-from digipod.terminology.vocabulary import OMOP_SURGICAL_PROCEDURE
 from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import column_interval_type
 from execution_engine.omop.criterion.combination.logical import (
@@ -12,6 +9,10 @@ from execution_engine.util.interval import IntervalType
 from execution_engine.util.value import ValueNumber
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
+
+from digipod import concepts
+from digipod.concepts import OMOP_SURGICAL_PROCEDURE
+from digipod.criterion.patients import AdultPatients, PatientsInTimeFrame
 
 
 class PreOperativePatientsBeforeDayOfSurgery(PatientsInTimeFrame):
