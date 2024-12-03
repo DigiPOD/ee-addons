@@ -73,8 +73,8 @@ with omopdb.begin() as con:
 
 recommendation_package_version = "latest"
 
-start_datetime = pendulum.parse("2020-01-01 00:00:00+01:00")
-end_datetime = pendulum.parse("2023-05-31 23:59:59+01:00")
+start_datetime = pendulum.parse("2024-01-01 00:00:00+01:00")
+end_datetime = pendulum.parse("2025-05-31 23:59:59+01:00")
 
 
 builder = ExecutionEngineBuilder()
