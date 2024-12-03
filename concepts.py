@@ -32,11 +32,11 @@ OutpatientVisit = Concept(
 )
 
 MMSE = Concept(
-    concept_id=3229634,
-    concept_name="Mini-Cog brief cognitive screening test score",
-    concept_code="713408000",
-    domain_id="Observation",
-    vocabulary_id="Nebraska Lexicon",
+    concept_id=40491929,
+    concept_name="Mini-mental state examination score",
+    concept_code="447316007",
+    domain_id="Measurement",
+    vocabulary_id="SNOMED",
     concept_class_id="Observable Entity",
 )
 
