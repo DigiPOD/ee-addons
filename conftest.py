@@ -1,5 +1,6 @@
 import os
 from glob import glob
+from typing import Any
 
 import pandas as pd
 import pytest
@@ -10,6 +11,10 @@ pytest_plugins = [
     "digipod." + fixture_file.replace("/", ".").replace(".py", "")
     for fixture_file in glob("tests/_fixtures/[!__]*.py", recursive=True)
 ]
+
+
+current_dir = os.path.dirname(__file__)
+os.environ["ENV_FILE"] = os.path.join(current_dir, "digipod.env")
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -90,6 +95,12 @@ def pytest_sessionstart(session):  # type: ignore
     """
     init_postgres(session.config)
 
+    from execution_engine.omop.vocabulary import standard_vocabulary
+
+    from digipod.terminology.vocabulary import DigiPOD
+
+    standard_vocabulary.register(DigiPOD)
+
 
 def pytest_sessionfinish(session):  # type: ignore
     """
@@ -97,3 +108,19 @@ def pytest_sessionfinish(session):  # type: ignore
     """
     janitor = postgres_janitor()
     janitor.drop()
+
+
+def pytest_assertrepr_compare(
+    op: str,
+    left: Any,
+    right: Any,
+) -> list[str] | None:
+    """
+    Custom pytest assertion comparison.
+    """
+    from digipod.tests.recommendation.resultset import ResultSet
+
+    if isinstance(left, ResultSet) and isinstance(right, ResultSet) and op == "==":
+        return left.comparison_report(right)
+
+    return None

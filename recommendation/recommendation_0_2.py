@@ -42,7 +42,7 @@ normalward_scores = LogicalCriterionCombination.Or(
 )
 
 icu_scores = LogicalCriterionCombination.Or(
-    CAMICU_documented,  # 3DCAM Morning
+    CAMICU_documented,  # CAM ICU Morning
     DDS_documented,  # AT4 Morning
     ICDSC_documented,  # CAM Morning
     category=CohortCategory.INTERVENTION,
