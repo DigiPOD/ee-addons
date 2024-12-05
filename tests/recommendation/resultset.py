@@ -81,30 +81,91 @@ class ResultSet:
             )
             print(row)
 
+    def __eq__(self, other: Any) -> bool:
+        """Check if two ResultSet objects are equal, ignoring the order of intervals."""
+        if not isinstance(other, ResultSet):
+            return False
+
+        def interval_to_tuple(interval):
+            return (
+                interval["interval_start"],
+                interval["interval_end"],
+                interval["interval_type"],
+            )
+
+        self_set = set(interval_to_tuple(interval) for interval in self.intervals)
+        other_set = set(interval_to_tuple(interval) for interval in other.intervals)
+
+        return self_set == other_set
+
     def comparison_report(self, other: Any) -> list[str]:
-        """Generate a detailed comparison report for pytest_assertrepr_compare."""
+        """Generate a detailed comparison report with side-by-side intervals."""
         if not isinstance(other, ResultSet):
             return ["Comparison is not valid: other object is not a ResultSet."]
 
-        report = ["Comparison report:"]
-        self_set = set(map(tuple, [dict(sorted(d.items())) for d in self.intervals]))
-        other_set = set(map(tuple, [dict(sorted(d.items())) for d in other.intervals]))
+        report = ["Comparison Report:"]
+        report.append("")
 
-        missing_in_other = self_set - other_set
-        extra_in_other = other_set - self_set
+        # Helper function to convert interval to a comparable key
+        def interval_key(interval):
+            return (
+                interval["interval_start"],
+                interval["interval_end"],
+                interval["interval_type"],
+            )
 
-        if missing_in_other:
-            report.append("Missing in other:")
-            for item in sorted(missing_in_other):
-                report.append(f"  {item}")
+        # Build dictionaries for quick lookup
+        self_intervals_dict = {interval_key(i): i for i in self.intervals}
+        other_intervals_dict = {interval_key(i): i for i in other.intervals}
 
-        if extra_in_other:
-            report.append("Extra in other:")
-            for item in sorted(extra_in_other):
-                report.append(f"  {item}")
+        # Get all unique keys
+        all_keys = set(self_intervals_dict.keys()).union(other_intervals_dict.keys())
 
-        if not missing_in_other and not extra_in_other:
-            report.append("No differences found.")
+        # Prepare combined intervals
+        combined_intervals = []
+        for key in sorted(all_keys):
+            self_interval = self_intervals_dict.get(key)
+            other_interval = other_intervals_dict.get(key)
+            combined_intervals.append((self_interval, other_interval))
+
+        # Define headers and column widths
+        headers = [
+            "Interval Start (left)",
+            "Interval End (left)",
+            "Interval Type (left)",
+            "Interval Start (right)",
+            "Interval End (right)",
+            "Interval Type (right)",
+        ]
+        col_widths = [25, 25, 20, 25, 25, 20]
+
+        # Create header row
+        header_row = " | ".join(
+            f"{header:<{width}}" for header, width in zip(headers, col_widths)
+        )
+        report.append(header_row)
+        separator = "-" * (sum(col_widths) + len(headers) * 3 - 1)
+        report.append(separator)
+
+        # Function to format interval values
+        def format_interval(interval):
+            if interval is None:
+                return [""] * 3
+            return [
+                interval["interval_start"].isoformat(),
+                interval["interval_end"].isoformat(),
+                interval["interval_type"],
+            ]
+
+        # Add rows to the report
+        for self_interval, other_interval in combined_intervals:
+            self_values = format_interval(self_interval)
+            other_values = format_interval(other_interval)
+            row_values = self_values + other_values
+            row = " | ".join(
+                f"{value:<{width}}" for value, width in zip(row_values, col_widths)
+            )
+            report.append(row)
 
         return report
 

@@ -10,13 +10,23 @@ from digipod.tests.functions import (
     create_visit,
 )
 
+DELIR_SCREENING_ICU_SCORES = {
+    "CAMICU": digipod_vocab.CAM_ICU.concept_id,
+    "DDS": digipod_vocab.DDS.concept_id,
+    "ICDSC": digipod_vocab.ICDSC.concept_id,
+}
+
+DELIR_SCREENING_NORMALWARD_SCORES = {
+    "3DCAM": digipod_vocab.ThreeDCAM.concept_id,
+    "4AT": digipod_vocab.FourAT.concept_id,
+    "CAM": digipod_vocab.CAM.concept_id,
+    "DRS": digipod_vocab.DRS.concept_id,
+    "DOS": digipod_vocab.DOS.concept_id,
+    "NuDESC": digipod_vocab.NuDESC.concept_id,
+}
+
 
 class Patient:
-
-    _person = None
-    _visits = []
-    _measurements = []
-    _procedures = []
 
     def __init__(self, gender_concept_id: int, birth_date: str):
         self._person = create_person(
@@ -24,6 +34,10 @@ class Patient:
             birth_date=pendulum.parse(birth_date).date(),
         )
         self._person.person_id = -1
+
+        self._visits = []
+        self._measurements = []
+        self._procedures = []
 
     @property
     def person(self):

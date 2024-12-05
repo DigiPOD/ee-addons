@@ -64,7 +64,7 @@ class TestRecommendationBase:
         pi_pair_id: int | None,
         criterion_id: int | None,
         category: CohortCategory | None,
-    ) -> pd.DataFrame:
+    ) -> dict[str, pd.DataFrame]:
         assert self.run_id is not None, "Run test first"
         stmt = select(view).where(view.c.run_id == self.run_id)
 
@@ -83,7 +83,7 @@ class TestRecommendationBase:
 
         df = pd.read_sql(
             stmt,
-            db_session.connection(),
+            db_session.bind,
             params={"run_id": self.run_id},
         )
 

@@ -117,7 +117,13 @@ def db_setup():
     yield sessionmaker(bind=engine, expire_on_commit=False)
 
 
-@pytest.fixture
+def truncate_tables(connection, schema_name, table_names):
+    for table_name in table_names:
+        sql = text(f"TRUNCATE TABLE {schema_name}.{table_name} CASCADE;")
+        connection.execute(sql)
+
+
+@pytest.fixture(scope="function")
 def db_session(db_setup):
     # late import to prevent settings object being initialized before the test (and thus using the wrong settings)
     from execution_engine.omop.db.celida.schema import SCHEMA_NAME as CELIDA_SCHEMA_NAME
@@ -127,25 +133,25 @@ def db_session(db_setup):
     try:
         yield session
     finally:
-        session.rollback()  # rollback in case of exceptions
+        # Rollback any active transaction in the test session
+        session.rollback()
+
         with session.begin():
-            session.execute(
-                text(f'TRUNCATE TABLE "{OMOP_SCHEMA_NAME}"."person" CASCADE;')
+            # Truncate tables in the OMOP schema
+            truncate_tables(
+                session,
+                OMOP_SCHEMA_NAME,
+                ["person"],
             )
-            session.execute(
-                text(f'TRUNCATE TABLE "{CELIDA_SCHEMA_NAME}"."recommendation" CASCADE;')
+
+            # Truncate tables in the CELIDA schema
+            truncate_tables(
+                session,
+                CELIDA_SCHEMA_NAME,
+                ["recommendation", "execution_run", "population_intervention_pair"],
             )
-            session.execute(
-                text(f'TRUNCATE TABLE "{CELIDA_SCHEMA_NAME}"."execution_run" CASCADE;')
-            )
-            session.execute(
-                text(
-                    f'TRUNCATE TABLE "{CELIDA_SCHEMA_NAME}"."population_intervention_pair" CASCADE;'
-                )
-            )
-            session.execute(
-                text(f'TRUNCATE TABLE "{CELIDA_SCHEMA_NAME}"."criterion" CASCADE;')
-            )
+
+        session.close()
 
 
 @contextmanager
