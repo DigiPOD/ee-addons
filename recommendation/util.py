@@ -60,3 +60,14 @@ def AtLeast(
     return LogicalCriterionCombination.AtLeast(
         *args, threshold=threshold, category=CohortCategory.INTERVENTION
     )
+
+
+def AnyTime(
+    criterion: Criterion | CriterionCombination,
+) -> TemporalIndicatorCombination:
+    """
+    Any time overlap
+    """
+    return TemporalIndicatorCombination.AnyTime(
+        criterion, category=CohortCategory.INTERVENTION
+    )

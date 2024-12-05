@@ -17,6 +17,7 @@ from digipod.criterion.scores import (
     TDCAM_documented,
 )
 from digipod.recommendation import package_version
+from digipod.recommendation.util import AnyTime
 
 base_criterion = PatientsActiveDuringPeriod()
 
@@ -25,15 +26,17 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
-    intervention=LogicalCriterionCombination.AtLeast(
-        NUDESC_documented,
-        DRS_documented,
-        DOS_documented,
-        CAM_documented,
-        AT4_documented,
-        TDCAM_documented,
-        threshold=1,
-        category=CohortCategory.INTERVENTION,
+    intervention=AnyTime(
+        LogicalCriterionCombination.AtLeast(
+            NUDESC_documented,
+            DRS_documented,
+            DOS_documented,
+            CAM_documented,
+            AT4_documented,
+            TDCAM_documented,
+            threshold=1,
+            category=CohortCategory.INTERVENTION,
+        )
     ),
 )
 
