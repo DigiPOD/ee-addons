@@ -40,9 +40,9 @@ class PostOperativePatientsUntilDay0(PatientsInTimeFrame):
         return query
 
 
-class PostOperativePatientsUntilDay6(PostOperativePatientsUntilDay0):
+class PostOperativePatientsUntilDay5(PostOperativePatientsUntilDay0):
     """
     Select patients who are post-surgical in the timeframe between the day of the surgery and 6 days after the surgery.
     """
 
-    postoperative_days = 6
+    postoperative_days = 5

@@ -5,7 +5,7 @@ from execution_engine.omop.criterion.combination.logical import (
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 
 from digipod.criterion.patients import AdultPatients
-from digipod.criterion.postop_patients import PostOperativePatientsUntilDay6
+from digipod.criterion.postop_patients import PostOperativePatientsUntilDay5
 from digipod.criterion.preop_patients import InpatientPatients, IntensiveCarePatients
 from digipod.criterion.scores import *
 from digipod.recommendation import package_version
@@ -54,7 +54,7 @@ pi_normalward = PopulationInterventionPair(
     base_criterion=base_criterion,
     population=LogicalCriterionCombination.And(
         AdultPatients(),
-        PostOperativePatientsUntilDay6(),
+        PostOperativePatientsUntilDay5(),
         InpatientPatients(),
         category=CohortCategory.POPULATION,
     ),
@@ -73,7 +73,7 @@ pi_icu = PopulationInterventionPair(
     base_criterion=base_criterion,
     population=LogicalCriterionCombination.And(
         AdultPatients(),
-        PostOperativePatientsUntilDay6(),
+        PostOperativePatientsUntilDay5(),
         IntensiveCarePatients(),
         category=CohortCategory.POPULATION,
     ),
