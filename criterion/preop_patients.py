@@ -52,7 +52,6 @@ class PreAdmissionPatients(VisitOccurrence):
 
     def __init__(self) -> None:
         super().__init__(
-            exclude=False,
             category=CohortCategory.POPULATION,
             concept=concepts.OutpatientVisit,
         )
@@ -65,7 +64,6 @@ class InpatientPatients(VisitOccurrence):
 
     def __init__(self) -> None:
         super().__init__(
-            exclude=False,
             category=CohortCategory.POPULATION,
             concept=concepts.InpatientVisit,
         )
@@ -78,7 +76,6 @@ class IntensiveCarePatients(VisitOccurrence):
 
     def __init__(self) -> None:
         super().__init__(
-            exclude=False,
             category=CohortCategory.POPULATION,
             concept=concepts.IntensiveCare,
         )

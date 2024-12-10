@@ -21,7 +21,7 @@ class AdultPatients(Criterion):
     _static = True
 
     def __init__(self) -> None:
-        super().__init__(exclude=False, category=CohortCategory.POPULATION)
+        super().__init__(category=CohortCategory.POPULATION)
         self._table = Person.__table__.alias("p")
 
     @classmethod
@@ -42,7 +42,6 @@ class AdultPatients(Criterion):
         Get a dictionary representation of the object.
         """
         return {
-            "exclude": self._exclude,
             "category": self.category.value,
             "class": self.__class__.__name__,
         }
@@ -77,7 +76,7 @@ class PatientsInTimeFrame(Criterion):
     _static = True
 
     def __init__(self) -> None:
-        super().__init__(exclude=False, category=CohortCategory.POPULATION)
+        super().__init__(category=CohortCategory.POPULATION)
         self._table = ProcedureOccurrence.__table__.alias("po")
 
     @classmethod
@@ -98,7 +97,6 @@ class PatientsInTimeFrame(Criterion):
         Get a dictionary representation of the object.
         """
         return {
-            "exclude": self._exclude,
             "category": self.category.value,
             "class": self.__class__.__name__,
         }

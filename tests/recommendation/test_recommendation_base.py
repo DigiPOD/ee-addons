@@ -23,15 +23,17 @@ class TestRecommendationBase:
     def _setup(self, db_session):
         self.db = db_session
 
-    @classmethod
-    def setup_class(cls):
+    def setup_method(self, method):
         from execution_engine.execution_engine import ExecutionEngine
 
-        assert cls.recommendation is not None, "Set recommendation first"
+        assert self.recommendation is not None, "Set recommendation first"
 
         e = ExecutionEngine(verbose=False)
 
-        e.register_recommendation(cls.recommendation)
+        e.register_recommendation(self.recommendation)
+
+    def teardown_method(self, method):
+        self.recommendation.reset_state()
 
     def commit_patient(self, pat: Patient):
 
