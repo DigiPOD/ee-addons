@@ -42,6 +42,28 @@ def NightShift(
     )
 
 
+def NightShiftBeforeMidnight(
+    criterion: Criterion | CriterionCombination,
+) -> TemporalIndicatorCombination:
+    """
+    Night shift (before midnight) overlap
+    """
+    return TemporalIndicatorCombination.NightShiftBeforeMidnight(
+        criterion, category=CohortCategory.INTERVENTION
+    )
+
+
+def NightShiftAfterMidnight(
+    criterion: Criterion | CriterionCombination,
+) -> TemporalIndicatorCombination:
+    """
+    Night shift overlap
+    """
+    return TemporalIndicatorCombination.NightShiftAfterMidnight(
+        criterion, category=CohortCategory.INTERVENTION
+    )
+
+
 def Day(criterion: Criterion | CriterionCombination) -> TemporalIndicatorCombination:
     """
     Full Day Overlap

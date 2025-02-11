@@ -14,7 +14,8 @@ from digipod.recommendation.util import (
     AtLeast,
     Day,
     MorningShift,
-    NightShift,
+    NightShiftAfterMidnight,
+    NightShiftBeforeMidnight,
 )
 
 #############
@@ -59,9 +60,10 @@ pi_normalward = PopulationInterventionPair(
         category=CohortCategory.POPULATION,
     ),
     intervention=AtLeast(
+        Day(NightShiftAfterMidnight(normalward_scores)),
         Day(MorningShift(normalward_scores)),
         Day(AfternoonShift(normalward_scores)),
-        Day(NightShift(normalward_scores)),
+        Day(NightShiftBeforeMidnight(normalward_scores)),
         threshold=2,
     ),
 )
@@ -78,9 +80,10 @@ pi_icu = PopulationInterventionPair(
         category=CohortCategory.POPULATION,
     ),
     intervention=AtLeast(
+        Day(NightShiftAfterMidnight(icu_scores)),
         Day(MorningShift(icu_scores)),
         Day(AfternoonShift(icu_scores)),
-        Day(NightShift(icu_scores)),
+        Day(NightShiftBeforeMidnight(icu_scores)),
         threshold=2,
     ),
 )
