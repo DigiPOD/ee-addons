@@ -1,8 +1,9 @@
+from digipod.terminology.vocabulary import DigiPOD
 from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.vocabulary import standard_vocabulary
 
-from digipod.terminology.vocabulary import DigiPOD
+from concepts import FourAT
 
 NUDESC_documented = PointInTimeCriterion(
     category=CohortCategory.INTERVENTION,
@@ -38,9 +39,7 @@ CAM_documented = PointInTimeCriterion(
 )
 AT4_documented = PointInTimeCriterion(
     category=CohortCategory.INTERVENTION,
-    concept=standard_vocabulary.get_concept(
-        DigiPOD.system_uri, "017"
-    ),  # $cs-digipod#017 "4AT score"
+    concept=FourAT,
     override_value_required=False,
     forward_fill=False,
 )

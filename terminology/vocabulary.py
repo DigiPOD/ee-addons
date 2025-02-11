@@ -5,14 +5,6 @@ DIGIPOD_CONCEPT_OFFSET = 2000000000
 
 vocab_id = "DIGIPOD"
 
-DATE_OF_SURGICAL_PROCEDURE = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 7,
-    concept_name="Date of surgical procedure",
-    concept_code="007",
-    domain_id="Event",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
 
 CHARLSON_COMORBIDITY_INDEX = Concept(
     concept_id=DIGIPOD_CONCEPT_OFFSET + 3,
@@ -23,11 +15,11 @@ CHARLSON_COMORBIDITY_INDEX = Concept(
     concept_class_id="Custom",
 )
 
-ADDENBROOKE_COGNITIVE_EXAMINATION = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 100012,
-    concept_name="Result of Addenbrooke cognitive examination revised",
-    concept_code="012",
-    domain_id="Measurement",
+DATE_OF_SURGICAL_PROCEDURE = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 7,
+    concept_name="Date of surgical procedure",
+    concept_code="007",
+    domain_id="Event",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
@@ -41,19 +33,19 @@ NuDESC = Concept(
     concept_class_id="Custom",
 )
 
-FourAT = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 100017,
-    concept_name="4AT score",
-    concept_code="017",
+CAM = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 13,
+    concept_name="Confusion Assessment Method score",
+    concept_code="018",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
 
-CAM = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 13,
-    concept_name="Confusion Assessment Method score",
-    concept_code="018",
+ThreeDCAM = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
+    concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
+    concept_code="021",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
@@ -77,19 +69,19 @@ DOS = Concept(
     concept_class_id="Custom",
 )
 
-ThreeDCAM = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
-    concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
-    concept_code="021",
+CAM_ICU = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
+    concept_name="Confusion Assessment Method for the Intensive Care Unit score",
+    concept_code="022",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
 
-CAM_ICU = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
-    concept_name="Confusion Assessment Method for the Intensive Care Unit score",
-    concept_code="022",
+ICDSC = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 18,
+    concept_name="Intensive Care Delirium Screening Checklist score",
+    concept_code="024",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
@@ -104,10 +96,10 @@ DDS = Concept(
     concept_class_id="Custom",
 )
 
-ICDSC = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 18,
-    concept_name="Intensive Care Delirium Screening Checklist score",
-    concept_code="024",
+ADDENBROOKE_COGNITIVE_EXAMINATION = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 100012,
+    concept_name="Result of Addenbrooke cognitive examination revised",
+    concept_code="012",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
@@ -126,7 +118,6 @@ class DigiPOD(AbstractVocabulary):
         "009": CHARLSON_COMORBIDITY_INDEX,
         "012": ADDENBROOKE_COGNITIVE_EXAMINATION,
         "016": NuDESC,
-        "017": FourAT,
         "018": CAM,
         "019": DRS,
         "020": DOS,

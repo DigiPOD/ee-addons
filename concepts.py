@@ -9,6 +9,7 @@ OMOP_ASA = 4199571
 OMOP_MINICOG = 37017178
 OMOP_MOCA = 37174522
 OMOP_RASS = 36684829
+OMOP_4AT = 3662219
 
 # Gender
 OMOP_GENDER_FEMALE = 8532
@@ -65,6 +66,16 @@ RASS = Concept(
     concept_id=OMOP_RASS,
     concept_name="Richmond Agitation-Sedation Scale",
     concept_code="457441000124102",
+    domain_id="Measurement",
+    vocabulary_id="SNOMED",
+    concept_class_id="Staging / Scales",
+)
+
+
+FourAT = Concept(
+    concept_id=OMOP_4AT,
+    concept_name="4AT - 4 A's Test",
+    concept_code="1239191000000102",
     domain_id="Measurement",
     vocabulary_id="SNOMED",
     concept_class_id="Staging / Scales",
