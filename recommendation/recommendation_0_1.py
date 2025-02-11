@@ -43,10 +43,12 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
 rec_0_1_Delirium_Screening = Recommendation(
     pi_pairs=[_RecPlanPreoperativeDeliriumScreening],
     base_criterion=base_criterion,
-    name="Rec 0.1: CheckRFAdultSurgicalPatientsPreoperatively",
-    title="Check Risk Factors in Adult Surgical Patients Preoperatively",
+    name="Rec 0.1: PreoperativeDeliriumScreening",
+    title="Recommendation 0.1: Preoperative Screening of Delirium",
     url="",
-    version="0.1",
-    description="Check Risk Factors in Adult Surgical Patients Preoperatively",
+    version="0.2.0",
+    description="Adult patients before undergoing a surgical intervention of any type independently of the type of "
+    "anesthesia, on the day of the surgical intervention or maximum 42 days before: "
+    "Perform baseline delirium screening.",
     package_version=package_version,
 )

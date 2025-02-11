@@ -95,10 +95,12 @@ pi_icu = PopulationInterventionPair(
 rec_0_2_Delirium_Screening = Recommendation(
     pi_pairs=[pi_normalward, pi_icu],
     base_criterion=base_criterion,
-    name="Rec 0.2: PostOperativeScreeningOfDelirium",
-    title="Recommendation 0.2: Postoperative screening of delirium",
+    name="Rec 0.2: PostoperativeDeliriumScreening",
+    title="Recommendation 0.2: Postoperative Screening of Delirium",
     url="",
-    version="0.1",
-    description="Delirium should be screened at least once per day (preferably two or three times per day) for at least 3 days, starting in the recovery room or in the PACU on the day of surgery or latest on postoperative day 1.",
+    version="0.2.0",
+    description="Adult patients that had a surgical intervention of any type independently of the type of anesthesia: "
+    "Perform delirium screening from surgery day to the fifth postoperative day, "
+    "ideally once a shift and at least twice a day.",
     package_version=package_version,
 )

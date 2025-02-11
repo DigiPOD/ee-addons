@@ -124,9 +124,14 @@ RecCollCheckRFAdultSurgicalPatientsPreoperatively = Recommendation(
     ],
     base_criterion=base_criterion,
     name="Rec 2.1: CheckRFAdultSurgicalPatientsPreoperatively",
-    title="Check Risk Factors in Adult Surgical Patients Preoperatively",
+    title="Recommendation 2.1: Check risk factors in 'General Adult Surgical Patients' Preoperatively",
     url="",
-    version="0.1",
-    description="Check Risk Factors in Adult Surgical Patients Preoperatively",
+    version="0.2.0",
+    description="Adult patients before undergoing a surgical intervention of any type independently of the type of anesthesia: "
+    "Check risk factors age, American Society of Anesthesiology Physical status score (ASA), "
+    "Charlson Comorbidity Index (CCI) and Mini-cog test score (Mini-cog). "
+    "If Mini-cog test score is equal to or higher than 3, perform Montreal Cognitive Assessment (MoCA), A"
+    "ddenbrooke's Cognitive Examination (ACE-R) or Mini Mental State Examination (MMSE). "
+    "Please note that MMSE is not free of charge (license fees)",
     package_version=package_version,
 )
