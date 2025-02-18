@@ -1,6 +1,3 @@
-from digipod import concepts
-from digipod.concepts import OMOP_SURGICAL_PROCEDURE
-from digipod.criterion.patients import AdultPatients, PatientsInTimeFrame
 from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import column_interval_type
 from execution_engine.omop.criterion.combination.logical import (
@@ -13,17 +10,21 @@ from execution_engine.util.value import ValueNumber
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
 
+from digipod import concepts
+from digipod.concepts import OMOP_SURGICAL_PROCEDURE
+from digipod.criterion.patients import AdultPatients, PatientsInTimeFrame
+
 
 class SurgicalPatients(PatientsInTimeFrame):
     """
     Select first surgery per patient
     """
 
-    def _query_first_surgery(self):
+    def _query_first_surgery(self) -> Select:
         subquery = (
             select(
                 self._table.c.person_id,
-                self._table.c.procedure_id,
+                self._table.c.procedure_occurrence_id,
                 self._table.c.procedure_datetime,
                 func.row_number()
                 .over(
