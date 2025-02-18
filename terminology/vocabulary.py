@@ -105,6 +105,15 @@ ADDENBROOKE_COGNITIVE_EXAMINATION = Concept(
     concept_class_id="Custom",
 )
 
+BRADYCARDIA_DURING_SURGERY = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 30,
+    concept_name="Bradycardia During Surgery",
+    concept_code="030",
+    domain_id="Condition",
+    vocabulary_id=vocab_id,
+    concept_class_id="Custom",
+)
+
 
 class DigiPOD(AbstractVocabulary):
     """
@@ -125,6 +134,7 @@ class DigiPOD(AbstractVocabulary):
         "022": CAM_ICU,
         "023": DDS,
         "024": ICDSC,
+        "031": BRADYCARDIA_DURING_SURGERY,
     }
 
     @classmethod

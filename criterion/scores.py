@@ -1,6 +1,8 @@
 from execution_engine.constants import CohortCategory
+from execution_engine.omop.concepts import Concept
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.vocabulary import standard_vocabulary
+from execution_engine.util.value import Value
 
 from digipod.concepts import FourAT
 from digipod.terminology.vocabulary import DigiPOD
@@ -78,3 +80,20 @@ ICDSC_documented = PointInTimeCriterion(
     override_value_required=False,
     forward_fill=False,
 )
+
+
+def score_threshold(
+    concept: Concept,
+    value: Value,
+    cohort_category: CohortCategory = CohortCategory.POPULATION,
+) -> PointInTimeCriterion:
+    """
+    Returns a PointInTime Criterion for the given Concept and Value
+    """
+    return PointInTimeCriterion(
+        category=cohort_category,
+        concept=concept,
+        override_value_required=False,
+        forward_fill=False,
+        value=value,
+    )

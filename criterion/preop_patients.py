@@ -134,6 +134,36 @@ class PreOperativePatientsBeforeEndOfSurgery(SurgicalPatients):
         return query
 
 
+class PreOperativePatientsBeforeSurgery(SurgicalPatients):
+    """
+    Select patients who are pre-operative in the timeframe between 42 days before the surgery and the end of the surgery.
+    """
+
+    def _create_query(self) -> Select:
+        """
+        Get the SQL Select query for data required by this criterion.
+        """
+
+        subquery = self._query_first_surgery()
+
+        query = select(
+            subquery.c.person_id,
+            column_interval_type(IntervalType.POSITIVE),
+            (
+                func.date_trunc("day", subquery.c.procedure_datetime)
+                - func.cast(func.concat(42, "day"), Interval)
+            ).label("interval_start"),
+            subquery.c.procedure_datetime.label("interval_end"),
+        ).where(
+            subquery.c.rn == 1
+        )  # Filter only the first procedure per person
+
+        query = self._filter_base_persons(query, c_person_id=subquery.c.person_id)
+        query = self._filter_datetime(query)
+
+        return query
+
+
 """
 - >= 18 years
 - 42 days until end of day before surgery

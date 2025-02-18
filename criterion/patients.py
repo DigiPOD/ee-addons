@@ -8,12 +8,16 @@ from execution_engine.omop.criterion.abstract import (
     observation_end_datetime,
     observation_start_datetime,
 )
-from execution_engine.omop.db.omop.tables import Person, ProcedureOccurrence
+from execution_engine.omop.db.omop.tables import (
+    DrugExposure,
+    Person,
+    ProcedureOccurrence,
+)
 from execution_engine.util.interval import IntervalType
 from sqlalchemy import func, select
 from sqlalchemy.sql import Select
 
-from digipod.concepts import OMOP_SURGICAL_PROCEDURE
+from digipod.concepts import OMOP_DEXMEDETOMIDINE, OMOP_SURGICAL_PROCEDURE
 
 
 class AdultPatients(Criterion):
@@ -78,9 +82,8 @@ class PatientsInTimeFrame(Criterion):
 
     _static = True
 
-    def __init__(self) -> None:
-        super().__init__(category=CohortCategory.POPULATION)
-        self._table = ProcedureOccurrence.__table__.alias("po")
+    def __init__(self, category: CohortCategory) -> None:
+        super().__init__(category=category)
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Self:
@@ -110,6 +113,10 @@ class SurgicalPatients(PatientsInTimeFrame):
     Select first surgery per patient
     """
 
+    def __init__(self) -> None:
+        super().__init__(category=CohortCategory.POPULATION)
+        self._table = ProcedureOccurrence.__table__.alias("po")
+
     def _query_first_surgery(self) -> Select:
         subquery = (
             select(
@@ -126,6 +133,36 @@ class SurgicalPatients(PatientsInTimeFrame):
             )
             .where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
             .alias("first_procedure")
+        )
+
+        return subquery
+
+
+class FirstDexmedetomidineAdministration(PatientsInTimeFrame):
+    """
+    Select first administration of Dexmedetomidine per patient.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(category=CohortCategory.POPULATION)
+        self._table = DrugExposure.__table__.alias("d")
+
+    def _query_first_dexmedetomidine(self) -> Select:
+        subquery = (
+            select(
+                self._table.c.person_id,
+                self._table.c.drug_exposure_id,
+                self._table.c.drug_exposure_start_datetime,
+                self._table.c.drug_exposure_end_datetime,
+                func.row_number()
+                .over(
+                    partition_by=self._table.c.person_id,
+                    order_by=self._table.c.drug_exposure_start_datetime,
+                )
+                .label("rn"),
+            )
+            .where(self._table.c.drug_concept_id == OMOP_DEXMEDETOMIDINE)
+            .alias("first_dexmedetomidine")
         )
 
         return subquery
