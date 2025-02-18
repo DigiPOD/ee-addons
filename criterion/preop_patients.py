@@ -11,34 +11,7 @@ from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
 
 from digipod import concepts
-from digipod.concepts import OMOP_SURGICAL_PROCEDURE
-from digipod.criterion.patients import AdultPatients, PatientsInTimeFrame
-
-
-class SurgicalPatients(PatientsInTimeFrame):
-    """
-    Select first surgery per patient
-    """
-
-    def _query_first_surgery(self) -> Select:
-        subquery = (
-            select(
-                self._table.c.person_id,
-                self._table.c.procedure_occurrence_id,
-                self._table.c.procedure_datetime,
-                self._table.c.procedure_end_datetime,
-                func.row_number()
-                .over(
-                    partition_by=self._table.c.person_id,
-                    order_by=self._table.c.procedure_datetime,
-                )
-                .label("rn"),
-            )
-            .where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
-            .alias("first_procedure")
-        )
-
-        return subquery
+from digipod.criterion.patients import AdultPatients, SurgicalPatients
 
 
 class PreOperativePatientsBeforeDayOfSurgery(SurgicalPatients):

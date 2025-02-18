@@ -10,7 +10,10 @@ from execution_engine.omop.criterion.abstract import (
 )
 from execution_engine.omop.db.omop.tables import Person, ProcedureOccurrence
 from execution_engine.util.interval import IntervalType
-from sqlalchemy import Select, select
+from sqlalchemy import func, select
+from sqlalchemy.sql import Select
+
+from digipod.concepts import OMOP_SURGICAL_PROCEDURE
 
 
 class AdultPatients(Criterion):
@@ -100,3 +103,29 @@ class PatientsInTimeFrame(Criterion):
             "category": self.category.value,
             "class": self.__class__.__name__,
         }
+
+
+class SurgicalPatients(PatientsInTimeFrame):
+    """
+    Select first surgery per patient
+    """
+
+    def _query_first_surgery(self) -> Select:
+        subquery = (
+            select(
+                self._table.c.person_id,
+                self._table.c.procedure_occurrence_id,
+                self._table.c.procedure_datetime,
+                self._table.c.procedure_end_datetime,
+                func.row_number()
+                .over(
+                    partition_by=self._table.c.person_id,
+                    order_by=self._table.c.procedure_datetime,
+                )
+                .label("rn"),
+            )
+            .where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
+            .alias("first_procedure")
+        )
+
+        return subquery
