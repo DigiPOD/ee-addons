@@ -1,9 +1,9 @@
-from digipod.terminology.vocabulary import DigiPOD
 from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.vocabulary import standard_vocabulary
 
-from concepts import FourAT
+from digipod.concepts import FourAT
+from digipod.terminology.vocabulary import DigiPOD
 
 NUDESC_documented = PointInTimeCriterion(
     category=CohortCategory.INTERVENTION,
