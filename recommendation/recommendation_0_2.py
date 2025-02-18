@@ -1,3 +1,9 @@
+from execution_engine.omop.cohort import PopulationInterventionPair, Recommendation
+from execution_engine.omop.criterion.combination.logical import (
+    LogicalCriterionCombination,
+)
+from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
+
 from digipod.criterion.patients import AdultPatients
 from digipod.criterion.postop_patients import PostOperativePatientsUntilDay5
 from digipod.criterion.preop_patients import InpatientPatients, IntensiveCarePatients
@@ -11,11 +17,6 @@ from digipod.recommendation.util import (
     NightShiftAfterMidnight,
     NightShiftBeforeMidnight,
 )
-from execution_engine.omop.cohort import PopulationInterventionPair, Recommendation
-from execution_engine.omop.criterion.combination.logical import (
-    LogicalCriterionCombination,
-)
-from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 
 #############
 # criteria
@@ -132,7 +133,7 @@ pi_icu_single_screening = PopulationInterventionPair(
 rec_0_2_Delirium_Screening_single = Recommendation(
     pi_pairs=[pi_normalward_single_screening, pi_icu_single_screening],
     base_criterion=base_criterion,
-    name="Rec 0.2: PostoperativeDeliriumScreening (Double)",
+    name="Rec 0.2: PostoperativeDeliriumScreening (Single)",
     title="Recommendation 0.2: Postoperative Screening of Delirium",
     url="",
     version="0.2.0",
@@ -145,7 +146,7 @@ rec_0_2_Delirium_Screening_single = Recommendation(
 rec_0_2_Delirium_Screening_double = Recommendation(
     pi_pairs=[pi_normalward_double_screening, pi_icu_double_screening],
     base_criterion=base_criterion,
-    name="Rec 0.2: PostoperativeDeliriumScreening (Single)",
+    name="Rec 0.2: PostoperativeDeliriumScreening (Double)",
     title="Recommendation 0.2: Postoperative Screening of Delirium",
     url="",
     version="0.2.0",
