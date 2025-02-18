@@ -1,6 +1,4 @@
 import pytest
-
-from digipod.recommendation.recommendation_0_2 import rec_0_2_Delirium_Screening
 from digipod.tests.recommendation.resultset import ResultSet
 from digipod.tests.recommendation.test_recommendation_base import TestRecommendationBase
 from digipod.tests.recommendation.utils import (
@@ -9,10 +7,12 @@ from digipod.tests.recommendation.utils import (
     AdultPatient,
 )
 
+from recommendation.recommendation_0_2 import rec_0_2_Delirium_Screening_double
+
 
 class TestRecommendation_0_2(TestRecommendationBase):
 
-    recommendation = rec_0_2_Delirium_Screening
+    recommendation = rec_0_2_Delirium_Screening_double
 
     def postop_icu_patient(self):
         pat = AdultPatient()
