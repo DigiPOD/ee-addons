@@ -26,6 +26,7 @@ class SurgicalPatients(PatientsInTimeFrame):
                 self._table.c.person_id,
                 self._table.c.procedure_occurrence_id,
                 self._table.c.procedure_datetime,
+                self._table.c.procedure_end_datetime,
                 func.row_number()
                 .over(
                     partition_by=self._table.c.person_id,
@@ -80,7 +81,7 @@ class PreOperativePatientsBeforeDayOfSurgery(SurgicalPatients):
         #     ).label("interval_end"),
         # ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
 
-        query = self._filter_base_persons(query)
+        query = self._filter_base_persons(query, c_person_id=subquery.c.person_id)
         query = self._filter_datetime(query)
 
         return query
@@ -146,15 +147,15 @@ class PreOperativePatientsBeforeEndOfSurgery(SurgicalPatients):
             subquery.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
             (
-                func.date_trunc("day", self._table.c.procedure_datetime)
+                func.date_trunc("day", subquery.c.procedure_datetime)
                 - func.cast(func.concat(42, "day"), Interval)
             ).label("interval_start"),
-            self._table.c.procedure_end_datetime.label("interval_end"),
+            subquery.c.procedure_end_datetime.label("interval_end"),
         ).where(
             subquery.c.rn == 1
         )  # Filter only the first procedure per person
 
-        query = self._filter_base_persons(query)
+        query = self._filter_base_persons(query, c_person_id=subquery.c.person_id)
         query = self._filter_datetime(query)
 
         return query
