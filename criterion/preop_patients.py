@@ -14,7 +14,32 @@ from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
 
 
-class PreOperativePatientsBeforeDayOfSurgery(PatientsInTimeFrame):
+class SurgicalPatients(PatientsInTimeFrame):
+    """
+    Select first surgery per patient
+    """
+
+    def _query_first_surgery(self):
+        subquery = (
+            select(
+                self._table.c.person_id,
+                self._table.c.procedure_id,
+                self._table.c.procedure_datetime,
+                func.row_number()
+                .over(
+                    partition_by=self._table.c.person_id,
+                    order_by=self._table.c.procedure_datetime,
+                )
+                .label("rn"),
+            )
+            .where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
+            .alias("first_procedure")
+        )
+
+        return subquery
+
+
+class PreOperativePatientsBeforeDayOfSurgery(SurgicalPatients):
     """
     Select patients who are pre-surgical in the timeframe between 42 days before the surgery and the day of the surgery.
     """
@@ -24,18 +49,35 @@ class PreOperativePatientsBeforeDayOfSurgery(PatientsInTimeFrame):
         Get the SQL Select query for data required by this criterion.
         """
 
+        subquery = self._query_first_surgery()
+
         query = select(
-            self._table.c.person_id,
+            subquery.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
             (
-                func.date_trunc("day", self._table.c.procedure_datetime)
+                func.date_trunc("day", subquery.c.procedure_datetime)
                 - func.cast(func.concat(42, "day"), Interval)
             ).label("interval_start"),
             (
-                func.date_trunc("day", self._table.c.procedure_datetime)
+                func.date_trunc("day", subquery.c.procedure_datetime)
                 - func.cast(func.concat(1, "day"), Interval)
             ).label("interval_end"),
-        ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
+        ).where(
+            subquery.c.rn == 1
+        )  # Filter only the first procedure per person
+
+        # query = select(
+        #     self._table.c.person_id,
+        #     column_interval_type(IntervalType.POSITIVE),
+        #     (
+        #         func.date_trunc("day", self._table.c.procedure_datetime)
+        #         - func.cast(func.concat(42, "day"), Interval)
+        #     ).label("interval_start"),
+        #     (
+        #         func.date_trunc("day", self._table.c.procedure_datetime)
+        #         - func.cast(func.concat(1, "day"), Interval)
+        #     ).label("interval_end"),
+        # ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
 
         query = self._filter_base_persons(query)
         query = self._filter_datetime(query)
@@ -87,7 +129,7 @@ MMSEgte3 = PointInTimeCriterion(
 )
 
 
-class PreOperativePatientsBeforeEndOfSurgery(PatientsInTimeFrame):
+class PreOperativePatientsBeforeEndOfSurgery(SurgicalPatients):
     """
     Select patients who are pre-operative in the timeframe between 42 days before the surgery and the end of the surgery.
     """
@@ -97,15 +139,19 @@ class PreOperativePatientsBeforeEndOfSurgery(PatientsInTimeFrame):
         Get the SQL Select query for data required by this criterion.
         """
 
+        subquery = self._query_first_surgery()
+
         query = select(
-            self._table.c.person_id,
+            subquery.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
             (
                 func.date_trunc("day", self._table.c.procedure_datetime)
                 - func.cast(func.concat(42, "day"), Interval)
             ).label("interval_start"),
             self._table.c.procedure_end_datetime.label("interval_end"),
-        ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
+        ).where(
+            subquery.c.rn == 1
+        )  # Filter only the first procedure per person
 
         query = self._filter_base_persons(query)
         query = self._filter_datetime(query)
