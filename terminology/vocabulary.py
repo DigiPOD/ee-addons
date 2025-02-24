@@ -5,21 +5,29 @@ DIGIPOD_CONCEPT_OFFSET = 2000000000
 
 vocab_id = "DIGIPOD"
 
+DATE_OF_SURGICAL_PROCEDURE = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 4,
+    concept_name="Optimizable risk factor",
+    concept_code="007",
+    domain_id="Observation",
+    vocabulary_id=vocab_id,
+    concept_class_id="Custom",
+)
+
+PREOPERATIVE_RISK_FACTOR_OPTIMIZATION = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 99999999999,  # todo: concept not mapped?
+    concept_name="Preoperative risk factor optimization",
+    concept_code="008",
+    domain_id="Procedure",
+    vocabulary_id=vocab_id,
+    concept_class_id="Custom",
+)
 
 CHARLSON_COMORBIDITY_INDEX = Concept(
     concept_id=DIGIPOD_CONCEPT_OFFSET + 3,
     concept_name="Result of Charlson Comorbidity Index",
     concept_code="009",
     domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
-
-DATE_OF_SURGICAL_PROCEDURE = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 7,
-    concept_name="Date of surgical procedure",
-    concept_code="007",
-    domain_id="Event",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
@@ -33,19 +41,19 @@ NuDESC = Concept(
     concept_class_id="Custom",
 )
 
-CAM = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 13,
-    concept_name="Confusion Assessment Method score",
-    concept_code="018",
-    domain_id="Measurement",
+ASSESSMENT_OF_POSTOPERATIVE_DELIRIUM = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 99999999999999,  # todo: concept not mapped?
+    concept_name="Assessment for risk of post-operative delirium",
+    concept_code="017",
+    domain_id="Procedure",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
 
-ThreeDCAM = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
-    concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
-    concept_code="021",
+CAM = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 13,
+    concept_name="Confusion Assessment Method score",
+    concept_code="018",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
@@ -69,19 +77,19 @@ DOS = Concept(
     concept_class_id="Custom",
 )
 
-CAM_ICU = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
-    concept_name="Confusion Assessment Method for the Intensive Care Unit score",
-    concept_code="022",
+ThreeDCAM = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
+    concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
+    concept_code="021",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
 
-ICDSC = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 18,
-    concept_name="Intensive Care Delirium Screening Checklist score",
-    concept_code="024",
+CAM_ICU = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
+    concept_name="Confusion Assessment Method for the Intensive Care Unit score",
+    concept_code="022",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
@@ -96,19 +104,19 @@ DDS = Concept(
     concept_class_id="Custom",
 )
 
-ADDENBROOKE_COGNITIVE_EXAMINATION = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 100012,
-    concept_name="Result of Addenbrooke cognitive examination revised",
-    concept_code="012",
+ICDSC = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 18,
+    concept_name="Intensive Care Delirium Screening Checklist score",
+    concept_code="024",
     domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
 
 BRADYCARDIA_DURING_SURGERY = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 30,
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 31,
     concept_name="Bradycardia During Surgery",
-    concept_code="030",
+    concept_code="031",
     domain_id="Condition",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
@@ -124,9 +132,10 @@ class DigiPOD(AbstractVocabulary):
 
     map = {
         "007": DATE_OF_SURGICAL_PROCEDURE,
+        "008": PREOPERATIVE_RISK_FACTOR_OPTIMIZATION,
         "009": CHARLSON_COMORBIDITY_INDEX,
-        "012": ADDENBROOKE_COGNITIVE_EXAMINATION,
         "016": NuDESC,
+        "017": ASSESSMENT_OF_POSTOPERATIVE_DELIRIUM,
         "018": CAM,
         "019": DRS,
         "020": DOS,

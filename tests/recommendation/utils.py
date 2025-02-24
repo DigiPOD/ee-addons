@@ -219,5 +219,9 @@ class Patient:
 
 
 class AdultPatient(Patient):
+    """
+    A patient with an age of 30 years
+    """
+
     def __init__(self):
         super().__init__(gender_concept_id=OMOP_GENDER_FEMALE, birth_date="1990-05-12")

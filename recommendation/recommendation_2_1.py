@@ -63,12 +63,12 @@ mocaDocumented = PointInTimeCriterion(
     override_value_required=False,
 )
 
-# $cs-digipod#012 "Result of Addenbrooke cognitive examination revised"
+# $sct-uk#711061000000109 "Addenbrooke's cognitive examination revised - score (observable entity)"
 acerDocumented = PointInTimeCriterion(
     category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
-        DigiPOD.system_uri, "012"
-    ),  # $cs-digipod#012 "Result of Addenbrooke cognitive examination revised"
+        SNOMEDCT.system_uri, "711061000000109", standard=False
+    ),  # $sct-uk#711061000000109 "Addenbrooke's cognitive examination revised - score (observable entity)"
     override_value_required=False,
 )
 

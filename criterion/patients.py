@@ -1,4 +1,5 @@
 import datetime
+from abc import ABC
 from typing import Any, Dict, Self
 
 from execution_engine.constants import CohortCategory
@@ -20,23 +21,29 @@ from sqlalchemy.sql import Select
 from digipod.concepts import OMOP_DEXMEDETOMIDINE, OMOP_SURGICAL_PROCEDURE
 
 
-class AdultPatients(Criterion):
+class AgeLimitPatient(Criterion):
     """
     Select patients who are at least 18 years old.
     """
 
     _static = True
+    _min_age_years: int
 
-    def __init__(self) -> None:
-        super().__init__(category=CohortCategory.POPULATION)
+    def __init__(
+        self,
+        min_age_years: int = 18,
+        category: CohortCategory = CohortCategory.POPULATION,
+    ) -> None:
+        super().__init__(category=category)
         self._table = Person.__table__.alias("p")
+        self._min_age_years = min_age_years
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Self:
         """
         Create an object from a dictionary.
         """
-        return cls(**data)
+        return cls(min_age_years=data["min_age_years"])
 
     def description(self) -> str:
         """
@@ -51,6 +58,7 @@ class AdultPatients(Criterion):
         return {
             "category": self.category.value,
             "class": self.__class__.__name__,
+            "min_age_years": self._min_age_years,
         }
 
     def _create_query(self) -> Select:
@@ -59,7 +67,7 @@ class AdultPatients(Criterion):
         """
         # Current date minus 18 years to find the maximum birth date for 18-year-olds
         eighteen_years_ago = datetime.datetime.now() - datetime.timedelta(
-            days=18 * 365.25
+            days=self._min_age_years * 365.25
         )
 
         query = select(
@@ -73,6 +81,15 @@ class AdultPatients(Criterion):
         query = self._filter_datetime(query)
 
         return query
+
+
+class AdultPatients(AgeLimitPatient):
+    """
+    Select patients who are at least 18 years old.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(min_age_years=18)
 
 
 class PatientsInTimeFrame(Criterion):
@@ -108,7 +125,7 @@ class PatientsInTimeFrame(Criterion):
         }
 
 
-class SurgicalPatients(PatientsInTimeFrame):
+class SurgicalPatients(PatientsInTimeFrame, ABC):
     """
     Select first surgery per patient
     """

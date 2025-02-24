@@ -41,19 +41,6 @@ class PreOperativePatientsBeforeDayOfSurgery(SurgicalPatients):
             subquery.c.rn == 1
         )  # Filter only the first procedure per person
 
-        # query = select(
-        #     self._table.c.person_id,
-        #     column_interval_type(IntervalType.POSITIVE),
-        #     (
-        #         func.date_trunc("day", self._table.c.procedure_datetime)
-        #         - func.cast(func.concat(42, "day"), Interval)
-        #     ).label("interval_start"),
-        #     (
-        #         func.date_trunc("day", self._table.c.procedure_datetime)
-        #         - func.cast(func.concat(1, "day"), Interval)
-        #     ).label("interval_end"),
-        # ).where(self._table.c.procedure_concept_id == OMOP_SURGICAL_PROCEDURE)
-
         query = self._filter_base_persons(query, c_person_id=subquery.c.person_id)
         query = self._filter_datetime(query)
 
