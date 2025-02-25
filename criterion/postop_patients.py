@@ -27,9 +27,7 @@ class PostOperativePatientsUntilDay0(SurgicalPatients):
         query = select(
             subquery.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
-            (func.date_trunc("day", subquery.c.procedure_end_datetime)).label(
-                "interval_start"
-            ),
+            subquery.c.procedure_end_datetime.label("interval_start"),
             (
                 func.date_trunc("day", subquery.c.procedure_end_datetime)
                 + func.cast(func.concat(self.postoperative_days + 1, "day"), Interval)
@@ -68,9 +66,7 @@ class IntraOrPostOperativePatients(SurgicalPatients):
         query = select(
             subquery.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
-            (func.date_trunc("day", subquery.c.procedure_datetime)).label(
-                "interval_start"
-            ),
+            subquery.c.procedure_datetime.label("interval_start"),
             observation_end_datetime.label("interval_end"),
         ).where(
             subquery.c.rn == 1
