@@ -3,6 +3,9 @@ from execution_engine.omop.cohort import PopulationInterventionPair, Recommendat
 from execution_engine.omop.criterion.combination.logical import (
     LogicalCriterionCombination,
 )
+from execution_engine.omop.criterion.combination.temporal import (
+    TemporalIndicatorCombination,
+)
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 from execution_engine.omop.vocabulary import SNOMEDCT, standard_vocabulary
@@ -91,11 +94,14 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=preOperativeAdultBeforeDayOfSurgeryPatients,
-    intervention=LogicalCriterionCombination.Or(
-        ageDocumented,
-        asaDocumented,
-        cciDocumented,
-        miniCogDocumented,
+    intervention=TemporalIndicatorCombination.AnyTime(
+        LogicalCriterionCombination.Or(
+            ageDocumented,
+            asaDocumented,
+            cciDocumented,
+            miniCogDocumented,
+            category=CohortCategory.INTERVENTION,
+        ),
         category=CohortCategory.INTERVENTION,
     ),
 )
@@ -105,11 +111,14 @@ _RecPlanCheckRiskFactorsMoCAACERMMSE = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
-    intervention=LogicalCriterionCombination.AtLeast(
-        mocaDocumented,
-        acerDocumented,
-        mmseDocumented,
-        threshold=1,
+    intervention=TemporalIndicatorCombination.AnyTime(
+        LogicalCriterionCombination.AtLeast(
+            mocaDocumented,
+            acerDocumented,
+            mmseDocumented,
+            threshold=1,
+            category=CohortCategory.INTERVENTION,
+        ),
         category=CohortCategory.INTERVENTION,
     ),
 )
