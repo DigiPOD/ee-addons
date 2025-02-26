@@ -1,4 +1,3 @@
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.concepts import Concept
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.vocabulary import standard_vocabulary
@@ -8,7 +7,6 @@ from digipod.concepts import FourAT
 from digipod.terminology.vocabulary import DigiPOD
 
 NUDESC_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "016"
     ),  # $cs-digipod#016 "Nursing Delirium Screening Scale (NU-DESC) score"
@@ -16,7 +14,6 @@ NUDESC_documented = PointInTimeCriterion(
     forward_fill=False,
 )
 DRS_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "019"
     ),  # $cs-digipod#019 "Delirium Rating Scale score"
@@ -24,7 +21,6 @@ DRS_documented = PointInTimeCriterion(
     forward_fill=False,
 )
 DOS_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "020"
     ),  # $cs-digipod#020 "Delirium Observation Scale score"
@@ -32,7 +28,6 @@ DOS_documented = PointInTimeCriterion(
     forward_fill=False,
 )
 CAM_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "018"
     ),  # $cs-digipod#018 "Confusion Assessment Method score"
@@ -40,13 +35,11 @@ CAM_documented = PointInTimeCriterion(
     forward_fill=False,
 )
 AT4_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=FourAT,
     override_value_required=False,
     forward_fill=False,
 )
 TDCAM_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "021"
     ),  # $cs-digipod#021 "3-minute Diagnostic Interview for CAM-defined Delirium score"
@@ -55,7 +48,6 @@ TDCAM_documented = PointInTimeCriterion(
 )
 
 CAMICU_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "022"
     ),  # $cs-digipod#022 "Confusion Assessment Method for the Intensive Care Unit score"
@@ -64,7 +56,6 @@ CAMICU_documented = PointInTimeCriterion(
 )
 
 DDS_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "023"
     ),  # $cs-digipod#023 "Delirium Detection Score score"
@@ -73,7 +64,6 @@ DDS_documented = PointInTimeCriterion(
 )
 
 ICDSC_documented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "024"
     ),  # $cs-digipod#024 "Intensive Care Delirium Screening Checklist score"
@@ -85,13 +75,11 @@ ICDSC_documented = PointInTimeCriterion(
 def score_threshold(
     concept: Concept,
     value: Value,
-    cohort_category: CohortCategory = CohortCategory.POPULATION,
 ) -> PointInTimeCriterion:
     """
     Returns a PointInTime Criterion for the given Concept and Value
     """
     return PointInTimeCriterion(
-        category=cohort_category,
         concept=concept,
         override_value_required=False,
         forward_fill=False,

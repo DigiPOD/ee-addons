@@ -1,4 +1,3 @@
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import column_interval_type
 from execution_engine.omop.criterion.combination.logical import (
     LogicalCriterionCombination,
@@ -55,7 +54,6 @@ class PreAdmissionPatients(VisitOccurrence):
 
     def __init__(self) -> None:
         super().__init__(
-            category=CohortCategory.POPULATION,
             concept=concepts.OutpatientVisit,
         )
 
@@ -67,7 +65,6 @@ class InpatientPatients(VisitOccurrence):
 
     def __init__(self) -> None:
         super().__init__(
-            category=CohortCategory.POPULATION,
             concept=concepts.InpatientVisit,
         )
 
@@ -79,13 +76,11 @@ class IntensiveCarePatients(VisitOccurrence):
 
     def __init__(self) -> None:
         super().__init__(
-            category=CohortCategory.POPULATION,
             concept=concepts.IntensiveCare,
         )
 
 
 MMSEgte3 = PointInTimeCriterion(
-    category=CohortCategory.POPULATION,
     concept=concepts.MMSE,
     value=ValueNumber(value_min=3, unit=concepts.unit_score),
 )
@@ -158,7 +153,6 @@ class PreOperativePatientsBeforeSurgery(SurgicalPatients):
 preOperativeAdultBeforeDayOfSurgeryPatients = LogicalCriterionCombination.And(
     AdultPatients(),
     PreOperativePatientsBeforeDayOfSurgery(),
-    category=CohortCategory.POPULATION,
 )
 
 """
@@ -170,7 +164,6 @@ preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = LogicalCriterionCombinatio
     AdultPatients(),
     PreOperativePatientsBeforeDayOfSurgery(),
     MMSEgte3,
-    category=CohortCategory.POPULATION,
 )
 
 
@@ -180,7 +173,6 @@ preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = LogicalCriterionCombinatio
 preAdmissionOrInpatientPatients = LogicalCriterionCombination.Or(
     PreAdmissionPatients(),
     InpatientPatients(),
-    category=CohortCategory.POPULATION,
 )
 
 """
@@ -193,6 +185,5 @@ adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = (
         AdultPatients(),
         PreOperativePatientsBeforeEndOfSurgery(),
         preAdmissionOrInpatientPatients,
-        category=CohortCategory.POPULATION,
     )
 )

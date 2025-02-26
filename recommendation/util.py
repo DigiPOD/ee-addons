@@ -1,10 +1,10 @@
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import Criterion
 from execution_engine.omop.criterion.combination.combination import CriterionCombination
 from execution_engine.omop.criterion.combination.logical import (
     LogicalCriterionCombination,
 )
 from execution_engine.omop.criterion.combination.temporal import (
+    FixedWindowTemporalIndicatorCombination,
     TemporalIndicatorCombination,
 )
 
@@ -15,9 +15,7 @@ def MorningShift(
     """
     Morning shift overlap
     """
-    return TemporalIndicatorCombination.MorningShift(
-        criterion, category=CohortCategory.INTERVENTION
-    )
+    return FixedWindowTemporalIndicatorCombination.MorningShift(criterion)
 
 
 def AfternoonShift(
@@ -26,9 +24,7 @@ def AfternoonShift(
     """
     Afternoon shift overlap
     """
-    return TemporalIndicatorCombination.AfternoonShift(
-        criterion, category=CohortCategory.INTERVENTION
-    )
+    return FixedWindowTemporalIndicatorCombination.AfternoonShift(criterion)
 
 
 def NightShift(
@@ -37,9 +33,7 @@ def NightShift(
     """
     Night shift overlap
     """
-    return TemporalIndicatorCombination.NightShift(
-        criterion, category=CohortCategory.INTERVENTION
-    )
+    return FixedWindowTemporalIndicatorCombination.NightShift(criterion)
 
 
 def NightShiftBeforeMidnight(
@@ -48,9 +42,7 @@ def NightShiftBeforeMidnight(
     """
     Night shift (before midnight) overlap
     """
-    return TemporalIndicatorCombination.NightShiftBeforeMidnight(
-        criterion, category=CohortCategory.INTERVENTION
-    )
+    return FixedWindowTemporalIndicatorCombination.NightShiftBeforeMidnight(criterion)
 
 
 def NightShiftAfterMidnight(
@@ -59,18 +51,14 @@ def NightShiftAfterMidnight(
     """
     Night shift overlap
     """
-    return TemporalIndicatorCombination.NightShiftAfterMidnight(
-        criterion, category=CohortCategory.INTERVENTION
-    )
+    return FixedWindowTemporalIndicatorCombination.NightShiftAfterMidnight(criterion)
 
 
 def Day(criterion: Criterion | CriterionCombination) -> TemporalIndicatorCombination:
     """
     Full Day Overlap
     """
-    return TemporalIndicatorCombination.Day(
-        criterion, category=CohortCategory.INTERVENTION
-    )
+    return FixedWindowTemporalIndicatorCombination.Day(criterion)
 
 
 def AtLeast(
@@ -79,9 +67,7 @@ def AtLeast(
     """
     At least threshold of the criteria must be met
     """
-    return LogicalCriterionCombination.AtLeast(
-        *args, threshold=threshold, category=CohortCategory.INTERVENTION
-    )
+    return LogicalCriterionCombination.AtLeast(*args, threshold=threshold)
 
 
 def AnyTime(
@@ -90,6 +76,4 @@ def AnyTime(
     """
     Any time overlap
     """
-    return TemporalIndicatorCombination.AnyTime(
-        criterion, category=CohortCategory.INTERVENTION
-    )
+    return FixedWindowTemporalIndicatorCombination.AnyTime(criterion)

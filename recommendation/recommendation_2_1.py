@@ -1,10 +1,9 @@
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.cohort import PopulationInterventionPair, Recommendation
 from execution_engine.omop.criterion.combination.logical import (
     LogicalCriterionCombination,
 )
 from execution_engine.omop.criterion.combination.temporal import (
-    TemporalIndicatorCombination,
+    FixedWindowTemporalIndicatorCombination,
 )
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
@@ -23,7 +22,6 @@ from digipod.terminology.vocabulary import DigiPOD
 base_criterion = PatientsActiveDuringPeriod()
 
 ageDocumented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         SNOMEDCT.system_uri, "424144002"
     ),  # $sct#424144002 "Current chronological age (observable entity)"
@@ -32,7 +30,6 @@ ageDocumented = PointInTimeCriterion(
 
 # $sct#302132005 "American Society of Anesthesiologists physical status class (observable entity)"
 asaDocumented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         SNOMEDCT.system_uri, "302132005"
     ),  # $sct#424144002 "Current chronological age (observable entity)"
@@ -41,7 +38,6 @@ asaDocumented = PointInTimeCriterion(
 
 #  $cs-digipod#009 "Result of Charlson Comorbidity Index"
 cciDocumented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         DigiPOD.system_uri, "009"
     ),  # $cs-digipod#009 "Result of Charlson Comorbidity Index"
@@ -50,7 +46,6 @@ cciDocumented = PointInTimeCriterion(
 
 #  $sct#713408000 "Mini-Cog brief cognitive screening test score (observable entity)"
 miniCogDocumented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         SNOMEDCT.system_uri, "713408000", standard=False
     ),  # $sct#713408000 "Mini-Cog brief cognitive screening test score (observable entity)"
@@ -59,7 +54,6 @@ miniCogDocumented = PointInTimeCriterion(
 
 # $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
 mocaDocumented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         SNOMEDCT.system_uri, "1255891005"
     ),  # $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
@@ -68,7 +62,6 @@ mocaDocumented = PointInTimeCriterion(
 
 # $sct-uk#711061000000109 "Addenbrooke's cognitive examination revised - score (observable entity)"
 acerDocumented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         SNOMEDCT.system_uri, "711061000000109", standard=False
     ),  # $sct-uk#711061000000109 "Addenbrooke's cognitive examination revised - score (observable entity)"
@@ -77,7 +70,6 @@ acerDocumented = PointInTimeCriterion(
 
 # $sct#447316007 "Mini-mental state examination score (observable entity)"
 mmseDocumented = PointInTimeCriterion(
-    category=CohortCategory.INTERVENTION,
     concept=standard_vocabulary.get_concept(
         SNOMEDCT.system_uri, "447316007", standard=False
     ),  # $sct#447316007 "Mini-mental state examination score (observable entity)"
@@ -94,15 +86,13 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=preOperativeAdultBeforeDayOfSurgeryPatients,
-    intervention=TemporalIndicatorCombination.AnyTime(
+    intervention=FixedWindowTemporalIndicatorCombination.AnyTime(
         LogicalCriterionCombination.Or(
             ageDocumented,
             asaDocumented,
             cciDocumented,
             miniCogDocumented,
-            category=CohortCategory.INTERVENTION,
         ),
-        category=CohortCategory.INTERVENTION,
     ),
 )
 
@@ -111,15 +101,13 @@ _RecPlanCheckRiskFactorsMoCAACERMMSE = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
-    intervention=TemporalIndicatorCombination.AnyTime(
+    intervention=FixedWindowTemporalIndicatorCombination.AnyTime(
         LogicalCriterionCombination.AtLeast(
             mocaDocumented,
             acerDocumented,
             mmseDocumented,
             threshold=1,
-            category=CohortCategory.INTERVENTION,
         ),
-        category=CohortCategory.INTERVENTION,
     ),
 )
 

@@ -1,6 +1,5 @@
 from typing import Self, Type
 
-from execution_engine.constants import CohortCategory
 from execution_engine.converter.action.abstract import AbstractAction
 from execution_engine.converter.characteristic.abstract import AbstractCharacteristic
 from execution_engine.converter.characteristic.value import AbstractValueCharacteristic
@@ -84,7 +83,6 @@ class OtherActionConverter(AbstractAction):
                 )
 
         criterion = cls(
-            category=CohortCategory.INTERVENTION,
             concept=self._code,
             timing=self._timing,
         )
@@ -171,7 +169,6 @@ class AssessmentCharacteristicConverter(AbstractValueCharacteristic):
                 )
 
         criterion = cls(
-            category=CohortCategory.POPULATION,
             concept=concept,
             # timing=self._timing, # not used currently (or ever?)
         )

@@ -1,4 +1,3 @@
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.cohort import PopulationInterventionPair, Recommendation
 from execution_engine.omop.criterion.combination.logical import (
     LogicalCriterionCombination,
@@ -27,9 +26,7 @@ _recPlan_Dexmed_WithoutDementia = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=popAdultPatWithoutDementiaGettingDexmedetomidineIntraOrPostOP,
-    intervention=LogicalCriterionCombination.And(
-        Noop(category=CohortCategory.INTERVENTION), category=CohortCategory.INTERVENTION
-    ),
+    intervention=LogicalCriterionCombination.And(Noop()),
 )
 
 _recPlan_Dexmed_WithDementia = PopulationInterventionPair(
@@ -37,9 +34,7 @@ _recPlan_Dexmed_WithDementia = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=popAdultPatWithDementiaGettingDexmedetomidineIntraOrPostOP,
-    intervention=LogicalCriterionCombination.And(
-        Noop(category=CohortCategory.INTERVENTION), category=CohortCategory.INTERVENTION
-    ),
+    intervention=LogicalCriterionCombination.And(Noop()),
 )
 
 _recPlan_Dexmed_SideEffects = PopulationInterventionPair(
@@ -47,9 +42,7 @@ _recPlan_Dexmed_SideEffects = PopulationInterventionPair(
     url="",
     base_criterion=base_criterion,
     population=popAdultPatientsIntraOrPostOPWithDexmedetomidineAndBradyOrHypo,
-    intervention=LogicalCriterionCombination.And(
-        Noop(category=CohortCategory.INTERVENTION), category=CohortCategory.INTERVENTION
-    ),
+    intervention=LogicalCriterionCombination.And(Noop()),
 )
 
 #############################

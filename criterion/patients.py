@@ -2,7 +2,6 @@ import datetime
 from abc import ABC
 from typing import Any, Dict, Self
 
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import (
     Criterion,
     column_interval_type,
@@ -32,9 +31,8 @@ class AgeLimitPatient(Criterion):
     def __init__(
         self,
         min_age_years: int = 18,
-        category: CohortCategory = CohortCategory.POPULATION,
     ) -> None:
-        super().__init__(category=category)
+        super().__init__()
         self._table = Person.__table__.alias("p")
         self._min_age_years = min_age_years
 
@@ -56,7 +54,6 @@ class AgeLimitPatient(Criterion):
         Get a dictionary representation of the object.
         """
         return {
-            "category": self.category.value,
             "class": self.__class__.__name__,
             "min_age_years": self._min_age_years,
         }
@@ -99,9 +96,6 @@ class PatientsInTimeFrame(Criterion):
 
     _static = True
 
-    def __init__(self, category: CohortCategory) -> None:
-        super().__init__(category=category)
-
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Self:
         """
@@ -120,7 +114,6 @@ class PatientsInTimeFrame(Criterion):
         Get a dictionary representation of the object.
         """
         return {
-            "category": self.category.value,
             "class": self.__class__.__name__,
         }
 
@@ -131,7 +124,7 @@ class SurgicalPatients(PatientsInTimeFrame, ABC):
     """
 
     def __init__(self) -> None:
-        super().__init__(category=CohortCategory.POPULATION)
+        super().__init__()
         self._table = ProcedureOccurrence.__table__.alias("po")
 
     def _query_first_surgery(self) -> Select:
@@ -161,7 +154,7 @@ class FirstDexmedetomidineAdministration(PatientsInTimeFrame):
     """
 
     def __init__(self) -> None:
-        super().__init__(category=CohortCategory.POPULATION)
+        super().__init__()
         self._table = DrugExposure.__table__.alias("d")
 
     def _query_first_dexmedetomidine(self) -> Select:

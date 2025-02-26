@@ -21,7 +21,7 @@ class Noop(Criterion):
         """
         Get the SQL Select query for data required by this criterion.
         """
-        subquery = self.base_query()
+        subquery = self.base_query().subquery()
 
         query = select(
             subquery.c.person_id,
@@ -53,6 +53,5 @@ class Noop(Criterion):
         Get a dictionary representation of the object.
         """
         return {
-            "category": self.category.value,
             "class": self.__class__.__name__,
         }

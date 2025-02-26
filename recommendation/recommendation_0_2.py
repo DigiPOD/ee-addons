@@ -39,14 +39,12 @@ normalward_scores = LogicalCriterionCombination.Or(
     DRS_documented,  # DRS Morning
     DOS_documented,  # DOS Morning
     NUDESC_documented,  # NuDESC Morning
-    category=CohortCategory.INTERVENTION,
 )
 
 icu_scores = LogicalCriterionCombination.Or(
     CAMICU_documented,  # CAM ICU Morning
     DDS_documented,  # AT4 Morning
     ICDSC_documented,  # CAM Morning
-    category=CohortCategory.INTERVENTION,
 )
 
 pi_normalward_double_screening = PopulationInterventionPair(
@@ -57,7 +55,6 @@ pi_normalward_double_screening = PopulationInterventionPair(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         InpatientPatients(),
-        category=CohortCategory.POPULATION,
     ),
     intervention=AtLeast(
         Day(NightShiftAfterMidnight(normalward_scores)),
@@ -76,7 +73,6 @@ pi_normalward_single_screening = PopulationInterventionPair(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         InpatientPatients(),
-        category=CohortCategory.POPULATION,
     ),
     intervention=AtLeast(
         Day(NightShiftAfterMidnight(normalward_scores)),
@@ -96,7 +92,6 @@ pi_icu_double_screening = PopulationInterventionPair(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         IntensiveCarePatients(),
-        category=CohortCategory.POPULATION,
     ),
     intervention=AtLeast(
         Day(NightShiftAfterMidnight(icu_scores)),
@@ -115,7 +110,6 @@ pi_icu_single_screening = PopulationInterventionPair(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         IntensiveCarePatients(),
-        category=CohortCategory.POPULATION,
     ),
     intervention=AtLeast(
         Day(NightShiftAfterMidnight(icu_scores)),

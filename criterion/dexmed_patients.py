@@ -13,6 +13,7 @@ from execution_engine.omop.criterion.combination.logical import (
     LogicalCriterionCombination,
 )
 from execution_engine.omop.criterion.combination.temporal import (
+    FixedWindowTemporalIndicatorCombination,
     TemporalIndicatorCombination,
 )
 from execution_engine.omop.criterion.condition_occurrence import ConditionOccurrence
@@ -54,22 +55,14 @@ def score_criterion(
     """
     if value is None:
         return LogicalCriterionCombination.Or(
-            LogicalCriterionCombination.Not(
-                score_threshold(concept, ValuePositive), category=category
-            ),
+            LogicalCriterionCombination.Not(score_threshold(concept, ValuePositive)),
             score_threshold(concept, ValueNotPerformed),
-            category=category,
         )
     else:
         return LogicalCriterionCombination.Or(
-            LogicalCriterionCombination.Not(
-                score_threshold(concept, value), category=category
-            ),
-            LogicalCriterionCombination.Not(
-                score_threshold(concept, ValuePositive), category=category
-            ),
+            LogicalCriterionCombination.Not(score_threshold(concept, value)),
+            LogicalCriterionCombination.Not(score_threshold(concept, ValuePositive)),
             score_threshold(concept, ValueNotPerformed),
-            category=category,
         )
 
 
@@ -95,23 +88,18 @@ FourAT_negative = score_criterion(
     concepts.FourAT, ValueNumber.parse(">=4", unit=concepts.unit_score)
 )
 
-dementia = ContinuousCriterion(
-    category=CohortCategory.POPULATION, concept=concepts.Dementia
-)
+dementia = ContinuousCriterion(concept=concepts.Dementia)
 
 deliriumAssessmentPerformed = ContinuousCriterion(
-    category=CohortCategory.POPULATION,
     concept=concepts.AssessmentOfDelirium,
 )
 
 riskAssessmentPerformed = PointInTimeCriterion(
-    category=CohortCategory.POPULATION,
     concept=concepts.RiskAssessmentDone,
     forward_fill=True,
 )
 
 drugDexmedetomidine = DrugExposure(
-    category=CohortCategory.POPULATION,
     ingredient_concept=concepts.Dexmedetomidine,
     dose=None,
     route=None,
@@ -119,31 +107,19 @@ drugDexmedetomidine = DrugExposure(
 
 
 # Before Dexmedetomidine started
-baselineBradycardia = ConditionOccurrence(
-    category=CohortCategory.POPULATION, concept=Baseline_Bradycardia
-)
+baselineBradycardia = ConditionOccurrence(concept=Baseline_Bradycardia)
 
-lowBloodPressure = ConditionOccurrence(
-    category=CohortCategory.POPULATION, concept=Low_Blood_Pressure
-)
+lowBloodPressure = ConditionOccurrence(concept=Low_Blood_Pressure)
 
 # After Dexmedetomidine started
-drugInducedBradycardia = ConditionOccurrence(
-    category=CohortCategory.POPULATION, concept=Drug_Induced_Bradycardia
-)
+drugInducedBradycardia = ConditionOccurrence(concept=Drug_Induced_Bradycardia)
 
-drugInducedHypotension = ConditionOccurrence(
-    category=CohortCategory.POPULATION, concept=Drug_Induced_Hypotension
-)
+drugInducedHypotension = ConditionOccurrence(concept=Drug_Induced_Hypotension)
 
 # During surgery
-bradycardiaDuringSurgery = ConditionOccurrence(
-    category=CohortCategory.POPULATION, concept=Bradycardia_During_Surgery
-)
+bradycardiaDuringSurgery = ConditionOccurrence(concept=Bradycardia_During_Surgery)
 
-hypotensionDuringSurgery = ConditionOccurrence(
-    category=CohortCategory.POPULATION, concept=Hypotension_During_Surgery
-)
+hypotensionDuringSurgery = ConditionOccurrence(concept=Hypotension_During_Surgery)
 
 
 """
@@ -180,13 +156,11 @@ During or after surgery:
 basePopulationPreOp = LogicalCriterionCombination.And(
     PreOperativePatientsBeforeSurgery(),  # gibt einen zeitraum aus, ist gut
     AdultPatients(),
-    category=CohortCategory.POPULATION,
 )
 
 basePopulationIntraPost = LogicalCriterionCombination.And(
     IntraOrPostOperativePatients(),  # gibt einen zeitraum aus, ist gut
     AdultPatients(),
-    category=CohortCategory.POPULATION,
 )
 
 
@@ -201,9 +175,8 @@ def temporal_filter_criteria(
     POSITIVE criterion after filtering, otherwise negative
     """
     return [
-        TemporalIndicatorCombination.AnyTime(
-            LogicalCriterionCombination.And(c, filter_, category=category),
-            category=category,
+        FixedWindowTemporalIndicatorCombination.AnyTime(
+            LogicalCriterionCombination.And(c, filter_),
         )
         for c in criteria
     ]
@@ -211,13 +184,13 @@ def temporal_filter_criteria(
 
 popAdultPatWithoutDementiaGettingDexmedetomidineIntraOrPostOP = (
     LogicalCriterionCombination.And(
-        TemporalIndicatorCombination.AnyTime(
+        FixedWindowTemporalIndicatorCombination.AnyTime(
             LogicalCriterionCombination.And(
                 basePopulationPreOp,
                 *temporal_filter_criteria(
                     [
                         LogicalCriterionCombination.Not(
-                            dementia, category=CohortCategory.POPULATION
+                            dementia,
                         ),  # nur ab beginn -> braucht umfassung
                         deliriumAssessmentPerformed,
                         riskAssessmentPerformed,
@@ -233,16 +206,12 @@ popAdultPatWithoutDementiaGettingDexmedetomidineIntraOrPostOP = (
                     ],
                     basePopulationPreOp,
                 ),
-                category=CohortCategory.POPULATION,
             ),
-            category=CohortCategory.POPULATION,
         ),
         LogicalCriterionCombination.And(
             IntraOrPostOperativePatients(),
             drugDexmedetomidine,
-            category=CohortCategory.POPULATION,
         ),
-        category=CohortCategory.POPULATION,
     )
 )
 
@@ -256,20 +225,16 @@ During or after surgery:
 """
 popAdultPatWithDementiaGettingDexmedetomidineIntraOrPostOP = (
     LogicalCriterionCombination.And(
-        TemporalIndicatorCombination.AnyTime(
+        FixedWindowTemporalIndicatorCombination.AnyTime(
             LogicalCriterionCombination.And(
                 basePopulationPreOp,
                 *temporal_filter_criteria([dementia], basePopulationPreOp),
-                category=CohortCategory.POPULATION,
             ),
-            category=CohortCategory.POPULATION,
         ),
         LogicalCriterionCombination.And(
             IntraOrPostOperativePatients(),
             drugDexmedetomidine,
-            category=CohortCategory.POPULATION,
         ),
-        category=CohortCategory.POPULATION,
     )
 )
 
@@ -351,7 +316,6 @@ class PatientsAfterFirstDexAdministration(FirstDexmedetomidineAdministration):
 condBeforeOrAfter = LogicalCriterionCombination.And(
     *temporal_filter_criteria([drugDexmedetomidine], filter_=basePopulationIntraPost),
     basePopulationIntraPost,
-    category=CohortCategory.POPULATION,
 )
 
 
@@ -369,7 +333,6 @@ condIntraOp = LogicalCriterionCombination.And(
     *temporal_filter_criteria(
         [bradycardiaDuringSurgery, hypotensionDuringSurgery], filter_=intraOp
     ),
-    category=CohortCategory.POPULATION,
 )
 
 popAdultPatientsIntraOrPostOPWithDexmedetomidineAndBradyOrHypo = (
@@ -378,6 +341,5 @@ popAdultPatientsIntraOrPostOPWithDexmedetomidineAndBradyOrHypo = (
         *condBeforeDex,
         *condAfterDex,
         condIntraOp,
-        category=CohortCategory.POPULATION,
     )
 )

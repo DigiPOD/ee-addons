@@ -1,4 +1,3 @@
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.cohort import PopulationInterventionPair, Recommendation
 from execution_engine.omop.criterion.combination.logical import (
     LogicalCriterionCombination,
@@ -35,7 +34,6 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
             AT4_documented,
             TDCAM_documented,
             threshold=1,
-            category=CohortCategory.INTERVENTION,
         )
     ),
 )
