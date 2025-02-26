@@ -54,7 +54,6 @@ class AgeLimitPatient(Criterion):
         Get a dictionary representation of the object.
         """
         return {
-            "class": self.__class__.__name__,
             "min_age_years": self._min_age_years,
         }
 
@@ -101,7 +100,7 @@ class PatientsInTimeFrame(Criterion):
         """
         Create an object from a dictionary.
         """
-        return cls(**data)
+        return cls()
 
     def description(self) -> str:
         """
@@ -113,9 +112,7 @@ class PatientsInTimeFrame(Criterion):
         """
         Get a dictionary representation of the object.
         """
-        return {
-            "class": self.__class__.__name__,
-        }
+        return {}
 
 
 class SurgicalPatients(PatientsInTimeFrame, ABC):
