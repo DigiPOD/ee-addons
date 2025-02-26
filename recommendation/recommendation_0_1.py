@@ -43,7 +43,7 @@ rec_0_1_Delirium_Screening = Recommendation(
     base_criterion=base_criterion,
     name="Rec 0.1: PreoperativeDeliriumScreening",
     title="Recommendation 0.1: Preoperative Screening of Delirium",
-    url="",
+    url="https://fhir.charite.de/digipod/PlanDefinition/RecCollPreoperativeDeliriumScreening",
     version="0.2.0",
     description="Adult patients before undergoing a surgical intervention of any type independently of the type of "
     "anesthesia, on the day of the surgical intervention or maximum 42 days before: "

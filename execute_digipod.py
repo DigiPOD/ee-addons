@@ -2,6 +2,7 @@ import logging
 import os
 import re
 import sys
+from collections import OrderedDict
 
 import pendulum
 from execution_engine.omop.criterion.factory import register_criterion_class
@@ -89,8 +90,12 @@ end_datetime = pendulum.parse("2025-05-31 23:59:59+01:00")
 
 
 from digipod.criterion.patients import AgeLimitPatient
+from digipod.criterion.preop_patients import PreOperativePatientsBeforeDayOfSurgery
 
 register_criterion_class("AgeLimitPatient", AgeLimitPatient)
+register_criterion_class(
+    "PreOperativePatientsBeforeDayOfSurgery", PreOperativePatientsBeforeDayOfSurgery
+)
 
 
 builder = default_execution_engine_builder()
@@ -110,39 +115,49 @@ engine = builder.build()
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-
-# we'll rather build recommendations
-# TODO: we need to register the recommendations in the database, if they haven't been registered!
 recommendations: list[cohort.Recommendation] = [
-    # digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_single,
-    # digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_double,
-    # digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
-    # digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
-    digipod.recommendation.recommendation_3_2.RecCollCheckRFAdultSurgicalPatientsPreoperatively
+    digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_single,
+    digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_double,
+    digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
+    digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
+    digipod.recommendation.recommendation_3_2.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
 ]
+
 base_url = "https://fhir.charite.de/digipod/"
+urls = OrderedDict()
 
-urls = ["PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"]  # rec 4.1
+# manually implemented
+# urls["0.1"] = "PlanDefinition/RecCollPreoperativeDeliriumScreening"
+# urls["0.2"] = "PlanDefinition/RecCollDeliriumScreeningPostoperatively"
+# urls["2.1"] = "PlanDefinition/RecCollCheckRFAdultSurgicalPatientsPreoperatively"
+# urls["3.1"] = "PlanDefinition/RecCollAdultSurgicalPatNoSpecProphylacticDrugForPOD"
+
+# priority
+urls["4.1"] = "PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"
+# urls["4.3."] = None
+# urls["4.2"] = "PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies"
+
+# unknown
+# urls["3.2"] = "PlanDefinition/RecCollBalanceBenefitsAgainstSideEffectsWhenUsingDexmedetomidine"
+# urls["3.3"] = "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecSurgeryOrAnesthesiaType"
+# urls["3.4"] = "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecificBiomarker"
+# urls["5.1"] = "PlanDefinition/RecCollIntraoperativeEEGMonitoringDepth"
+# urls["5.2"] = "PlanDefinition/RecCollIntraoperativeMultiparameterEEG"
+# urls["6.2"] = "PlanDefinition/RecCollBenzoTreatmentofDeliriumInAdultSurgicalPatPostoperatively"
+# urls["6.3"] = "PlanDefinition/RecCollAdministerDexmedetomidineToPostOPCardiacSurgeryPatForPOD"
 
 
-for recommendation_url in urls:
-    print(recommendation_url)
+for rec_no, recommendation_url in urls.items():
+    print(rec_no, recommendation_url)
     cdd = engine.load_recommendation(
         base_url + recommendation_url,
         recommendation_package_version=recommendation_package_version,
     )
 
 
-#
-# from digipod.criterion.dexmed_patients import drugDexmedetomidine
-# for recommendation in recommendations:
-#     print(recommendation.name)
-#     #print(drugDexmedetomidine.id)
-#     engine.register_recommendation(recommendation)
-#     engine.execute(
-#         recommendation, start_datetime=start_datetime, end_datetime=end_datetime
-#     )
-#     engine.register_recommendation(recommendation)
-#     engine.execute(
-#         recommendation, start_datetime=start_datetime, end_datetime=end_datetime
-#     )
+for recommendation in recommendations:
+    print(recommendation.name)
+    engine.register_recommendation(recommendation)
+    engine.execute(
+        recommendation, start_datetime=start_datetime, end_datetime=end_datetime
+    )

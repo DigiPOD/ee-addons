@@ -122,7 +122,7 @@ RecCollCheckRFAdultSurgicalPatientsPreoperatively = Recommendation(
     base_criterion=base_criterion,
     name="Rec 2.1: CheckRFAdultSurgicalPatientsPreoperatively",
     title="Recommendation 2.1: Check risk factors in 'General Adult Surgical Patients' Preoperatively",
-    url="",
+    url="https://fhir.charite.de/digipod/PlanDefinition/RecCollCheckRFAdultSurgicalPatientsPreoperatively",
     version="0.2.0",
     description="Adult patients before undergoing a surgical intervention of any type independently of the type of anesthesia: "
     "Check risk factors age, American Society of Anesthesiology Physical status score (ASA), "
