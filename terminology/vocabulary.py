@@ -15,7 +15,7 @@ DATE_OF_SURGICAL_PROCEDURE = Concept(
 )
 
 PREOPERATIVE_RISK_FACTOR_OPTIMIZATION = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 99999999999,  # todo: concept not mapped?
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 9999999,  # todo: concept not mapped?
     concept_name="Preoperative risk factor optimization",
     concept_code="008",
     domain_id="Procedure",
@@ -42,7 +42,7 @@ NuDESC = Concept(
 )
 
 ASSESSMENT_OF_POSTOPERATIVE_DELIRIUM = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 99999999999999,  # todo: concept not mapped?
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 9999999,  # todo: concept not mapped?
     concept_name="Assessment for risk of post-operative delirium",
     concept_code="017",
     domain_id="Procedure",
