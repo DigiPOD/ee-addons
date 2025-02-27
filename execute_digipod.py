@@ -1,20 +1,15 @@
+import inspect
 import logging
 import os
 import re
 import sys
 from collections import OrderedDict
+from types import ModuleType
+from typing import Generator, Type
 
 import pendulum
 from execution_engine.omop.criterion.factory import register_criterion_class
 from sqlalchemy import text
-
-from digipod.converter.condition import DigiPODConditionCharacteristic
-from digipod.converter.evaluation_procedure import (
-    AssessmentCharacteristicConverter,
-    OtherActionConverter,
-    ProcedureWithExplicitContextConverter,
-)
-from digipod.converter.time_from_event import SurgicalOperationDate
 
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.dirname(current_dir)
@@ -26,7 +21,6 @@ os.environ["ENV_FILE"] = os.path.join(current_dir, "digipod.env")
 
 from execution_engine.omop.vocabulary import standard_vocabulary
 
-from digipod.converter.age import AgeConverter
 from digipod.terminology.vocabulary import DigiPOD
 
 standard_vocabulary.register(DigiPOD)
@@ -98,22 +92,44 @@ register_criterion_class(
 )
 
 
+def import_converters(module: ModuleType) -> Generator[Type, None, None]:
+    """
+    Imports and yields all classes listed in the `__all__` attribute of a module.
+
+    :param module: The module from which to import classes.
+    :return: A generator yielding classes defined in the module's `__all__` list.
+    """
+
+    if hasattr(module, "__all__"):
+        for class_name in module.__all__:
+            cls = getattr(module, class_name, None)
+            if inspect.isclass(cls):
+                yield cls
+
+
 builder = default_execution_engine_builder()
 
-builder.prepend_characteristic_converter(AgeConverter)
-builder.prepend_characteristic_converter(AssessmentCharacteristicConverter)
-builder.prepend_characteristic_converter(ProcedureWithExplicitContextConverter)
-builder.prepend_characteristic_converter(DigiPODConditionCharacteristic)
+import digipod.converter.action
+import digipod.converter.characteristic
+import digipod.converter.time_from_event
 
-builder.prepend_action_converter(OtherActionConverter)
+logging.getLogger().setLevel(logging.DEBUG)
 
-builder.append_time_from_event_converter(SurgicalOperationDate)
+for cls in import_converters(digipod.converter.characteristic):
+    logging.info(f'Importing characteristic converter "{cls.__name__}"')
+    builder.prepend_characteristic_converter(cls)
+
+for cls in import_converters(digipod.converter.action):
+    logging.info(f'Importing action converter "{cls.__name__}"')
+    builder.prepend_action_converter(cls)
+
+for cls in import_converters(digipod.converter.time_from_event):
+    logging.info(f'Importing timeFromEvent converter "{cls.__name__}"')
+    builder.append_time_from_event_converter(cls)
 
 
 # Build the ExecutionEngine
 engine = builder.build()
-
-logging.getLogger().setLevel(logging.DEBUG)
 
 recommendations: list[cohort.Recommendation] = [
     digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_single,
@@ -133,31 +149,65 @@ urls = OrderedDict()
 # urls["3.1"] = "PlanDefinition/RecCollAdultSurgicalPatNoSpecProphylacticDrugForPOD"
 
 # priority
-urls["4.1"] = "PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"
+# urls["4.1"] = "PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"
+# urls["4.2"] = "PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies" # works
 # urls["4.3."] = None
-# urls["4.2"] = "PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies"
 
 # unknown
 # urls["3.2"] = "PlanDefinition/RecCollBalanceBenefitsAgainstSideEffectsWhenUsingDexmedetomidine"
-# urls["3.3"] = "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecSurgeryOrAnesthesiaType"
+urls["3.3"] = (
+    "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecSurgeryOrAnesthesiaType"
+)
 # urls["3.4"] = "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecificBiomarker"
 # urls["5.1"] = "PlanDefinition/RecCollIntraoperativeEEGMonitoringDepth"
 # urls["5.2"] = "PlanDefinition/RecCollIntraoperativeMultiparameterEEG"
 # urls["6.2"] = "PlanDefinition/RecCollBenzoTreatmentofDeliriumInAdultSurgicalPatPostoperatively"
 # urls["6.3"] = "PlanDefinition/RecCollAdministerDexmedetomidineToPostOPCardiacSurgeryPatForPOD"
 
+import pathlib
+
+path = pathlib.Path("recommendation/gen")
+assert path.exists()
+
+header = """from digipod.criterion.intraop_patients import IntraOperativePatients
+from digipod.criterion.noop import Noop
+from digipod.criterion.patients import AgeLimitPatient
+from digipod.criterion.preop_patients import PreOperativePatientsBeforeSurgery
+from execution_engine.omop.cohort import Recommendation, PopulationInterventionPair
+from execution_engine.omop.concepts import Concept
+from execution_engine.omop.criterion.combination.logical import LogicalCriterionCombination
+from execution_engine.omop.criterion.combination.temporal import PersonalWindowTemporalIndicatorCombination,   TemporalIndicatorCombination
+from execution_engine.omop.criterion.condition_occurrence import ConditionOccurrence
+from execution_engine.omop.criterion.drug_exposure import DrugExposure
+from execution_engine.omop.criterion.measurement import Measurement
+from execution_engine.omop.criterion.observation import Observation
+from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
+from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
+from execution_engine.util.types import Timing
+from execution_engine.util.value.time import ValueCount
+
+
+"""
 
 for rec_no, recommendation_url in urls.items():
     print(rec_no, recommendation_url)
-    cdd = engine.load_recommendation(
+    recommendation = engine.load_recommendation(
         base_url + recommendation_url,
         recommendation_package_version=recommendation_package_version,
     )
 
+    with open(path / f"rec_{rec_no.replace('.', '_')}.py", "w") as f:
+        f.write(header)
+        f.write("recommendation = " + repr(recommendation))
 
-for recommendation in recommendations:
-    print(recommendation.name)
-    engine.register_recommendation(recommendation)
-    engine.execute(
-        recommendation, start_datetime=start_datetime, end_datetime=end_datetime
-    )
+    # engine.execute(
+    #     recommendation, start_datetime=start_datetime, end_datetime=end_datetime
+    # )
+
+
+# for recommendation in recommendations:
+#     print(recommendation.name)
+#     engine.register_recommendation(recommendation)
+#     engine.execute(
+#         recommendation, start_datetime=start_datetime, end_datetime=end_datetime
+#     )
