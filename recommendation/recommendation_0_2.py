@@ -56,7 +56,7 @@ pi_normalward_double_screening = PopulationInterventionPair(
         PostOperativePatientsUntilDay5(),
         InpatientPatients(),
     ),
-    intervention=AtLeast(
+    intervention=LogicalCriterionCombination.CappedAtLeast(
         Day(NightShiftAfterMidnight(normalward_scores)),
         Day(MorningShift(normalward_scores)),
         Day(AfternoonShift(normalward_scores)),
@@ -93,7 +93,7 @@ pi_icu_double_screening = PopulationInterventionPair(
         PostOperativePatientsUntilDay5(),
         IntensiveCarePatients(),
     ),
-    intervention=AtLeast(
+    intervention=LogicalCriterionCombination.CappedAtLeast(
         Day(NightShiftAfterMidnight(icu_scores)),
         Day(MorningShift(icu_scores)),
         Day(AfternoonShift(icu_scores)),
