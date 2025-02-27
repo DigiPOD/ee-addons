@@ -21,7 +21,8 @@ from execution_engine.omop.criterion.continuous import ContinuousCriterion
 from execution_engine.omop.criterion.drug_exposure import DrugExposure
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.util.interval import IntervalType
-from execution_engine.util.value import Value, ValueConcept, ValueNumber
+from execution_engine.util.value import Value, ValueConcept
+from execution_engine.util.value.value import ValueScalar
 from sqlalchemy import select
 from sqlalchemy.sql import Select
 
@@ -67,26 +68,16 @@ def score_criterion(
 
 
 NuDESC_negative = score_criterion(
-    concepts.NuDESC, ValueNumber.parse(">=2", unit=concepts.unit_score)
+    concepts.NuDESC, ValueScalar.parse(">=2")
 )  # we only support >=, hence we must use >=2 instead of >1
-ICDSC_negative = score_criterion(
-    concepts.ICDSC, ValueNumber.parse(">=4", unit=concepts.unit_score)
-)
+ICDSC_negative = score_criterion(concepts.ICDSC, ValueScalar.parse(">=4"))
 CAM_negative = score_criterion(concepts.CAM, value=None)
-DRS_negative = score_criterion(
-    concepts.DRS, ValueNumber.parse(">=12", unit=concepts.unit_score)
-)
-DOS_negative = score_criterion(
-    concepts.DOS, ValueNumber.parse(">=3", unit=concepts.unit_score)
-)
+DRS_negative = score_criterion(concepts.DRS, ValueScalar.parse(">=12"))
+DOS_negative = score_criterion(concepts.DOS, ValueScalar.parse(">=3"))
 TDCAM_negative = score_criterion(concepts.TDCAM, value=None)
 CAM_ICU_negative = score_criterion(concepts.CAM_ICU, value=None)
-DDS_negative = score_criterion(
-    concepts.DDS, ValueNumber.parse(">=8", unit=concepts.unit_score)
-)
-FourAT_negative = score_criterion(
-    concepts.FourAT, ValueNumber.parse(">=4", unit=concepts.unit_score)
-)
+DDS_negative = score_criterion(concepts.DDS, ValueScalar.parse(">=8"))
+FourAT_negative = score_criterion(concepts.FourAT, ValueScalar.parse(">=4"))
 
 dementia = ContinuousCriterion(concept=concepts.Dementia)
 

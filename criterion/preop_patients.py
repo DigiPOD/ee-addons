@@ -5,7 +5,7 @@ from execution_engine.omop.criterion.combination.logical import (
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import VisitOccurrence
 from execution_engine.util.interval import IntervalType
-from execution_engine.util.value import ValueNumber
+from execution_engine.util.value.value import ValueScalar
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
 
@@ -82,7 +82,7 @@ class IntensiveCarePatients(VisitOccurrence):
 
 MMSEgte3 = PointInTimeCriterion(
     concept=concepts.MMSE,
-    value=ValueNumber(value_min=3, unit=concepts.unit_score),
+    value=ValueScalar(value_min=3),
 )
 
 
