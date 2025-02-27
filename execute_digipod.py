@@ -83,18 +83,9 @@ start_datetime = pendulum.parse("2024-01-01 00:00:00+01:00")
 end_datetime = pendulum.parse("2025-05-31 23:59:59+01:00")
 
 
-from digipod.criterion.patients import AgeLimitPatient
-from digipod.criterion.preop_patients import PreOperativePatientsBeforeDayOfSurgery
-
-register_criterion_class("AgeLimitPatient", AgeLimitPatient)
-register_criterion_class(
-    "PreOperativePatientsBeforeDayOfSurgery", PreOperativePatientsBeforeDayOfSurgery
-)
-
-
-def import_converters(module: ModuleType) -> Generator[Type, None, None]:
+def iterate_module_classes(module: ModuleType) -> Generator[Type, None, None]:
     """
-    Imports and yields all classes listed in the `__all__` attribute of a module.
+    Yields all classes listed in the `__all__` attribute of a module.
 
     :param module: The module from which to import classes.
     :return: A generator yielding classes defined in the module's `__all__` list.
@@ -112,18 +103,23 @@ builder = default_execution_engine_builder()
 import digipod.converter.action
 import digipod.converter.characteristic
 import digipod.converter.time_from_event
+import digipod.criterion
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-for cls in import_converters(digipod.converter.characteristic):
+for cls in iterate_module_classes(digipod.criterion):
+    logging.info(f'Importing criterion class "{cls.__name__}"')
+    register_criterion_class(cls.__name__, cls)
+
+for cls in iterate_module_classes(digipod.converter.characteristic):
     logging.info(f'Importing characteristic converter "{cls.__name__}"')
     builder.prepend_characteristic_converter(cls)
 
-for cls in import_converters(digipod.converter.action):
+for cls in iterate_module_classes(digipod.converter.action):
     logging.info(f'Importing action converter "{cls.__name__}"')
     builder.prepend_action_converter(cls)
 
-for cls in import_converters(digipod.converter.time_from_event):
+for cls in iterate_module_classes(digipod.converter.time_from_event):
     logging.info(f'Importing timeFromEvent converter "{cls.__name__}"')
     builder.append_time_from_event_converter(cls)
 
@@ -134,13 +130,13 @@ engine = builder.build()
 recommendations: list[cohort.Recommendation] = [
     digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_single,
     digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_double,
-    digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
-    digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
-    digipod.recommendation.recommendation_3_2.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
+    # digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
+    # digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
+    # digipod.recommendation.recommendation_3_2.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
 ]
 
 base_url = "https://fhir.charite.de/digipod/"
-urls = OrderedDict()
+urls: dict[str, str] = OrderedDict()
 
 # manually implemented
 # urls["0.1"] = "PlanDefinition/RecCollPreoperativeDeliriumScreening"
@@ -155,9 +151,9 @@ urls = OrderedDict()
 
 # unknown
 # urls["3.2"] = "PlanDefinition/RecCollBalanceBenefitsAgainstSideEffectsWhenUsingDexmedetomidine"
-urls["3.3"] = (
-    "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecSurgeryOrAnesthesiaType"
-)
+# urls["3.3"] = (
+#     "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecSurgeryOrAnesthesiaType"
+# )
 # urls["3.4"] = "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecificBiomarker"
 # urls["5.1"] = "PlanDefinition/RecCollIntraoperativeEEGMonitoringDepth"
 # urls["5.2"] = "PlanDefinition/RecCollIntraoperativeMultiparameterEEG"
@@ -205,9 +201,9 @@ for rec_no, recommendation_url in urls.items():
     # )
 
 
-# for recommendation in recommendations:
-#     print(recommendation.name)
-#     engine.register_recommendation(recommendation)
-#     engine.execute(
-#         recommendation, start_datetime=start_datetime, end_datetime=end_datetime
-#     )
+for recommendation in recommendations:
+    print(recommendation.name)
+    engine.register_recommendation(recommendation)
+    engine.execute(
+        recommendation, start_datetime=start_datetime, end_datetime=end_datetime
+    )
