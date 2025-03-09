@@ -5,6 +5,7 @@ from execution_engine.omop.vocabulary import LOINC, SNOMEDCT
 from execution_engine.util.value.value import ValueScalar
 
 from digipod.converter.time_from_event.util import wrap_criteria_with_temporal_indicator
+from digipod.terminology.vocabulary import DigiPOD
 
 #  $loinc#67782-3 "Surgical operation date"
 #  $sct#442137000 "Completion time of procedure (observable entity)"
@@ -111,3 +112,78 @@ class IntraPostOperative(TimeFromEvent):
         from digipod.criterion.intraop_patients import IntraOperativePatients
 
         return wrap_criteria_with_temporal_indicator(combo, IntraOperativePatients())
+
+
+class PreOrIntraOperative(TimeFromEvent):
+    """
+    This class represents the criterion of the time before the surgery
+    """
+
+    _event_vocabulary = SNOMEDCT
+    _event_code = "442137000"  # Completion time of procedure (observable entity)
+
+    def to_temporal_combination(
+        self, combo: Criterion | CriterionCombination
+    ) -> CriterionCombination:
+        """
+        Returns a temporal combination of the criterion based on the mode
+
+        Returns:
+            TemporalIndicatorCombination: The temporal combination of the criterion
+        """
+        assert self._value is not None
+        if (
+            self._value.value_min == -1008
+            and self._value.value_max == 0
+            and self._value.unit.concept_code == "h"
+        ):
+
+            from digipod.criterion.preop_patients import (
+                PreOperativePatientsBeforeEndOfSurgery,
+            )
+
+            return wrap_criteria_with_temporal_indicator(
+                combo, PreOperativePatientsBeforeEndOfSurgery()
+            )
+
+        raise NotImplementedError(
+            "Currently, only pre/intraoperative patients before end of surgery are implemented"
+        )
+
+
+# Todo: this should be the same as above (actually the digipod code shouldn't exist, because it's the same)
+class PreOrIntraOperativeDigipod(TimeFromEvent):
+    """
+    This class represents the criterion of the time before the surgery
+    """
+
+    _event_vocabulary = DigiPOD
+    _event_code = "034"  # Completion time of surgical procedure
+
+    def to_temporal_combination(
+        self, combo: Criterion | CriterionCombination
+    ) -> CriterionCombination:
+        """
+        Returns a temporal combination of the criterion based on the mode
+
+        Returns:
+            TemporalIndicatorCombination: The temporal combination of the criterion
+        """
+        assert self._value is not None
+        if (
+            self._value.value_min == -1032
+            and self._value.value_max == 0
+            and self._value.unit.concept_code == "h"
+        ):
+
+            from digipod.criterion.preop_patients import (
+                PreOperativePatientsBeforeEndOfSurgery,
+            )
+
+            return wrap_criteria_with_temporal_indicator(
+                combo, PreOperativePatientsBeforeEndOfSurgery()
+            )
+
+        raise NotImplementedError(
+            "Currently, only pre/intraoperative patients before end of surgery are implemented"
+        )

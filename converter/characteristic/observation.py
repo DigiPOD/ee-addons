@@ -19,6 +19,7 @@ from digipod.terminology.vocabulary import (
     DOS,
     DRS,
     ICDSC,
+    OPTIMIZABLE_RISK_FACTOR,
     DigiPOD,
     NuDESC,
     ThreeDCAM,
@@ -63,6 +64,8 @@ class ObservationCharacteristicConverter(AbstractValueCharacteristic):
         {"code": DDS.concept_code, "vocabulary": DigiPOD},
         # "4 A's Test for delirium and cognitive impairment score (observable entity)"
         {"code": "1239211000000103", "vocabulary": SNOMEDCT},
+        # Presence of optimizable preoperative risk factor
+        {"code": OPTIMIZABLE_RISK_FACTOR.concept_code, "vocabulary": DigiPOD},
     ]
 
     @classmethod

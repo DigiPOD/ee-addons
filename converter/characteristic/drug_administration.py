@@ -13,9 +13,7 @@ class DrugAdministrationCharacteristicConverter(AbstractCharacteristic):
     Converts DrugAdministration characteristics
     """
 
-    _concept_code = (
-        "18629005"  # 18629005 Administration of drug or medicament (procedure)
-    )
+    _concept_code = "18629005"  # Administration of drug or medicament (procedure)
     _concept_vocabulary = SNOMEDCT
 
     @classmethod

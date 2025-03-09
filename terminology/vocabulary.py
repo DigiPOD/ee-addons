@@ -5,9 +5,9 @@ DIGIPOD_CONCEPT_OFFSET = 2000000000
 
 vocab_id = "DIGIPOD"
 
-DATE_OF_SURGICAL_PROCEDURE = Concept(
+OPTIMIZABLE_RISK_FACTOR = Concept(
     concept_id=DIGIPOD_CONCEPT_OFFSET + 4,
-    concept_name="Optimizable risk factor",
+    concept_name="Presence of optimizable preoperative risk factor",
     concept_code="007",
     domain_id="Observation",
     vocabulary_id=vocab_id,
@@ -131,7 +131,7 @@ class DigiPOD(AbstractVocabulary):
     system_uri = "https://www.charite.de/fhir/digipod/CodeSystem/digipod"
 
     map = {
-        "007": DATE_OF_SURGICAL_PROCEDURE,
+        "007": OPTIMIZABLE_RISK_FACTOR,
         "008": PREOPERATIVE_RISK_FACTOR_OPTIMIZATION,
         "009": CHARLSON_COMORBIDITY_INDEX,
         "016": NuDESC,

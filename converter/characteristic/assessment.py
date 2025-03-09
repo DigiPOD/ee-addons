@@ -1,5 +1,3 @@
-from typing import Type
-
 from execution_engine.converter.characteristic.abstract import AbstractCharacteristic
 from execution_engine.converter.characteristic.value import AbstractValueCharacteristic
 from execution_engine.converter.criterion import parse_code, parse_value
@@ -54,7 +52,7 @@ class AssessmentCharacteristicConverter(AbstractValueCharacteristic):
     def to_positive_criterion(self) -> ConceptCriterion:
         """Converts this characteristic to a Criterion."""
 
-        cls: Type[ConceptCriterion]
+        criterion: ConceptCriterion
 
         assert isinstance(
             self.value, ValueConcept
@@ -64,25 +62,30 @@ class AssessmentCharacteristicConverter(AbstractValueCharacteristic):
 
         match concept.domain_id:
             case "Procedure":
-                cls = ProcedureOccurrence
+                criterion = ProcedureOccurrence(
+                    concept=concept,
+                    # timing=self._timing, # not used currently (or ever?)
+                )
             case "Measurement":
-                cls = Measurement
+                # we need to explicitly set the VALUE_REQUIRED flag to false, otherwise creating the query will raise an error
+                # as Observation and Measurement normally expect a value.
+                criterion = Measurement(
+                    concept=concept,
+                    override_value_required=False,
+                    # timing=self._timing, # not used currently (or ever?)
+                )
             case "Observation":
-                cls = Observation
+                # we need to explicitly set the VALUE_REQUIRED flag to false, otherwise creating the query will raise an error
+                # as Observation and Measurement normally expect a value.
+                criterion = Observation(
+                    concept=concept,
+                    override_value_required=False,
+                    # timing=self._timing, # not used currently (or ever?)
+                )
             case _:
                 raise ValueError(
                     f"Concept domain {concept.domain_id} is not supported for AssessmentAction"
                 )
-
-        criterion = cls(
-            concept=concept,
-            # timing=self._timing, # not used currently (or ever?)
-        )
-
-        # we need to explicitly set the VALUE_REQUIRED flag to false after creation of the object,
-        # otherwise creating the query will raise an error as Observation and Measurement normally expect
-        # a value.
-        criterion._OMOP_VALUE_REQUIRED = False
 
         return criterion
 
