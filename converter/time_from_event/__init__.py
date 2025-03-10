@@ -1,3 +1,6 @@
+from digipod.converter.time_from_event.drug_administration import (
+    BeforeDexmedetomidineAdministration,
+)
 from digipod.converter.time_from_event.surgery import (
     IntraPostOperative,
     PreOperative,
@@ -12,4 +15,5 @@ __all__ = [
     "IntraPostOperative",
     "PreOrIntraOperative",
     "PreOrIntraOperativeDigipod",
+    "BeforeDexmedetomidineAdministration",
 ]
