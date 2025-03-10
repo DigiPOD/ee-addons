@@ -14,7 +14,7 @@ from digipod.criterion.preop_patients import (
     preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
 )
 from digipod.recommendation import package_version
-from digipod.terminology.vocabulary import DigiPOD
+from digipod.terminology import vocabulary
 
 #############
 # criteria
@@ -38,9 +38,7 @@ asaDocumented = PointInTimeCriterion(
 
 #  $cs-digipod#009 "Result of Charlson Comorbidity Index"
 cciDocumented = PointInTimeCriterion(
-    concept=standard_vocabulary.get_concept(
-        DigiPOD.system_uri, "009"
-    ),  # $cs-digipod#009 "Result of Charlson Comorbidity Index"
+    concept=vocabulary.CHARLSON_COMORBIDITY_INDEX,
     override_value_required=False,
 )
 

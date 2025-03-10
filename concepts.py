@@ -1,7 +1,16 @@
 from execution_engine.omop.concepts import Concept
-from execution_engine.omop.vocabulary import standard_vocabulary
 
-from digipod.terminology.vocabulary import DigiPOD
+from digipod.terminology.vocabulary import (  # BRADYCARDIA_DURING_SURGERY as Bradycardia_During_Surgery; noqa: we expose these concepts intentionally
+    CAM,
+    CAM_ICU,
+    DDS,
+    DOS,
+    DRS,
+    ICDSC,
+    DigiPOD,
+    NuDESC,
+    ThreeDCAM,
+)
 
 OMOP_INTENSIVE_CARE = 32037
 OMOP_INPATIENT_VISIT = 9201
@@ -141,15 +150,6 @@ NotPerformed = Concept(
     concept_class_id="Qualifier Value",
 )
 
-NuDESC = standard_vocabulary.get_concept(DigiPOD.system_uri, "016")
-DRS = standard_vocabulary.get_concept(DigiPOD.system_uri, "019")
-DOS = standard_vocabulary.get_concept(DigiPOD.system_uri, "020")
-CAM = standard_vocabulary.get_concept(DigiPOD.system_uri, "018")
-TDCAM = standard_vocabulary.get_concept(DigiPOD.system_uri, "021")
-CAM_ICU = standard_vocabulary.get_concept(DigiPOD.system_uri, "022")
-DDS = standard_vocabulary.get_concept(DigiPOD.system_uri, "023")
-ICDSC = standard_vocabulary.get_concept(DigiPOD.system_uri, "024")
-
 Dexmedetomidine = Concept(
     concept_id=OMOP_DEXMEDETOMIDINE,
     concept_name="Dexmedetomidine",
@@ -198,7 +198,6 @@ Drug_Induced_Hypotension = Concept(
 )
 
 # During surgery
-Bradycardia_During_Surgery = standard_vocabulary.get_concept(DigiPOD.system_uri, "031")
 
 Hypotension_During_Surgery = Concept(
     concept_id=OMOP_HYPOTENSION_DURING_SURGERY,

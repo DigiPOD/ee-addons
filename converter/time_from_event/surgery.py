@@ -5,7 +5,7 @@ from execution_engine.omop.vocabulary import LOINC, SNOMEDCT
 from execution_engine.util.value.value import ValueScalar
 
 from digipod.converter.time_from_event.util import wrap_criteria_with_temporal_indicator
-from digipod.terminology.vocabulary import DigiPOD
+from digipod.terminology import vocabulary
 
 #  $loinc#67782-3 "Surgical operation date"
 #  $sct#442137000 "Completion time of procedure (observable entity)"
@@ -157,8 +157,10 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
     This class represents the criterion of the time before the surgery
     """
 
-    _event_vocabulary = DigiPOD
-    _event_code = "034"  # Completion time of surgical procedure
+    _event_vocabulary = vocabulary.DigiPOD
+    _event_code = (
+        vocabulary.COMPLETION_TIME_OF_SURGICAL_PROCEDURE.concept_id
+    )  # Completion time of surgical procedure
 
     def to_temporal_combination(
         self, combo: Criterion | CriterionCombination
