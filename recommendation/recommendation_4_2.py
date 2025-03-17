@@ -9,170 +9,81 @@ from execution_engine.util.types import Timing
 from digipod.criterion.patients import AgeLimitPatient
 
 recommendation = Recommendation(
-    expr=Or(
-        PopulationInterventionPairExpr(
-            population_expr=And(
-                AgeLimitPatient(min_age_years=70),
-                ProcedureOccurrence(
-                    value=None,
-                    timing=None,
-                    static=False,
-                    concept=Concept(
-                        concept_id=4301351,
-                        concept_name="Surgical procedure",
-                        concept_code="387713003",
-                        domain_id="Procedure",
-                        vocabulary_id="SNOMED",
-                        concept_class_id="Procedure",
-                        standard_concept="S",
-                        invalid_reason=None,
-                    ),
-                ),
-                ProcedureOccurrence(
-                    value=None,
-                    timing=None,
-                    static=False,
-                    concept=Concept(
-                        concept_id=2099999999,
-                        concept_name="Assessment for risk of post-operative delirium",
-                        concept_code="017",
-                        domain_id="Procedure",
-                        vocabulary_id="DIGIPOD",
-                        concept_class_id="Custom",
-                        standard_concept=None,
-                        invalid_reason=None,
-                    ),
-                ),
+  expr=Or(
+  PopulationInterventionPairExpr(
+      population_expr=And(
+          AgeLimitPatient(
+              min_age_years=70
             ),
-            intervention_expr=Observation(
-                value=None,
-                static=False,
-                timing=Timing(
-                    count={
-                        "unit": None,
-                        "value": None,
-                        "value_min": 1,
-                        "value_max": None,
-                    },
-                    duration=None,
-                    frequency=None,
-                    interval=None,
-                ),
-                forward_fill=True,
-                concept=Concept(
-                    concept_id=4296383,
-                    concept_name="Healthcare information exchange",
-                    concept_code="386317007",
-                    domain_id="Observation",
-                    vocabulary_id="SNOMED",
-                    concept_class_id="Procedure",
-                    standard_concept="S",
-                    invalid_reason=None,
-                ),
-                value_required=False,
+          ProcedureOccurrence(
+              value=None,
+              concept=Concept(concept_id=4301351, concept_name='Surgical procedure', concept_code='387713003', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
+              timing=None,
+              static=False
             ),
-            name="RecPlanExchangeHealthcareInformation",
-            url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanExchangeHealthcareInformation",
-            base_criterion=PatientsActiveDuringPeriod(),
+          ProcedureOccurrence(
+              value=None,
+              concept=Concept(concept_id=2000000017, concept_name='Assessment for risk of post-operative delirium', concept_code='017', domain_id='Procedure', vocabulary_id='DIGIPOD', concept_class_id='Custom', standard_concept=None, invalid_reason=None),
+              timing=None,
+              static=False
+            )
         ),
-        PopulationInterventionPairExpr(
-            population_expr=And(
-                AgeLimitPatient(min_age_years=70),
-                ProcedureOccurrence(
-                    value=None,
-                    timing=None,
-                    static=False,
-                    concept=Concept(
-                        concept_id=4301351,
-                        concept_name="Surgical procedure",
-                        concept_code="387713003",
-                        domain_id="Procedure",
-                        vocabulary_id="SNOMED",
-                        concept_class_id="Procedure",
-                        standard_concept="S",
-                        invalid_reason=None,
-                    ),
-                ),
-                ProcedureOccurrence(
-                    value=None,
-                    timing=None,
-                    static=False,
-                    concept=Concept(
-                        concept_id=2099999999,
-                        concept_name="Assessment for risk of post-operative delirium",
-                        concept_code="017",
-                        domain_id="Procedure",
-                        vocabulary_id="DIGIPOD",
-                        concept_class_id="Custom",
-                        standard_concept=None,
-                        invalid_reason=None,
-                    ),
-                ),
-            ),
-            intervention_expr=And(
-                Observation(
-                    value=None,
-                    static=False,
-                    timing=Timing(
-                        count={
-                            "unit": None,
-                            "value": None,
-                            "value_min": 1,
-                            "value_max": None,
-                        },
-                        duration=None,
-                        frequency=None,
-                        interval=None,
-                    ),
-                    forward_fill=True,
-                    concept=Concept(
-                        concept_id=4296791,
-                        concept_name="Multidisciplinary care conference",
-                        concept_code="384682003",
-                        domain_id="Observation",
-                        vocabulary_id="SNOMED",
-                        concept_class_id="Procedure",
-                        standard_concept="S",
-                        invalid_reason=None,
-                    ),
-                    value_required=False,
-                ),
-                ProcedureOccurrence(
-                    value=None,
-                    timing=Timing(
-                        count={
-                            "unit": None,
-                            "value": None,
-                            "value_min": 1,
-                            "value_max": None,
-                        },
-                        duration=None,
-                        frequency=None,
-                        interval=None,
-                    ),
-                    static=False,
-                    concept=Concept(
-                        concept_id=44808908,
-                        concept_name="Multidisciplinary case management",
-                        concept_code="842901000000108",
-                        domain_id="Procedure",
-                        vocabulary_id="SNOMED",
-                        concept_class_id="Procedure",
-                        standard_concept="S",
-                        invalid_reason=None,
-                    ),
-                ),
-            ),
-            name="RecPlanShareResultsOfRFAssessmentAndPreventiveStrategies",
-            url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanShareResultsOfRFAssessmentAndPreventiveStrategies",
-            base_criterion=PatientsActiveDuringPeriod(),
+      intervention_expr=Observation(
+          value=None,
+          forward_fill=True,
+          static=False,
+          timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
+          value_required=False,
+          concept=Concept(concept_id=4296383, concept_name='Healthcare information exchange', concept_code='386317007', domain_id='Observation', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None)
         ),
+      name='RecPlanExchangeHealthcareInformation',
+      url='https://fhir.charite.de/digipod/PlanDefinition/RecPlanExchangeHealthcareInformation',
+      base_criterion=PatientsActiveDuringPeriod()
     ),
-    base_criterion=PatientsActiveDuringPeriod(),
-    name="RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies",
-    title="Recommendation Collection: Share the results of the screening for POD risk factors among the care team and discuss and register the preventive strategies in the medical records in 'Older Adult Surgical Patients After Preoperative Screening of Risk Factors for POD'",
-    url="https://fhir.charite.de/digipod/PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies",
-    version="0.2.0",
-    description="Recommendation collection for older adult patients that were screened for risk factors for postoperative delirium before undergoing a surgical intervention of any type independently of the type of anesthesia: Share the results of the screening for POD risk factors among the care team and discuss and register the preventive strategies in the medical records.",
-    package_version="latest",
+  PopulationInterventionPairExpr(
+      population_expr=And(
+          AgeLimitPatient(
+              min_age_years=70
+            ),
+          ProcedureOccurrence(
+              value=None,
+              concept=Concept(concept_id=4301351, concept_name='Surgical procedure', concept_code='387713003', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
+              timing=None,
+              static=False
+            ),
+          ProcedureOccurrence(
+              value=None,
+              concept=Concept(concept_id=2000000017, concept_name='Assessment for risk of post-operative delirium', concept_code='017', domain_id='Procedure', vocabulary_id='DIGIPOD', concept_class_id='Custom', standard_concept=None, invalid_reason=None),
+              timing=None,
+              static=False
+            )
+        ),
+      intervention_expr=And(
+          Observation(
+              value=None,
+              forward_fill=True,
+              static=False,
+              timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
+              value_required=False,
+              concept=Concept(concept_id=4296791, concept_name='Multidisciplinary care conference', concept_code='384682003', domain_id='Observation', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None)
+            ),
+          ProcedureOccurrence(
+              value=None,
+              concept=Concept(concept_id=44808908, concept_name='Multidisciplinary case management', concept_code='842901000000108', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
+              timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
+              static=False
+            )
+        ),
+      name='RecPlanShareResultsOfRFAssessmentAndPreventiveStrategies',
+      url='https://fhir.charite.de/digipod/PlanDefinition/RecPlanShareResultsOfRFAssessmentAndPreventiveStrategies',
+      base_criterion=PatientsActiveDuringPeriod()
+    )
+),
+  base_criterion=PatientsActiveDuringPeriod(),
+  name='RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies',
+  title="Recommendation Collection: Share the results of the screening for POD risk factors among the care team and discuss and register the preventive strategies in the medical records in 'Older Adult Surgical Patients After Preoperative Screening of Risk Factors for POD'",
+  url='https://fhir.charite.de/digipod/PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies',
+  version='0.2.0',
+  description='Recommendation collection for older adult patients that were screened for risk factors for postoperative delirium before undergoing a surgical intervention of any type independently of the type of anesthesia: Share the results of the screening for POD risk factors among the care team and discuss and register the preventive strategies in the medical records.',
+  package_version='latest',
 )
