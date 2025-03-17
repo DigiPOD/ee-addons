@@ -6,50 +6,50 @@ from digipod import concepts
 
 NUDESC_documented = PointInTimeCriterion(
     concept=concepts.NuDESC,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 DRS_documented = PointInTimeCriterion(
     concept=concepts.DRS,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 DOS_documented = PointInTimeCriterion(
     concept=concepts.DOS,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 CAM_documented = PointInTimeCriterion(
     concept=concepts.CAM,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 AT4_documented = PointInTimeCriterion(
     concept=concepts.FourAT,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 TDCAM_documented = PointInTimeCriterion(
     concept=concepts.ThreeDCAM,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 
 CAMICU_documented = PointInTimeCriterion(
     concept=concepts.CAM_ICU,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 
 DDS_documented = PointInTimeCriterion(
     concept=concepts.DDS,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 
 ICDSC_documented = PointInTimeCriterion(
     concept=concepts.ICDSC,
-    override_value_required=False,
+    value_required=False,
     forward_fill=False,
 )
 
@@ -63,7 +63,7 @@ def score_threshold(
     """
     return PointInTimeCriterion(
         concept=concept,
-        override_value_required=False,
+        value_required=False,
         forward_fill=False,
         value=value,
     )

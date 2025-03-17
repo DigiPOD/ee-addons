@@ -1,7 +1,8 @@
 from execution_engine.converter.characteristic.abstract import AbstractCharacteristic
-from execution_engine.converter.criterion import Criterion, parse_code, parse_value
+from execution_engine.converter.criterion import parse_code, parse_value
 from execution_engine.fhir.util import get_coding
 from execution_engine.omop.vocabulary import SNOMEDCT
+from execution_engine.util import logic
 from fhir.resources.evidencevariable import EvidenceVariableCharacteristic
 
 
@@ -43,7 +44,7 @@ class AgeConverter(AbstractCharacteristic):
             and cc.code == cls._concept_code
         )
 
-    def to_positive_criterion(self) -> Criterion:
+    def to_positive_expression(self) -> logic.Symbol:
         """Converts this characteristic to a Criterion."""
         from digipod.criterion.patients import AgeLimitPatient
 

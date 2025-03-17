@@ -1,7 +1,6 @@
 from execution_engine.converter.time_from_event.abstract import TimeFromEvent
-from execution_engine.omop.criterion.abstract import Criterion
-from execution_engine.omop.criterion.combination.combination import CriterionCombination
 from execution_engine.omop.vocabulary import LOINC, SNOMEDCT
+from execution_engine.util import logic
 from execution_engine.util.value.value import ValueScalar
 
 from digipod.converter.time_from_event.util import wrap_criteria_with_temporal_indicator
@@ -26,9 +25,7 @@ class SurgicalOperationDate(TimeFromEvent):
     _event_vocabulary = LOINC
     _event_code = "67782-3"  # Surgical operation date
 
-    def to_temporal_combination(
-        self, combo: Criterion | CriterionCombination
-    ) -> CriterionCombination:
+    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
         """
         Returns a temporal combination of the criterion based on the mode
 
@@ -48,7 +45,7 @@ class SurgicalOperationDate(TimeFromEvent):
             )
 
             return wrap_criteria_with_temporal_indicator(
-                combo, PreOperativePatientsBeforeDayOfSurgery()
+                expr, PreOperativePatientsBeforeDayOfSurgery()
             )
 
         raise NotImplementedError(
@@ -64,9 +61,7 @@ class PreOperative(TimeFromEvent):
     _event_vocabulary = SNOMEDCT
     _event_code = "262068006"  # Surgical operation date
 
-    def to_temporal_combination(
-        self, combo: Criterion | CriterionCombination
-    ) -> CriterionCombination:
+    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
         """
         Returns a temporal combination of the criterion based on the mode
 
@@ -82,7 +77,7 @@ class PreOperative(TimeFromEvent):
         from digipod.criterion.preop_patients import PreOperativePatientsBeforeSurgery
 
         return wrap_criteria_with_temporal_indicator(
-            combo, PreOperativePatientsBeforeSurgery()
+            expr, PreOperativePatientsBeforeSurgery()
         )
 
 
@@ -94,9 +89,7 @@ class IntraPostOperative(TimeFromEvent):
     _event_vocabulary = LOINC
     _event_code = "80992-1"  # Date and time of surgery
 
-    def to_temporal_combination(
-        self, combo: Criterion | CriterionCombination
-    ) -> CriterionCombination:
+    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
         """
         Returns a temporal combination of the criterion based on the mode
 
@@ -111,7 +104,7 @@ class IntraPostOperative(TimeFromEvent):
 
         from digipod.criterion.intraop_patients import IntraOperativePatients
 
-        return wrap_criteria_with_temporal_indicator(combo, IntraOperativePatients())
+        return wrap_criteria_with_temporal_indicator(expr, IntraOperativePatients())
 
 
 class PreOrIntraOperative(TimeFromEvent):
@@ -122,9 +115,7 @@ class PreOrIntraOperative(TimeFromEvent):
     _event_vocabulary = SNOMEDCT
     _event_code = "442137000"  # Completion time of procedure (observable entity)
 
-    def to_temporal_combination(
-        self, combo: Criterion | CriterionCombination
-    ) -> CriterionCombination:
+    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
         """
         Returns a temporal combination of the criterion based on the mode
 
@@ -143,7 +134,7 @@ class PreOrIntraOperative(TimeFromEvent):
             )
 
             return wrap_criteria_with_temporal_indicator(
-                combo, PreOperativePatientsBeforeEndOfSurgery()
+                expr, PreOperativePatientsBeforeEndOfSurgery()
             )
 
         raise NotImplementedError(
@@ -158,13 +149,11 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
     """
 
     _event_vocabulary = vocabulary.DigiPOD
-    _event_code = (
+    _event_code = str(
         vocabulary.COMPLETION_TIME_OF_SURGICAL_PROCEDURE.concept_id
     )  # Completion time of surgical procedure
 
-    def to_temporal_combination(
-        self, combo: Criterion | CriterionCombination
-    ) -> CriterionCombination:
+    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
         """
         Returns a temporal combination of the criterion based on the mode
 
@@ -183,7 +172,7 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
             )
 
             return wrap_criteria_with_temporal_indicator(
-                combo, PreOperativePatientsBeforeEndOfSurgery()
+                expr, PreOperativePatientsBeforeEndOfSurgery()
             )
 
         raise NotImplementedError(

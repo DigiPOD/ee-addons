@@ -10,6 +10,7 @@ from execution_engine.omop.criterion.measurement import Measurement
 from execution_engine.omop.criterion.observation import Observation
 from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
 from execution_engine.omop.vocabulary import SNOMEDCT, AbstractVocabulary
+from execution_engine.util import logic
 from fhir.resources.evidencevariable import EvidenceVariableCharacteristic
 
 from digipod.terminology.vocabulary import (
@@ -134,7 +135,7 @@ class ObservationCharacteristicConverter(AbstractValueCharacteristic):
                 return True
         return False
 
-    def to_positive_criterion(self) -> ConceptCriterion:
+    def to_positive_expression(self) -> logic.Symbol:
         """Converts this characteristic to a Criterion."""
 
         cls: Type[ConceptCriterion]

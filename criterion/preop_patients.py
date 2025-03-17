@@ -1,9 +1,7 @@
 from execution_engine.omop.criterion.abstract import column_interval_type
-from execution_engine.omop.criterion.combination.logical import (
-    LogicalCriterionCombination,
-)
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import VisitOccurrence
+from execution_engine.util import logic
 from execution_engine.util.interval import IntervalType
 from execution_engine.util.value.value import ValueScalar
 from sqlalchemy import Interval, func, select
@@ -150,7 +148,7 @@ class PreOperativePatientsBeforeSurgery(SurgicalPatients):
 - >= 18 years
 - 42 days until end of day before surgery
 """
-preOperativeAdultBeforeDayOfSurgeryPatients = LogicalCriterionCombination.And(
+preOperativeAdultBeforeDayOfSurgeryPatients = logic.And(
     AdultPatients(),
     PreOperativePatientsBeforeDayOfSurgery(),
 )
@@ -160,7 +158,7 @@ preOperativeAdultBeforeDayOfSurgeryPatients = LogicalCriterionCombination.And(
 - 42 days until end of day before surgery
 - MMSE >= 3
 """
-preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = LogicalCriterionCombination.And(
+preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = logic.And(
     AdultPatients(),
     PreOperativePatientsBeforeDayOfSurgery(),
     MMSEgte3,
@@ -170,7 +168,7 @@ preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = LogicalCriterionCombinatio
 """
 - vorstationär OR normalstationär
 """
-preAdmissionOrInpatientPatients = LogicalCriterionCombination.Or(
+preAdmissionOrInpatientPatients = logic.Or(
     PreAdmissionPatients(),
     InpatientPatients(),
 )
@@ -180,10 +178,8 @@ preAdmissionOrInpatientPatients = LogicalCriterionCombination.Or(
 - 42 days before day of surgery until end of surgery
 - vorstationär OR normalstationär
 """
-adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = (
-    LogicalCriterionCombination.And(
-        AdultPatients(),
-        PreOperativePatientsBeforeEndOfSurgery(),
-        preAdmissionOrInpatientPatients,
-    )
+adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = logic.And(
+    AdultPatients(),
+    PreOperativePatientsBeforeEndOfSurgery(),
+    preAdmissionOrInpatientPatients,
 )

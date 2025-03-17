@@ -1,22 +1,19 @@
-from execution_engine.omop.cohort import PopulationInterventionPair, Recommendation
-from execution_engine.omop.criterion.combination.logical import (
-    LogicalCriterionCombination,
-)
+from execution_engine.omop.cohort import PopulationInterventionPairExpr, Recommendation
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
+from execution_engine.util import logic
+from execution_engine.util.temporal_logic_util import (
+    AfternoonShift,
+    Day,
+    MorningShift,
+    NightShiftAfterMidnight,
+    NightShiftBeforeMidnight,
+)
 
 from digipod.criterion.patients import AdultPatients
 from digipod.criterion.postop_patients import PostOperativePatientsUntilDay5
 from digipod.criterion.preop_patients import InpatientPatients, IntensiveCarePatients
 from digipod.criterion.scores import *
 from digipod.recommendation import package_version
-from digipod.recommendation.util import (
-    AfternoonShift,
-    AtLeast,
-    Day,
-    MorningShift,
-    NightShiftAfterMidnight,
-    NightShiftBeforeMidnight,
-)
 
 #############
 # criteria
@@ -32,7 +29,7 @@ base_criterion = PatientsActiveDuringPeriod()
 #############
 
 
-normalward_scores = LogicalCriterionCombination.Or(
+normalward_scores = logic.Or(
     TDCAM_documented,  # 3DCAM Morning
     AT4_documented,  # AT4 Morning
     CAM_documented,  # CAM Morning
@@ -41,22 +38,22 @@ normalward_scores = LogicalCriterionCombination.Or(
     NUDESC_documented,  # NuDESC Morning
 )
 
-icu_scores = LogicalCriterionCombination.Or(
+icu_scores = logic.Or(
     CAMICU_documented,  # CAM ICU Morning
     DDS_documented,  # AT4 Morning
     ICDSC_documented,  # CAM Morning
 )
 
-pi_normalward_double_screening = PopulationInterventionPair(
+pi_normalward_double_screening = PopulationInterventionPairExpr(
     name="RecCollDeliriumScreeningOnSurgeryDay_NormalWard",
     url="",
     base_criterion=base_criterion,
-    population=LogicalCriterionCombination.And(
+    population_expr=logic.And(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         InpatientPatients(),
     ),
-    intervention=LogicalCriterionCombination.CappedAtLeast(
+    intervention_expr=logic.CappedMinCount(
         Day(NightShiftAfterMidnight(normalward_scores)),
         Day(MorningShift(normalward_scores)),
         Day(AfternoonShift(normalward_scores)),
@@ -65,16 +62,16 @@ pi_normalward_double_screening = PopulationInterventionPair(
     ),
 )
 
-pi_normalward_single_screening = PopulationInterventionPair(
+pi_normalward_single_screening = PopulationInterventionPairExpr(
     name="RecCollDeliriumScreeningOnSurgeryDay_NormalWard",
     url="",
     base_criterion=base_criterion,
-    population=LogicalCriterionCombination.And(
+    population_expr=logic.And(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         InpatientPatients(),
     ),
-    intervention=AtLeast(
+    intervention_expr=logic.MinCount(
         Day(NightShiftAfterMidnight(normalward_scores)),
         Day(MorningShift(normalward_scores)),
         Day(AfternoonShift(normalward_scores)),
@@ -84,16 +81,16 @@ pi_normalward_single_screening = PopulationInterventionPair(
 )
 
 
-pi_icu_double_screening = PopulationInterventionPair(
+pi_icu_double_screening = PopulationInterventionPairExpr(
     name="RecCollDeliriumScreeningOnSurgeryDay_ICU",
     url="",
     base_criterion=base_criterion,
-    population=LogicalCriterionCombination.And(
+    population_expr=logic.And(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         IntensiveCarePatients(),
     ),
-    intervention=LogicalCriterionCombination.CappedAtLeast(
+    intervention_expr=logic.CappedMinCount(
         Day(NightShiftAfterMidnight(icu_scores)),
         Day(MorningShift(icu_scores)),
         Day(AfternoonShift(icu_scores)),
@@ -102,16 +99,16 @@ pi_icu_double_screening = PopulationInterventionPair(
     ),
 )
 
-pi_icu_single_screening = PopulationInterventionPair(
+pi_icu_single_screening = PopulationInterventionPairExpr(
     name="RecCollDeliriumScreeningOnSurgeryDay_ICU",
     url="",
     base_criterion=base_criterion,
-    population=LogicalCriterionCombination.And(
+    population_expr=logic.And(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
         IntensiveCarePatients(),
     ),
-    intervention=AtLeast(
+    intervention_expr=logic.MinCount(
         Day(NightShiftAfterMidnight(icu_scores)),
         Day(MorningShift(icu_scores)),
         Day(AfternoonShift(icu_scores)),
@@ -125,7 +122,7 @@ pi_icu_single_screening = PopulationInterventionPair(
 # Recommendation collections
 #############################
 rec_0_2_Delirium_Screening_single = Recommendation(
-    pi_pairs=[pi_normalward_single_screening, pi_icu_single_screening],
+    expr=logic.Or(pi_normalward_single_screening, pi_icu_single_screening),
     base_criterion=base_criterion,
     name="Rec 0.2: PostoperativeDeliriumScreening (Single)",
     title="Recommendation 0.2: Postoperative Screening of Delirium",
@@ -138,7 +135,7 @@ rec_0_2_Delirium_Screening_single = Recommendation(
 )
 
 rec_0_2_Delirium_Screening_double = Recommendation(
-    pi_pairs=[pi_normalward_double_screening, pi_icu_double_screening],
+    expr=logic.Or(pi_normalward_double_screening, pi_icu_double_screening),
     base_criterion=base_criterion,
     name="Rec 0.2: PostoperativeDeliriumScreening (Double)",
     title="Recommendation 0.2: Postoperative Screening of Delirium",

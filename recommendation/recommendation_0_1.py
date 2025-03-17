@@ -1,8 +1,6 @@
-from execution_engine.omop.cohort import PopulationInterventionPair, Recommendation
-from execution_engine.omop.criterion.combination.logical import (
-    LogicalCriterionCombination,
-)
+from execution_engine.omop.cohort import PopulationInterventionPairExpr, Recommendation
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
+from execution_engine.util import logic, temporal_logic_util
 
 from digipod.criterion.preop_patients import (
     adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
@@ -16,17 +14,16 @@ from digipod.criterion.scores import (
     TDCAM_documented,
 )
 from digipod.recommendation import package_version
-from digipod.recommendation.util import AnyTime
 
 base_criterion = PatientsActiveDuringPeriod()
 
-_RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
+_RecPlanPreoperativeDeliriumScreening = PopulationInterventionPairExpr(
     name="",
     url="",
     base_criterion=base_criterion,
-    population=adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
-    intervention=AnyTime(
-        LogicalCriterionCombination.AtLeast(
+    population_expr=adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
+    intervention_expr=temporal_logic_util.AnyTime(
+        logic.MinCount(
             NUDESC_documented,
             DRS_documented,
             DOS_documented,
@@ -39,7 +36,7 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPair(
 )
 
 rec_0_1_Delirium_Screening = Recommendation(
-    pi_pairs=[_RecPlanPreoperativeDeliriumScreening],
+    expr=_RecPlanPreoperativeDeliriumScreening,
     base_criterion=base_criterion,
     name="Rec 0.1: PreoperativeDeliriumScreening",
     title="Recommendation 0.1: Preoperative Screening of Delirium",

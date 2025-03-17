@@ -1,21 +1,12 @@
 from typing import List
 
-from execution_engine.constants import CohortCategory
 from execution_engine.omop.criterion.abstract import (
-    Criterion,
     column_interval_type,
     observation_end_datetime,
     observation_start_datetime,
 )
-from execution_engine.omop.criterion.combination.combination import CriterionCombination
-from execution_engine.omop.criterion.combination.logical import (
-    LogicalCriterionCombination,
-)
-from execution_engine.omop.criterion.combination.temporal import (
-    FixedWindowTemporalIndicatorCombination,
-    TemporalIndicatorCombination,
-)
 from execution_engine.omop.criterion.drug_exposure import DrugExposure
+from execution_engine.util import logic, temporal_logic_util
 from execution_engine.util.interval import IntervalType
 from sqlalchemy import select
 from sqlalchemy.sql import Select
@@ -31,18 +22,17 @@ drugDexmedetomidine = DrugExposure(
 
 
 def temporal_filter_criteria(
-    criteria: List[Criterion | CriterionCombination],
-    filter_: Criterion | CriterionCombination,
-    category: CohortCategory = CohortCategory.POPULATION,
-) -> list[TemporalIndicatorCombination]:
+    criteria: List[logic.BaseExpr],
+    filter_: logic.BaseExpr,
+) -> list[logic.Expr]:
     """
     Filters each criterion in criteria individually and then returns an "AnyTime" TemporalCombination,
     meaning a single interval spanning the whole observed time, either POSITIVE if there is any
     POSITIVE criterion after filtering, otherwise negative
     """
     return [
-        FixedWindowTemporalIndicatorCombination.AnyTime(
-            LogicalCriterionCombination.And(c, filter_),
+        temporal_logic_util.AnyTime(
+            logic.And(c, filter_),
         )
         for c in criteria
     ]

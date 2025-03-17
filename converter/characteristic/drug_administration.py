@@ -1,9 +1,9 @@
 from execution_engine.converter.characteristic.abstract import AbstractCharacteristic
 from execution_engine.converter.criterion import parse_code, parse_value
 from execution_engine.fhir.util import get_coding
-from execution_engine.omop.criterion.abstract import Criterion
 from execution_engine.omop.criterion.drug_exposure import DrugExposure
 from execution_engine.omop.vocabulary import SNOMEDCT
+from execution_engine.util import logic
 from execution_engine.util.value import ValueConcept
 from fhir.resources.evidencevariable import EvidenceVariableCharacteristic
 
@@ -56,7 +56,7 @@ class DrugAdministrationCharacteristicConverter(AbstractCharacteristic):
             and cc.code == cls._concept_code
         )
 
-    def to_positive_criterion(self) -> Criterion:
+    def to_positive_expression(self) -> logic.Symbol:
         """Converts this characteristic to a Criterion."""
 
         assert isinstance(

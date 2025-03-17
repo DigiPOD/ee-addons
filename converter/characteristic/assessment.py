@@ -7,6 +7,7 @@ from execution_engine.omop.criterion.measurement import Measurement
 from execution_engine.omop.criterion.observation import Observation
 from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
 from execution_engine.omop.vocabulary import SNOMEDCT
+from execution_engine.util import logic
 from execution_engine.util.value import ValueConcept
 from fhir.resources.evidencevariable import EvidenceVariableCharacteristic
 
@@ -49,7 +50,7 @@ class AssessmentCharacteristicConverter(AbstractValueCharacteristic):
             and cc.code == cls._concept_code
         )
 
-    def to_positive_criterion(self) -> ConceptCriterion:
+    def to_positive_expression(self) -> logic.Symbol:
         """Converts this characteristic to a Criterion."""
 
         criterion: ConceptCriterion
@@ -71,7 +72,7 @@ class AssessmentCharacteristicConverter(AbstractValueCharacteristic):
                 # as Observation and Measurement normally expect a value.
                 criterion = Measurement(
                     concept=concept,
-                    override_value_required=False,
+                    value_required=False,
                     # timing=self._timing, # not used currently (or ever?)
                 )
             case "Observation":
@@ -79,7 +80,7 @@ class AssessmentCharacteristicConverter(AbstractValueCharacteristic):
                 # as Observation and Measurement normally expect a value.
                 criterion = Observation(
                     concept=concept,
-                    override_value_required=False,
+                    value_required=False,
                     # timing=self._timing, # not used currently (or ever?)
                 )
             case _:

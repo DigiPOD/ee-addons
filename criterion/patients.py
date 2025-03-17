@@ -1,6 +1,5 @@
 import datetime
 from abc import ABC
-from typing import Any, Dict, Self
 
 from execution_engine.omop.criterion.abstract import (
     Criterion,
@@ -36,26 +35,11 @@ class AgeLimitPatient(Criterion):
         self._table = Person.__table__.alias("p")
         self._min_age_years = min_age_years
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> Self:
-        """
-        Create an object from a dictionary.
-        """
-        return cls(min_age_years=data["min_age_years"])
-
     def description(self) -> str:
         """
         Get a description of the criterion.
         """
         return "AdultPatients"
-
-    def dict(self) -> dict:
-        """
-        Get a dictionary representation of the object.
-        """
-        return {
-            "min_age_years": self._min_age_years,
-        }
 
     def _create_query(self) -> Select:
         """
@@ -95,24 +79,11 @@ class PatientsInTimeFrame(Criterion):
 
     _static = True
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> Self:
-        """
-        Create an object from a dictionary.
-        """
-        return cls()
-
     def description(self) -> str:
         """
         Get a description of the criterion.
         """
         return self.__class__.__name__
-
-    def dict(self) -> dict:
-        """
-        Get a dictionary representation of the object.
-        """
-        return {}
 
 
 class SurgicalPatients(PatientsInTimeFrame, ABC):
