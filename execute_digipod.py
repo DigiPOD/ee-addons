@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import sys
+import time
 from collections import OrderedDict
 from types import ModuleType
 from typing import Generator, Type
@@ -32,10 +33,9 @@ from execution_engine.settings import get_config, update_config
 import digipod.recommendation.recommendation_0_1
 import digipod.recommendation.recommendation_0_2
 import digipod.recommendation.recommendation_2_1
-
-# import digipod.recommendation.recommendation_3_2
-# import digipod.recommendation.recommendation_4_1
-# import digipod.recommendation.recommendation_4_2
+import digipod.recommendation.recommendation_3_2
+import digipod.recommendation.recommendation_4_1
+import digipod.recommendation.recommendation_4_2
 
 # enable multiprocessing with all available cores
 # update_config(multiprocessing_use=False, multiprocessing_pool_size=-1)
@@ -134,9 +134,9 @@ recommendations: list[cohort.Recommendation] = [
     digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_double,
     digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
     digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
-    # digipod.recommendation.recommendation_3_2.recommendation,
-    # digipod.recommendation.recommendation_4_1.recommendation,
-    # digipod.recommendation.recommendation_4_2.recommendation,
+    digipod.recommendation.recommendation_3_2.recommendation,
+    digipod.recommendation.recommendation_4_1.recommendation,
+    digipod.recommendation.recommendation_4_2.recommendation,
 ]
 
 base_url = "https://fhir.charite.de/digipod/"
@@ -151,9 +151,9 @@ urls: dict[str, str] = OrderedDict()
 # priority
 # urls["4.1"] = "PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"
 # urls["4.2"] = "PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies" # works
-urls["4.3"] = (
-    "PlanDefinition/RecCollBundleOfNonPharmaMeasuresPostOPInAdultsAtRiskForPOD"
-)
+# urls["4.3"] = (
+#     "PlanDefinition/RecCollBundleOfNonPharmaMeasuresPostOPInAdultsAtRiskForPOD"
+# )
 
 # unknown
 # urls["3.1"] = "PlanDefinition/RecCollAdultSurgicalPatNoSpecProphylacticDrugForPOD"
@@ -206,16 +206,16 @@ for rec_no, recommendation_url in urls.items():
     #     recommendation, start_datetime=start_datetime, end_datetime=end_datetime
     # )
 
-# start_time = time.time()
-#
-# # for recommendation in recommendations:
-# #     print(recommendation.name)
-# #     engine.register_recommendation(recommendation)
-# #     engine.execute(
-# #         recommendation, start_datetime=start_datetime, end_datetime=end_datetime
-# #     )
-#
-# end_time = time.time()
-# runtime_seconds = end_time - start_time
-#
-# logging.info(f"Total runtime: {runtime_seconds:.2f} seconds")
+start_time = time.time()
+
+for recommendation in recommendations:
+    print(recommendation.name)
+    engine.register_recommendation(recommendation)
+    engine.execute(
+        recommendation, start_datetime=start_datetime, end_datetime=end_datetime
+    )
+
+end_time = time.time()
+runtime_seconds = end_time - start_time
+
+logging.info(f"Total runtime: {runtime_seconds:.2f} seconds")
