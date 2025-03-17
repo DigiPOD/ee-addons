@@ -11,18 +11,18 @@ from digipod.tests.functions import (
 )
 
 DELIR_SCREENING_ICU_SCORES = {
-    "CAMICU": digipod_vocab.CAM_ICU.concept_id,
-    "DDS": digipod_vocab.DDS.concept_id,
+    "CAMICU": digipod_vocab.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE.concept_id,
+    "DDS": digipod_vocab.DELIRIUM_DETECTION_SCORE_SCORE.concept_id,
     "ICDSC": digipod_vocab.ICDSC.concept_id,
 }
 
 DELIR_SCREENING_NORMALWARD_SCORES = {
-    "3DCAM": digipod_vocab.ThreeDCAM.concept_id,
+    "3DCAM": digipod_vocab.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE.concept_id,
     "4AT": digipod_vocab.FourAT.concept_id,
     "CAM": digipod_vocab.CAM.concept_id,
-    "DRS": digipod_vocab.DRS.concept_id,
-    "DOS": digipod_vocab.DOS.concept_id,
-    "NuDESC": digipod_vocab.NuDESC.concept_id,
+    "DRS": digipod_vocab.DELIRIUM_RATING_SCALE_SCORE.concept_id,
+    "DOS": digipod_vocab.DELIRIUM_OBSERVATION_SCALE_SCORE.concept_id,
+    "NuDESC": digipod_vocab.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE.concept_id,
 }
 
 
@@ -133,7 +133,11 @@ class Patient:
         """
         Add a Nursing Delirium Screening Scale (NuDESC) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.NuDESC.concept_id, datetime, score)
+        self.add_measurement(
+            digipod_vocab.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE.concept_id,
+            datetime,
+            score,
+        )
 
     def add_4AT(self, datetime: str, score: int) -> None:
         """
@@ -163,13 +167,19 @@ class Patient:
         """
         Add a Confusion Assessment Method for the Intensive Care Unit (CAM-ICU) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.CAM_ICU.concept_id, datetime, score)
+        self.add_measurement(
+            digipod_vocab.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE.concept_id,
+            datetime,
+            score,
+        )
 
     def add_DDS(self, datetime: str, score: int) -> None:
         """
         Add a Delirium Detection Scale (DDS) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.DDS.concept_id, datetime, score)
+        self.add_measurement(
+            digipod_vocab.DELIRIUM_DETECTION_SCORE_SCORE.concept_id, datetime, score
+        )
 
     def add_ICDSC(self, datetime: str, score: int) -> None:
         """
@@ -181,7 +191,11 @@ class Patient:
         """
         Add a 3-minute Diagnostic Interview for CAM-defined Delirium (3D-CAM) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.ThreeDCAM.concept_id, datetime, score)
+        self.add_measurement(
+            digipod_vocab.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE.concept_id,
+            datetime,
+            score,
+        )
 
     def add_ASA(self, datetime: str, score: int) -> None:
         """
@@ -194,7 +208,9 @@ class Patient:
         Add a Charlson Comorbidity Index (CCI) measurement to the patient's record
         """
         self.add_measurement(
-            digipod_vocab.CHARLSON_COMORBIDITY_INDEX.concept_id, datetime, score
+            digipod_vocab.RESULT_OF_CHARLSON_COMORBIDITY_INDEX.concept_id,
+            datetime,
+            score,
         )
 
     def add_MiniCOG(self, datetime: str, score: int) -> None:

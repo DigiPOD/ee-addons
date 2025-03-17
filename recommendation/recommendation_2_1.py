@@ -25,15 +25,13 @@ ageDocumented = PointInTimeCriterion(
 
 # $sct#302132005 "American Society of Anesthesiologists physical status class (observable entity)"
 asaDocumented = PointInTimeCriterion(
-    concept=standard_vocabulary.get_concept(
-        SNOMEDCT.system_uri, "302132005"
-    ),  # $sct#424144002 "Current chronological age (observable entity)"
+    concept=standard_vocabulary.get_concept(SNOMEDCT.system_uri, "302132005"),
     value_required=False,
 )
 
 #  $cs-digipod#009 "Result of Charlson Comorbidity Index"
 cciDocumented = PointInTimeCriterion(
-    concept=vocabulary.CHARLSON_COMORBIDITY_INDEX,
+    concept=vocabulary.RESULT_OF_CHARLSON_COMORBIDITY_INDEX,
     value_required=False,
 )
 

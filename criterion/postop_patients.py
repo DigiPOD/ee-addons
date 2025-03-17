@@ -53,7 +53,7 @@ class PostOperativePatientsUntilDay5(PostOperativePatientsUntilDay0):
 
 class IntraOrPostOperativePatients(SurgicalPatients):
     """
-    Select patients who are post-surgical in the timeframe between the day of the surgery and 6 days after the surgery.
+    Select patients who are intra or post-surgical.
     """
 
     def _create_query(self) -> Select:
@@ -67,6 +67,33 @@ class IntraOrPostOperativePatients(SurgicalPatients):
             subquery.c.person_id,
             column_interval_type(IntervalType.POSITIVE),
             subquery.c.procedure_datetime.label("interval_start"),
+            observation_end_datetime.label("interval_end"),
+        ).where(
+            subquery.c.rn == 1
+        )  # Filter only the first procedure per person
+
+        query = self._filter_base_persons(query, c_person_id=subquery.c.person_id)
+        query = self._filter_datetime(query)
+
+        return query
+
+
+class PostOperativePatients(SurgicalPatients):
+    """
+    Select patients who are post-surgical.
+    """
+
+    def _create_query(self) -> Select:
+        """
+        Get the SQL Select query for data required by this criterion.
+        """
+
+        subquery = self._query_first_surgery()
+
+        query = select(
+            subquery.c.person_id,
+            column_interval_type(IntervalType.POSITIVE),
+            subquery.c.procedure_end_datetime.label("interval_start"),
             observation_end_datetime.label("interval_end"),
         ).where(
             subquery.c.rn == 1

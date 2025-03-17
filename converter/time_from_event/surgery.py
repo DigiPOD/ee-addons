@@ -107,6 +107,32 @@ class IntraPostOperative(TimeFromEvent):
         return wrap_criteria_with_temporal_indicator(expr, IntraOperativePatients())
 
 
+class PostOperative(TimeFromEvent):
+    """
+    This class represents the criterion of the time after a surgery
+    """
+
+    _event_vocabulary = SNOMEDCT
+    _event_code = "262061000"  # Postoperative period
+
+    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+        """
+        Returns a temporal combination of the criterion based on the mode
+
+        Returns:
+            TemporalIndicatorCombination: The temporal combination of the criterion
+        """
+
+        if self._value is not None and self._value != ValueScalar(value_min=0):
+            raise NotImplementedError(
+                "Only post-surgical without a condition implemented"
+            )
+
+        from digipod.criterion.postop_patients import PostOperativePatients
+
+        return wrap_criteria_with_temporal_indicator(expr, PostOperativePatients())
+
+
 class PreOrIntraOperative(TimeFromEvent):
     """
     This class represents the criterion of the time before the surgery

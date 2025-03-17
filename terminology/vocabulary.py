@@ -1,55 +1,82 @@
 from execution_engine.omop.concepts import Concept
-from execution_engine.omop.vocabulary import SNOMEDCT, AbstractVocabulary
-
-DIGIPOD_CONCEPT_OFFSET = 2000000000
-UNMAPPED_CONCEPT_ID = DIGIPOD_CONCEPT_OFFSET + 99999999
-
-vocab_id = "DIGIPOD"
-
-OPTIMIZABLE_RISK_FACTOR = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 4,
-    concept_name="Presence of optimizable preoperative risk factor",
-    concept_code="007",
-    domain_id="Observation",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
+from execution_engine.omop.vocabulary import (
+    LOINC,
+    SNOMEDCT,
+    AbstractVocabulary,
+    standard_vocabulary,
 )
 
-PREOPERATIVE_RISK_FACTOR_OPTIMIZATION = Concept(
-    concept_id=UNMAPPED_CONCEPT_ID,
-    concept_name="Preoperative risk factor optimization",
-    concept_code="008",
-    domain_id="Procedure",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
+from .custom_concepts import *
+
+# DIGIPOD_CONCEPT_OFFSET = 2000000000
+# UNMAPPED_CONCEPT_ID = DIGIPOD_CONCEPT_OFFSET + 99999999
+
+
+# vocab_id = "DIGIPOD"
+
+# $sct-uk#711061000000109 "Addenbrooke's cognitive examination revised - score (observable entity)"
+ACE_R = standard_vocabulary.get_concept(
+    SNOMEDCT.system_uri, "711061000000109", standard=False
 )
 
-CHARLSON_COMORBIDITY_INDEX = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 3,
-    concept_name="Result of Charlson Comorbidity Index",
-    concept_code="009",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
+# $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
+MOCA = standard_vocabulary.get_concept(SNOMEDCT.system_uri, "1255891005")
 
-NuDESC = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 12,
-    concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
-    concept_code="016",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
+# $loinc#72172-0 "Total score [MoCA]"
+MOCA_LOINC = standard_vocabulary.get_concept(LOINC.system_uri, "72172-0")
 
-ASSESSMENT_OF_POSTOPERATIVE_DELIRIUM = Concept(
-    concept_id=UNMAPPED_CONCEPT_ID,
-    concept_name="Assessment for risk of post-operative delirium",
-    concept_code="017",
-    domain_id="Procedure",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
+# $sct#302132005 "American Society of Anesthesiologists physical status class (observable entity)"
+ASA = standard_vocabulary.get_concept(SNOMEDCT.system_uri, "302132005")
+
+# $sct#713408000 "Mini-Cog brief cognitive screening test score (observable entity)"
+MINICOG = standard_vocabulary.get_concept(
+    SNOMEDCT.system_uri, "713408000", standard=False
 )
+#
+# OPTIMIZABLE_RISK_FACTOR = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 4,
+#     concept_name="Presence of optimizable preoperative risk factor",
+#     concept_code="007",
+#     domain_id="Observation",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# PREOPERATIVE_RISK_FACTOR_OPTIMIZATION = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 8,
+#     concept_name="Preoperative risk factor optimization",
+#     concept_code="008",
+#     domain_id="Procedure",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# CHARLSON_COMORBIDITY_INDEX = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 9,
+#     concept_name="Result of Charlson Comorbidity Index",
+#     concept_code="009",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# NuDESC = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 12,
+#     concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
+#     concept_code="016",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# ASSESSMENT_OF_POSTOPERATIVE_DELIRIUM = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
+#     concept_name="Assessment for risk of post-operative delirium",
+#     concept_code="017",
+#     domain_id="Procedure",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
 
 # as of 25-03-10 this SNOMEDCT concept hasn't been integrated into the OMOP standard vocabulary
 # hence, we define it ourselves with a custom concept code.
@@ -61,51 +88,51 @@ CAM = Concept(
     vocabulary_id=SNOMEDCT.omop_vocab_name,
     concept_class_id="Custom",
 )
-
-DRS = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 15,
-    concept_name="Delirium Rating Scale score",
-    concept_code="019",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
-
-DOS = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 16,
-    concept_name="Delirium Observation Scale score",
-    concept_code="020",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
-
-ThreeDCAM = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
-    concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
-    concept_code="021",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
-
-CAM_ICU = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
-    concept_name="Confusion Assessment Method for the Intensive Care Unit score",
-    concept_code="022",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
-
-DDS = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 19,
-    concept_name="Delirium Detection Score score",
-    concept_code="023",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
+#
+# DRS = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 15,
+#     concept_name="Delirium Rating Scale score",
+#     concept_code="019",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# DOS = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 16,
+#     concept_name="Delirium Observation Scale score",
+#     concept_code="020",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# ThreeDCAM = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
+#     concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
+#     concept_code="021",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# CAM_ICU = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 17,
+#     concept_name="Confusion Assessment Method for the Intensive Care Unit score",
+#     concept_code="022",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# DDS = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 19,
+#     concept_name="Delirium Detection Score score",
+#     concept_code="023",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
 
 # as of 25-03-10 this SNOMEDCT concept hasn't been integrated into the OMOP standard vocabulary
 # hence, we define it ourselves with a custom concept code.
@@ -118,41 +145,50 @@ ICDSC = Concept(
     concept_class_id="Custom",
 )
 
-# BRADYCARDIA_DURING_SURGERY = Concept(
-#     concept_id=DIGIPOD_CONCEPT_OFFSET + 31,
-#     concept_name="Bradycardia During Surgery",
-#     concept_code="031",
-#     domain_id="Condition",
+# # BRADYCARDIA_DURING_SURGERY = Concept(
+# #     concept_id=DIGIPOD_CONCEPT_OFFSET + 31,
+# #     concept_name="Bradycardia During Surgery",
+# #     concept_code="031",
+# #     domain_id="Condition",
+# #     vocabulary_id=vocab_id,
+# #     concept_class_id="Custom",
+# # )
+#
+# COMPLETION_TIME_OF_SURGICAL_PROCEDURE = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 34,
+#     concept_name="Completion time of surgical procedure",
+#     concept_code="034",
+#     domain_id="Measurement",
 #     vocabulary_id=vocab_id,
 #     concept_class_id="Custom",
 # )
-
-COMPLETION_TIME_OF_SURGICAL_PROCEDURE = Concept(
-    concept_id=UNMAPPED_CONCEPT_ID,
-    concept_name="Completion time of surgical procedure",
-    concept_code="034",
-    domain_id="Measurement",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
-
-BEFORE_DEXMEDETOMIDINE_ADMINISTRATION = Concept(
-    concept_id=UNMAPPED_CONCEPT_ID,
-    concept_name="Before dexmedetomidine administration",
-    concept_code="029",
-    domain_id="Observation",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
-
-ADMINISTRATION_OF_PROPHYLACTIC_DEXMEDETOMIDINE = Concept(
-    concept_id=UNMAPPED_CONCEPT_ID,
-    concept_name="Administration of prophylactic dexmedetomidine",
-    concept_code="024",
-    domain_id="Observation",
-    vocabulary_id=vocab_id,
-    concept_class_id="Custom",
-)
+#
+# BEFORE_DEXMEDETOMIDINE_ADMINISTRATION = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 29,
+#     concept_name="Before dexmedetomidine administration",
+#     concept_code="029",
+#     domain_id="Observation",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# ADMINISTRATION_OF_PROPHYLACTIC_DEXMEDETOMIDINE = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 24,
+#     concept_name="Administration of prophylactic dexmedetomidine",
+#     concept_code="024",
+#     domain_id="Observation",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
+#
+# FACES_ANXIETY_SCALE = Concept(
+#     concept_id=DIGIPOD_CONCEPT_OFFSET + 35,
+#     concept_name="Faces Anxiety Scale score",
+#     concept_code="035",
+#     domain_id="Measurement",
+#     vocabulary_id=vocab_id,
+#     concept_class_id="Custom",
+# )
 
 
 class DigiPOD(AbstractVocabulary):
@@ -181,5 +217,7 @@ class DigiPOD(AbstractVocabulary):
 DigiPOD.map = {
     obj.concept_code: obj
     for name, obj in globals().items()
-    if isinstance(obj, Concept) and hasattr(obj, "concept_code")
+    if isinstance(obj, Concept)
+    and hasattr(obj, "concept_code")
+    and getattr(obj, "vocabulary_id") == vocab_id
 }

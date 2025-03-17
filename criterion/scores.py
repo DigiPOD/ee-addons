@@ -5,17 +5,17 @@ from execution_engine.util.value import Value
 from digipod import concepts
 
 NUDESC_documented = PointInTimeCriterion(
-    concept=concepts.NuDESC,
+    concept=concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
     value_required=False,
     forward_fill=False,
 )
 DRS_documented = PointInTimeCriterion(
-    concept=concepts.DRS,
+    concept=concepts.DELIRIUM_RATING_SCALE_SCORE,
     value_required=False,
     forward_fill=False,
 )
 DOS_documented = PointInTimeCriterion(
-    concept=concepts.DOS,
+    concept=concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
     value_required=False,
     forward_fill=False,
 )
@@ -30,19 +30,19 @@ AT4_documented = PointInTimeCriterion(
     forward_fill=False,
 )
 TDCAM_documented = PointInTimeCriterion(
-    concept=concepts.ThreeDCAM,
+    concept=concepts.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
     value_required=False,
     forward_fill=False,
 )
 
 CAMICU_documented = PointInTimeCriterion(
-    concept=concepts.CAM_ICU,
+    concept=concepts.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
     value_required=False,
     forward_fill=False,
 )
 
 DDS_documented = PointInTimeCriterion(
-    concept=concepts.DDS,
+    concept=concepts.DELIRIUM_DETECTION_SCORE_SCORE,
     value_required=False,
     forward_fill=False,
 )

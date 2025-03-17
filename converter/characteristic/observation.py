@@ -9,21 +9,32 @@ from execution_engine.omop.criterion.concept import ConceptCriterion
 from execution_engine.omop.criterion.measurement import Measurement
 from execution_engine.omop.criterion.observation import Observation
 from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
-from execution_engine.omop.vocabulary import SNOMEDCT, AbstractVocabulary
+from execution_engine.omop.vocabulary import LOINC, SNOMEDCT, AbstractVocabulary
 from execution_engine.util import logic
 from fhir.resources.evidencevariable import EvidenceVariableCharacteristic
 
+from digipod.concepts import MMSE
+from digipod.terminology.custom_concepts import (
+    CONFUSION_ASSESSMENT_METHOD_SCORE,
+    INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
+)
 from digipod.terminology.vocabulary import (
+    ACE_R,
+    ASA,
     CAM,
-    CAM_ICU,
-    DDS,
-    DOS,
-    DRS,
+    CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
+    DELIRIUM_DETECTION_SCORE_SCORE,
+    DELIRIUM_OBSERVATION_SCALE_SCORE,
+    DELIRIUM_RATING_SCALE_SCORE,
     ICDSC,
-    OPTIMIZABLE_RISK_FACTOR,
+    MINICOG,
+    MOCA,
+    MOCA_LOINC,
+    NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
+    OPTIMIZABLE_PREOPERATIVE_RISK_FACTOR,
+    RESULT_OF_CHARLSON_COMORBIDITY_INDEX,
+    THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
     DigiPOD,
-    NuDESC,
-    ThreeDCAM,
 )
 
 
@@ -47,26 +58,62 @@ class ObservationCharacteristicConverter(AbstractValueCharacteristic):
     """
 
     _concepts: list[ConceptEntry] = [
-        # "Nursing Delirium Screening Scale (NU-DESC) score"
-        {"code": NuDESC.concept_code, "vocabulary": DigiPOD},
-        # "Intensive Care Delirium Screening Checklist score (observable entity)"
+        # Nursing Delirium Screening Scale (NU-DESC) score
+        {
+            "code": NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE.concept_code,
+            "vocabulary": DigiPOD,
+        },
+        # Intensive Care Delirium Screening Checklist score (observable entity)
         {"code": "1351995008", "vocabulary": SNOMEDCT, "replace": ICDSC},
-        # "Confusion Assessment Method score (observable entity)"
+        # Intensive Care Delirium Screening Checklist score (observable entity)
+        {
+            "code": INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE.concept_code,
+            "vocabulary": DigiPOD,
+        },
+        # Confusion Assessment Method score (observable entity)
         {"code": "1351493007", "vocabulary": SNOMEDCT, "replace": CAM},
-        #  "Delirium Rating Scale score"
-        {"code": DRS.concept_code, "vocabulary": DigiPOD},
-        # "Delirium Observation Scale score"
-        {"code": DOS.concept_code, "vocabulary": DigiPOD},
-        # "3-minute Diagnostic Interview for CAM-defined Delirium score"
-        {"code": ThreeDCAM.concept_code, "vocabulary": DigiPOD},
-        # "Confusion Assessment Method for the Intensive Care Unit score"
-        {"code": CAM_ICU.concept_code, "vocabulary": DigiPOD},
-        # "Delirium Detection Score score"
-        {"code": DDS.concept_code, "vocabulary": DigiPOD},
-        # "4 A's Test for delirium and cognitive impairment score (observable entity)"
+        # Confusion Assessment Method score
+        {"code": CONFUSION_ASSESSMENT_METHOD_SCORE.concept_code, "vocabulary": DigiPOD},
+        # Delirium Rating Scale score
+        {"code": DELIRIUM_RATING_SCALE_SCORE.concept_code, "vocabulary": DigiPOD},
+        # Delirium Observation Scale score
+        {"code": DELIRIUM_OBSERVATION_SCALE_SCORE.concept_code, "vocabulary": DigiPOD},
+        # 3-minute Diagnostic Interview for CAM-defined Delirium score
+        {
+            "code": THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE.concept_code,
+            "vocabulary": DigiPOD,
+        },
+        # Confusion Assessment Method for the Intensive Care Unit score
+        {
+            "code": CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE.concept_code,
+            "vocabulary": DigiPOD,
+        },
+        # Delirium Detection Score score
+        {"code": DELIRIUM_DETECTION_SCORE_SCORE.concept_code, "vocabulary": DigiPOD},
+        # 4 A's Test for delirium and cognitive impairment score (observable entity)
         {"code": "1239211000000103", "vocabulary": SNOMEDCT},
         # Presence of optimizable preoperative risk factor
-        {"code": OPTIMIZABLE_RISK_FACTOR.concept_code, "vocabulary": DigiPOD},
+        {
+            "code": OPTIMIZABLE_PREOPERATIVE_RISK_FACTOR.concept_code,
+            "vocabulary": DigiPOD,
+        },
+        # Charlson Comorbidity Index score
+        {
+            "code": RESULT_OF_CHARLSON_COMORBIDITY_INDEX.concept_code,
+            "vocabulary": DigiPOD,
+        },
+        # $sct-uk#711061000000109 "Addenbrooke's cognitive examination revised - score (observable entity)"
+        {"code": ACE_R.concept_code, "vocabulary": SNOMEDCT},
+        # $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
+        {"code": MOCA.concept_code, "vocabulary": SNOMEDCT},
+        # $loinc#72172-0 "Total score [MoCA]"
+        {"code": MOCA_LOINC.concept_code, "vocabulary": LOINC},
+        # $sct#302132005 "American Society of Anesthesiologists physical status class (observable entity)"
+        {"code": ASA.concept_code, "vocabulary": SNOMEDCT},
+        # $sct#713408000 "Mini-Cog brief cognitive screening test score (observable entity)"
+        {"code": MINICOG.concept_code, "vocabulary": SNOMEDCT},
+        # $sct#447316007 "Mini-mental state examination score (observable entity)"
+        {"code": MMSE.concept_code, "vocabulary": SNOMEDCT},
     ]
 
     @classmethod

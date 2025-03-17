@@ -2,14 +2,14 @@ from execution_engine.omop.concepts import Concept
 
 from digipod.terminology.vocabulary import (  # BRADYCARDIA_DURING_SURGERY as Bradycardia_During_Surgery; noqa: we expose these concepts intentionally
     CAM,
-    CAM_ICU,
-    DDS,
-    DOS,
-    DRS,
+    CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
+    DELIRIUM_DETECTION_SCORE_SCORE,
+    DELIRIUM_OBSERVATION_SCALE_SCORE,
+    DELIRIUM_RATING_SCALE_SCORE,
     ICDSC,
+    NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
+    THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
     DigiPOD,
-    NuDESC,
-    ThreeDCAM,
 )
 
 OMOP_INTENSIVE_CARE = 32037

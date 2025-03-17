@@ -15,14 +15,14 @@ from execution_engine.util import logic
 from digipod.converter.characteristic.observation import ConceptEntry
 from digipod.terminology.vocabulary import (
     CAM,
-    CAM_ICU,
-    DDS,
-    DOS,
-    DRS,
+    CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
+    DELIRIUM_DETECTION_SCORE_SCORE,
+    DELIRIUM_OBSERVATION_SCALE_SCORE,
+    DELIRIUM_RATING_SCALE_SCORE,
     ICDSC,
+    NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
+    THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
     DigiPOD,
-    NuDESC,
-    ThreeDCAM,
 )
 
 
@@ -91,21 +91,30 @@ class AssessmentActionConverter(AssessmentAction):
 
     _concepts: list[ConceptEntry] = [
         # "Nursing Delirium Screening Scale (NU-DESC) score"
-        {"code": NuDESC.concept_code, "vocabulary": DigiPOD},
+        {
+            "code": NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE.concept_code,
+            "vocabulary": DigiPOD,
+        },
         # "Intensive Care Delirium Screening Checklist score (observable entity)"
         {"code": "1351995008", "vocabulary": SNOMEDCT, "replace": ICDSC},
         # "Confusion Assessment Method score (observable entity)"
         {"code": "1351493007", "vocabulary": SNOMEDCT, "replace": CAM},
         # "Delirium Rating Scale score"
-        {"code": DRS.concept_code, "vocabulary": DigiPOD},
+        {"code": DELIRIUM_RATING_SCALE_SCORE.concept_code, "vocabulary": DigiPOD},
         # "Delirium Observation Scale score"
-        {"code": DOS.concept_code, "vocabulary": DigiPOD},
+        {"code": DELIRIUM_OBSERVATION_SCALE_SCORE.concept_code, "vocabulary": DigiPOD},
         # "3-minute Diagnostic Interview for CAM-defined Delirium score"
-        {"code": ThreeDCAM.concept_code, "vocabulary": DigiPOD},
+        {
+            "code": THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE.concept_code,
+            "vocabulary": DigiPOD,
+        },
         # "Confusion Assessment Method for the Intensive Care Unit score"
-        {"code": CAM_ICU.concept_code, "vocabulary": DigiPOD},
+        {
+            "code": CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE.concept_code,
+            "vocabulary": DigiPOD,
+        },
         # "Delirium Detection Score score"
-        {"code": DDS.concept_code, "vocabulary": DigiPOD},
+        {"code": DELIRIUM_DETECTION_SCORE_SCORE.concept_code, "vocabulary": DigiPOD},
         # "4 A's Test for delirium and cognitive impairment score (observable entity)"
         {"code": "1239211000000103", "vocabulary": SNOMEDCT},
     ]
