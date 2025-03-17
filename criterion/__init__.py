@@ -2,7 +2,6 @@ import inspect
 
 from .dexmed_patients import *
 from .intraop_patients import *
-from .noop import *
 from .patients import *
 from .postop_patients import *
 from .preop_patients import *

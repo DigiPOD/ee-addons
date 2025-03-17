@@ -8,7 +8,6 @@ from types import ModuleType
 from typing import Generator, Type
 
 import pendulum
-from execution_engine.omop.criterion.factory import register_criterion_class
 from sqlalchemy import text
 
 current_dir = os.path.dirname(__file__)
@@ -33,7 +32,10 @@ from execution_engine.settings import get_config, update_config
 import digipod.recommendation.recommendation_0_1
 import digipod.recommendation.recommendation_0_2
 import digipod.recommendation.recommendation_2_1
-import digipod.recommendation.recommendation_3_2
+
+# import digipod.recommendation.recommendation_3_2
+# import digipod.recommendation.recommendation_4_1
+# import digipod.recommendation.recommendation_4_2
 
 # enable multiprocessing with all available cores
 # update_config(multiprocessing_use=False, multiprocessing_pool_size=-1)
@@ -107,9 +109,9 @@ import digipod.criterion
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-for cls in iterate_module_classes(digipod.criterion):
-    logging.info(f'Importing criterion class "{cls.__name__}"')
-    register_criterion_class(cls.__name__, cls)
+# for cls in iterate_module_classes(digipod.criterion):
+#     logging.info(f'Importing criterion class "{cls.__name__}"')
+#     register_criterion_class(cls.__name__, cls)
 
 for cls in iterate_module_classes(digipod.converter.characteristic):
     logging.info(f'Importing characteristic converter "{cls.__name__}"')
@@ -130,9 +132,11 @@ engine = builder.build()
 recommendations: list[cohort.Recommendation] = [
     digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_single,
     digipod.recommendation.recommendation_0_2.rec_0_2_Delirium_Screening_double,
-    # digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
-    # digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
-    # digipod.recommendation.recommendation_3_2.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
+    digipod.recommendation.recommendation_2_1.RecCollCheckRFAdultSurgicalPatientsPreoperatively,
+    digipod.recommendation.recommendation_0_1.rec_0_1_Delirium_Screening,
+    # digipod.recommendation.recommendation_3_2.recommendation,
+    # digipod.recommendation.recommendation_4_1.recommendation,
+    # digipod.recommendation.recommendation_4_2.recommendation,
 ]
 
 base_url = "https://fhir.charite.de/digipod/"
@@ -142,15 +146,17 @@ urls: dict[str, str] = OrderedDict()
 # urls["0.1"] = "PlanDefinition/RecCollPreoperativeDeliriumScreening"
 # urls["0.2"] = "PlanDefinition/RecCollDeliriumScreeningPostoperatively"
 # urls["2.1"] = "PlanDefinition/RecCollCheckRFAdultSurgicalPatientsPreoperatively"
-# urls["3.1"] = "PlanDefinition/RecCollAdultSurgicalPatNoSpecProphylacticDrugForPOD"
+# urls["3.2"] = "PlanDefinition/RecCollProphylacticDexAdministrationAfterBalancingBenefitsVSSE"
 
 # priority
 # urls["4.1"] = "PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"
 # urls["4.2"] = "PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies" # works
-# urls["4.3."] = None
+urls["4.3"] = (
+    "PlanDefinition/RecCollBundleOfNonPharmaMeasuresPostOPInAdultsAtRiskForPOD"
+)
 
 # unknown
-# urls["3.2"] = "PlanDefinition/RecCollBalanceBenefitsAgainstSideEffectsWhenUsingDexmedetomidine"
+# urls["3.1"] = "PlanDefinition/RecCollAdultSurgicalPatNoSpecProphylacticDrugForPOD"
 # urls["3.3"] = (
 #     "PlanDefinition/RecCollAdultSurgicalPatPreOrIntraOPNoSpecSurgeryOrAnesthesiaType"
 # )
@@ -165,21 +171,21 @@ import pathlib
 path = pathlib.Path("recommendation/gen")
 assert path.exists()
 
-header = """from digipod.criterion.intraop_patients import IntraOperativePatients
-from digipod.criterion.noop import Noop
+header = """from digipod.criterion import PatientsBeforeFirstDexAdministration
+from digipod.criterion.intraop_patients import IntraOperativePatients
 from digipod.criterion.patients import AgeLimitPatient
-from digipod.criterion.preop_patients import PreOperativePatientsBeforeSurgery
-from execution_engine.omop.cohort import Recommendation, PopulationInterventionPair
+from digipod.criterion.preop_patients import PreOperativePatientsBeforeSurgery, PreOperativePatientsBeforeDayOfSurgery
+from execution_engine.omop.cohort import Recommendation, PopulationInterventionPairExpr
 from execution_engine.omop.concepts import Concept
-from execution_engine.omop.criterion.combination.logical import LogicalCriterionCombination
-from execution_engine.omop.criterion.combination.temporal import PersonalWindowTemporalIndicatorCombination,   TemporalIndicatorCombination
 from execution_engine.omop.criterion.condition_occurrence import ConditionOccurrence
 from execution_engine.omop.criterion.drug_exposure import DrugExposure
 from execution_engine.omop.criterion.measurement import Measurement
 from execution_engine.omop.criterion.observation import Observation
 from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
+from execution_engine.util.logic import *
 from execution_engine.util.types import Timing
+from execution_engine.util.value import ValueConcept, ValueScalar
 from execution_engine.util.value.time import ValueCount
 
 
@@ -200,10 +206,16 @@ for rec_no, recommendation_url in urls.items():
     #     recommendation, start_datetime=start_datetime, end_datetime=end_datetime
     # )
 
-
-for recommendation in recommendations:
-    print(recommendation.name)
-    engine.register_recommendation(recommendation)
-    engine.execute(
-        recommendation, start_datetime=start_datetime, end_datetime=end_datetime
-    )
+# start_time = time.time()
+#
+# # for recommendation in recommendations:
+# #     print(recommendation.name)
+# #     engine.register_recommendation(recommendation)
+# #     engine.execute(
+# #         recommendation, start_datetime=start_datetime, end_datetime=end_datetime
+# #     )
+#
+# end_time = time.time()
+# runtime_seconds = end_time - start_time
+#
+# logging.info(f"Total runtime: {runtime_seconds:.2f} seconds")

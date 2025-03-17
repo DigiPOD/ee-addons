@@ -150,7 +150,7 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
 
     _event_vocabulary = vocabulary.DigiPOD
     _event_code = str(
-        vocabulary.COMPLETION_TIME_OF_SURGICAL_PROCEDURE.concept_id
+        vocabulary.COMPLETION_TIME_OF_SURGICAL_PROCEDURE.concept_code
     )  # Completion time of surgical procedure
 
     def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
@@ -162,7 +162,7 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
         """
         assert self._value is not None
         if (
-            self._value.value_min == -1032
+            self._value.value_min == -1008
             and self._value.value_max == 0
             and self._value.unit.concept_code == "h"
         ):

@@ -8,11 +8,11 @@ from execution_engine.converter.criterion import parse_code
 from execution_engine.fhir.recommendation import RecommendationPlan
 from execution_engine.fhir.util import get_coding
 from execution_engine.omop.concepts import Concept
+from execution_engine.omop.criterion.noop import NoopCriterion
 from execution_engine.omop.vocabulary import SNOMEDCT
 from execution_engine.util import logic
 
 from digipod.converter.characteristic.observation import ConceptEntry
-from digipod.criterion.noop import Noop
 from digipod.terminology.vocabulary import (
     CAM,
     CAM_ICU,
@@ -45,7 +45,7 @@ class NoopAction(AbstractAction):
         return cls(exclude=exclude)
 
     def _to_expression(self) -> logic.BaseExpr:
-        return Noop()
+        return NoopCriterion()
 
 
 class OtherActionConverter(ProcedureAction):
