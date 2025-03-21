@@ -1,7 +1,8 @@
 import pendulum
+from execution_engine.omop.vocabulary import OMOP_SURGICAL_PROCEDURE
 
 from digipod import concepts as digipod_concepts
-from digipod.concepts import OMOP_GENDER_FEMALE, OMOP_SURGICAL_PROCEDURE
+from digipod.concepts import OMOP_GENDER_FEMALE
 from digipod.terminology import vocabulary as digipod_vocab
 from digipod.tests.functions import (
     create_measurement,

@@ -12,11 +12,12 @@ from execution_engine.omop.db.omop.tables import (
     Person,
     ProcedureOccurrence,
 )
+from execution_engine.omop.vocabulary import OMOP_SURGICAL_PROCEDURE
 from execution_engine.util.interval import IntervalType
 from sqlalchemy import func, select
 from sqlalchemy.sql import Select
 
-from digipod.concepts import OMOP_DEXMEDETOMIDINE, OMOP_SURGICAL_PROCEDURE
+from digipod.concepts import OMOP_DEXMEDETOMIDINE
 
 
 class AgeLimitPatient(Criterion):
