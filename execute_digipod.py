@@ -104,14 +104,12 @@ builder = default_execution_engine_builder()
 
 import digipod.converter.action
 import digipod.converter.characteristic
+import digipod.converter.relative_time
 import digipod.converter.time_from_event
 import digipod.criterion
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-# for cls in iterate_module_classes(digipod.criterion):
-#     logging.info(f'Importing criterion class "{cls.__name__}"')
-#     register_criterion_class(cls.__name__, cls)
 
 for cls in iterate_module_classes(digipod.converter.characteristic):
     logging.info(f'Importing characteristic converter "{cls.__name__}"')
@@ -124,6 +122,10 @@ for cls in iterate_module_classes(digipod.converter.action):
 for cls in iterate_module_classes(digipod.converter.time_from_event):
     logging.info(f'Importing timeFromEvent converter "{cls.__name__}"')
     builder.append_time_from_event_converter(cls)
+
+for cls in iterate_module_classes(digipod.converter.relative_time):
+    logging.info(f'Importing relativeTime converter "{cls.__name__}"')
+    builder.append_relative_time_converter(cls)
 
 
 # Build the ExecutionEngine
@@ -146,14 +148,18 @@ urls: dict[str, str] = OrderedDict()
 # urls["0.1"] = "PlanDefinition/RecCollPreoperativeDeliriumScreening"
 # urls["0.2"] = "PlanDefinition/RecCollDeliriumScreeningPostoperatively"
 # urls["2.1"] = "PlanDefinition/RecCollCheckRFAdultSurgicalPatientsPreoperatively"
-# urls["3.2"] = "PlanDefinition/RecCollProphylacticDexAdministrationAfterBalancingBenefitsVSSE"
+urls["3.2"] = (
+    "PlanDefinition/RecCollProphylacticDexAdministrationAfterBalancingBenefitsVSSE"
+)
 
 # priority
-# urls["4.1"] = "PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"
-# urls["4.2"] = "PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies" # works
-# urls["4.3"] = (
-#     "PlanDefinition/RecCollBundleOfNonPharmaMeasuresPostOPInAdultsAtRiskForPOD"
-# )
+urls["4.1"] = "PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization"
+urls["4.2"] = (
+    "PlanDefinition/RecCollShareRFOfOlderAdultsPreOPAndRegisterPreventiveStrategies"  # works
+)
+urls["4.3"] = (
+    "PlanDefinition/RecCollBundleOfNonPharmaMeasuresPostOPInAdultsAtRiskForPOD"
+)
 
 # unknown
 # urls["3.1"] = "PlanDefinition/RecCollAdultSurgicalPatNoSpecProphylacticDrugForPOD"
@@ -175,6 +181,8 @@ header = """from digipod.criterion import PatientsBeforeFirstDexAdministration
 from digipod.criterion.intraop_patients import IntraOperativePatients
 from digipod.criterion.patients import AgeLimitPatient
 from digipod.criterion.preop_patients import PreOperativePatientsBeforeSurgery, PreOperativePatientsBeforeDayOfSurgery
+from digipod.criterion import PostOperativePatients, OnFacesAnxietyScaleAssessmentDay, \
+    BeforeDailyFacesAnxietyScaleAssessment
 from execution_engine.omop.cohort import Recommendation, PopulationInterventionPairExpr
 from execution_engine.omop.concepts import Concept
 from execution_engine.omop.criterion.condition_occurrence import ConditionOccurrence
@@ -182,7 +190,9 @@ from execution_engine.omop.criterion.drug_exposure import DrugExposure
 from execution_engine.omop.criterion.measurement import Measurement
 from execution_engine.omop.criterion.observation import Observation
 from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
+from execution_engine.omop.criterion.device_exposure import DeviceExposure
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
+from execution_engine.util.enum import TimeUnit
 from execution_engine.util.logic import *
 from execution_engine.util.types import Timing
 from execution_engine.util.value import ValueConcept, ValueScalar

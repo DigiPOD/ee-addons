@@ -498,7 +498,7 @@ INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE = Concept(
     concept_id=DIGIPOD_CONCEPT_OFFSET + 55,
     concept_name="Intensive Care Delirium Screening Checklist score",
     concept_code="055",
-    domain_id="Procedure",
+    domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
@@ -507,7 +507,7 @@ CONFUSION_ASSESSMENT_METHOD_SCORE = Concept(
     concept_id=DIGIPOD_CONCEPT_OFFSET + 56,
     concept_name="Confusion Assessment Method score",
     concept_code="056",
-    domain_id="Procedure",
+    domain_id="Measurement",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )

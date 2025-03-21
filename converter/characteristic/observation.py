@@ -16,6 +16,7 @@ from fhir.resources.evidencevariable import EvidenceVariableCharacteristic
 from digipod.concepts import MMSE
 from digipod.terminology.custom_concepts import (
     CONFUSION_ASSESSMENT_METHOD_SCORE,
+    FACES_ANXIETY_SCALE_SCORE,
     INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
 )
 from digipod.terminology.vocabulary import (
@@ -114,6 +115,7 @@ class ObservationCharacteristicConverter(AbstractValueCharacteristic):
         {"code": MINICOG.concept_code, "vocabulary": SNOMEDCT},
         # $sct#447316007 "Mini-mental state examination score (observable entity)"
         {"code": MMSE.concept_code, "vocabulary": SNOMEDCT},
+        {"code": FACES_ANXIETY_SCALE_SCORE.concept_code, "vocabulary": DigiPOD},
     ]
 
     @classmethod

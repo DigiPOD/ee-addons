@@ -1,7 +1,6 @@
 from execution_engine.converter.time_from_event.abstract import TimeFromEvent
 from execution_engine.util import logic
 
-from digipod.converter.time_from_event.util import wrap_criteria_with_temporal_indicator
 from digipod.criterion import PatientsBeforeFirstDexAdministration
 from digipod.terminology import vocabulary
 from digipod.terminology.vocabulary import DigiPOD
@@ -17,14 +16,8 @@ class BeforeDexmedetomidineAdministration(TimeFromEvent):
     _event_vocabulary = DigiPOD
     _event_code = vocabulary.BEFORE_DEXMEDETOMIDINE_ADMINISTRATION.concept_code
 
-    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+    def to_interval_criterion(self) -> logic.BaseExpr:
         """
-        Returns a temporal combination of the criterion based on the mode
-
-        Returns:
-            TemporalIndicatorCombination: The temporal combination of the criterion
+        Returns the criterion that returns the intervals during the enclosed criterion/combination is evaluated.
         """
-
-        return wrap_criteria_with_temporal_indicator(
-            expr, PatientsBeforeFirstDexAdministration()
-        )
+        return PatientsBeforeFirstDexAdministration()

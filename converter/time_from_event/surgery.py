@@ -3,7 +3,6 @@ from execution_engine.omop.vocabulary import LOINC, SNOMEDCT
 from execution_engine.util import logic
 from execution_engine.util.value.value import ValueScalar
 
-from digipod.converter.time_from_event.util import wrap_criteria_with_temporal_indicator
 from digipod.terminology import vocabulary
 
 #  $loinc#67782-3 "Surgical operation date"
@@ -25,12 +24,9 @@ class SurgicalOperationDate(TimeFromEvent):
     _event_vocabulary = LOINC
     _event_code = "67782-3"  # Surgical operation date
 
-    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+    def to_interval_criterion(self) -> logic.BaseExpr:
         """
-        Returns a temporal combination of the criterion based on the mode
-
-        Returns:
-            TemporalIndicatorCombination: The temporal combination of the criterion
+        Returns the criterion that returns the intervals during the enclosed criterion/combination is evaluated.
         """
 
         assert self._value is not None
@@ -44,9 +40,7 @@ class SurgicalOperationDate(TimeFromEvent):
                 PreOperativePatientsBeforeDayOfSurgery,
             )
 
-            return wrap_criteria_with_temporal_indicator(
-                expr, PreOperativePatientsBeforeDayOfSurgery()
-            )
+            return PreOperativePatientsBeforeDayOfSurgery()
 
         raise NotImplementedError(
             "Currently, only preoperative patients are implemented"
@@ -61,12 +55,9 @@ class PreOperative(TimeFromEvent):
     _event_vocabulary = SNOMEDCT
     _event_code = "262068006"  # Surgical operation date
 
-    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+    def to_interval_criterion(self) -> logic.BaseExpr:
         """
-        Returns a temporal combination of the criterion based on the mode
-
-        Returns:
-            TemporalIndicatorCombination: The temporal combination of the criterion
+        Returns the criterion that returns the intervals during the enclosed criterion/combination is evaluated.
         """
 
         if self._value is not None:
@@ -76,9 +67,7 @@ class PreOperative(TimeFromEvent):
 
         from digipod.criterion.preop_patients import PreOperativePatientsBeforeSurgery
 
-        return wrap_criteria_with_temporal_indicator(
-            expr, PreOperativePatientsBeforeSurgery()
-        )
+        return PreOperativePatientsBeforeSurgery()
 
 
 class IntraPostOperative(TimeFromEvent):
@@ -89,12 +78,9 @@ class IntraPostOperative(TimeFromEvent):
     _event_vocabulary = LOINC
     _event_code = "80992-1"  # Date and time of surgery
 
-    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+    def to_interval_criterion(self) -> logic.BaseExpr:
         """
-        Returns a temporal combination of the criterion based on the mode
-
-        Returns:
-            TemporalIndicatorCombination: The temporal combination of the criterion
+        Returns the criterion that returns the intervals during the enclosed criterion/combination is evaluated.
         """
 
         if self._value is not None and self._value != ValueScalar(value_min=0):
@@ -104,7 +90,7 @@ class IntraPostOperative(TimeFromEvent):
 
         from digipod.criterion.intraop_patients import IntraOperativePatients
 
-        return wrap_criteria_with_temporal_indicator(expr, IntraOperativePatients())
+        return IntraOperativePatients()
 
 
 class PostOperative(TimeFromEvent):
@@ -115,12 +101,9 @@ class PostOperative(TimeFromEvent):
     _event_vocabulary = SNOMEDCT
     _event_code = "262061000"  # Postoperative period
 
-    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+    def to_interval_criterion(self) -> logic.BaseExpr:
         """
-        Returns a temporal combination of the criterion based on the mode
-
-        Returns:
-            TemporalIndicatorCombination: The temporal combination of the criterion
+        Returns the criterion that returns the intervals during the enclosed criterion/combination is evaluated.
         """
 
         if self._value is not None and self._value != ValueScalar(value_min=0):
@@ -130,7 +113,7 @@ class PostOperative(TimeFromEvent):
 
         from digipod.criterion.postop_patients import PostOperativePatients
 
-        return wrap_criteria_with_temporal_indicator(expr, PostOperativePatients())
+        return PostOperativePatients()
 
 
 class PreOrIntraOperative(TimeFromEvent):
@@ -141,12 +124,9 @@ class PreOrIntraOperative(TimeFromEvent):
     _event_vocabulary = SNOMEDCT
     _event_code = "442137000"  # Completion time of procedure (observable entity)
 
-    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+    def to_interval_criterion(self) -> logic.BaseExpr:
         """
-        Returns a temporal combination of the criterion based on the mode
-
-        Returns:
-            TemporalIndicatorCombination: The temporal combination of the criterion
+        Returns the criterion that returns the intervals during the enclosed criterion/combination is evaluated.
         """
         assert self._value is not None
         if (
@@ -159,9 +139,7 @@ class PreOrIntraOperative(TimeFromEvent):
                 PreOperativePatientsBeforeEndOfSurgery,
             )
 
-            return wrap_criteria_with_temporal_indicator(
-                expr, PreOperativePatientsBeforeEndOfSurgery()
-            )
+            return PreOperativePatientsBeforeEndOfSurgery()
 
         raise NotImplementedError(
             "Currently, only pre/intraoperative patients before end of surgery are implemented"
@@ -179,12 +157,9 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
         vocabulary.COMPLETION_TIME_OF_SURGICAL_PROCEDURE.concept_code
     )  # Completion time of surgical procedure
 
-    def to_temporal_combination(self, expr: logic.BaseExpr) -> logic.Expr:
+    def to_interval_criterion(self) -> logic.BaseExpr:
         """
-        Returns a temporal combination of the criterion based on the mode
-
-        Returns:
-            TemporalIndicatorCombination: The temporal combination of the criterion
+        Returns the criterion that returns the intervals during the enclosed criterion/combination is evaluated.
         """
         assert self._value is not None
         if (
@@ -197,9 +172,7 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
                 PreOperativePatientsBeforeEndOfSurgery,
             )
 
-            return wrap_criteria_with_temporal_indicator(
-                expr, PreOperativePatientsBeforeEndOfSurgery()
-            )
+            return PreOperativePatientsBeforeEndOfSurgery()
 
         raise NotImplementedError(
             "Currently, only pre/intraoperative patients before end of surgery are implemented"

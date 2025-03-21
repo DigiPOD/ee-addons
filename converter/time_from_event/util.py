@@ -1,5 +1,5 @@
 import logging
-from typing import Callable
+from typing import Callable, cast
 
 from execution_engine.omop.criterion.abstract import Criterion
 from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
@@ -64,7 +64,7 @@ def _wrap_criteria_with_factory(
 def wrap_criteria_with_temporal_indicator(
     expr: logic.BaseExpr,
     interval_criterion: logic.BaseExpr,
-) -> logic.Expr:
+) -> logic.TemporalMinCount:
     """
     Wraps all Criterion instances in a combination with a TemporalCount (with interval_criterion).
 
@@ -76,6 +76,9 @@ def wrap_criteria_with_temporal_indicator(
         criterion=criterion, interval_criterion=interval_criterion
     )
 
-    new_combo = _wrap_criteria_with_factory(expr, temporal_combo_factory)
+    new_combo = cast(
+        logic.TemporalMinCount,
+        _wrap_criteria_with_factory(expr, temporal_combo_factory),
+    )
 
     return new_combo

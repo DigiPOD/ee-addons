@@ -70,14 +70,17 @@ class OtherActionConverter(ProcedureAction):
             logging.warning("No coding in action - returning Noop Action")
             return NoopAction.from_fhir(action_def)
 
-        code = parse_code(action_def.activity_definition_fhir.code)
+        try:
+            code = parse_code(action_def.activity_definition_fhir.code)
+        except ValueError:
+            code = parse_code(action_def.activity_definition_fhir.code, standard=False)
+
+        timing = None
 
         if action_def.activity_definition_fhir.timingTiming is not None:
             timing = cls.process_timing(
                 action_def.activity_definition_fhir.timingTiming
             )
-        else:
-            timing = None
 
         exclude = action_def.activity_definition_fhir.doNotPerform
 

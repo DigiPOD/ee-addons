@@ -1,6 +1,9 @@
 from digipod.converter.time_from_event.drug_administration import (
     BeforeDexmedetomidineAdministration,
 )
+from digipod.converter.time_from_event.faces_anxiety_scale import (
+    BeforeDailyFacesAnxietyScaleAssessment,
+)
 from digipod.converter.time_from_event.surgery import (
     IntraPostOperative,
     PostOperative,
@@ -18,4 +21,5 @@ __all__ = [
     "PreOrIntraOperativeDigipod",
     "BeforeDexmedetomidineAdministration",
     "PostOperative",
+    "BeforeDailyFacesAnxietyScaleAssessment",
 ]
