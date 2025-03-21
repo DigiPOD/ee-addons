@@ -65,6 +65,7 @@ class BeforeDailyFacesAnxietyScaleAssessment(Criterion):
     def __init__(self) -> None:
         super().__init__()
         self._set_omop_variables_from_domain(FACES_ANXIETY_SCALE_SCORE.domain_id)
+        self._value_required = False  # we don't care for any specific value
 
     def _create_query(self) -> Select:
         """
@@ -79,7 +80,7 @@ class BeforeDailyFacesAnxietyScaleAssessment(Criterion):
             ),
             self._table.c.measurement_datetime.label("interval_end"),
         ).where(
-            self._table.c.procedure_concept_id == FACES_ANXIETY_SCALE_SCORE.concept_id
+            self._table.c.measurement_concept_id == FACES_ANXIETY_SCALE_SCORE.concept_id
         )
 
         query = self._filter_base_persons(query)
@@ -102,6 +103,7 @@ class OnFacesAnxietyScaleAssessmentDay(Criterion):
     def __init__(self) -> None:
         super().__init__()
         self._set_omop_variables_from_domain(FACES_ANXIETY_SCALE_SCORE.domain_id)
+        self._value_required = False  # we don't care for any specific value
 
     def _create_query(self) -> Select:
         """
@@ -120,7 +122,7 @@ class OnFacesAnxietyScaleAssessmentDay(Criterion):
                 - SQL_ONE_SECOND
             ).label("interval_end"),
         ).where(
-            self._table.c.procedure_concept_id == FACES_ANXIETY_SCALE_SCORE.concept_id
+            self._table.c.measurement_concept_id == FACES_ANXIETY_SCALE_SCORE.concept_id
         )
 
         query = self._filter_base_persons(query)
