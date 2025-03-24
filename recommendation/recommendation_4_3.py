@@ -23,7 +23,7 @@ from digipod.criterion.preop_patients import (
 )
 
 recommendation = Recommendation(
-  expr=And(
+  expr=MinCount(
   And(
       PopulationInterventionPairExpr(
           population_expr=And(
@@ -3955,7 +3955,8 @@ recommendation = Recommendation(
           url='https://fhir.charite.de/digipod/PlanDefinition/RecPlanOralCareRelatedInterventionsPostoperatively',
           base_criterion=PatientsActiveDuringPeriod()
         )
-    )
+    ),
+      threshold=4
 ),
   base_criterion=PatientsActiveDuringPeriod(),
   name='RecCollBundleOfNonPharmaMeasuresPostOPInAdultsAtRiskForPOD',

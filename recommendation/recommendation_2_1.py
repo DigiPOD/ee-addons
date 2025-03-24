@@ -77,11 +77,12 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPairExpr(
     url="",
     base_criterion=base_criterion,
     population_expr=preOperativeAdultBeforeDayOfSurgeryPatients,
-    intervention_expr=logic.And(
+    intervention_expr=logic.MinCount(
         temporal_logic_util.AnyTime(ageDocumented),
         temporal_logic_util.AnyTime(asaDocumented),
         temporal_logic_util.AnyTime(cciDocumented),
         temporal_logic_util.AnyTime(miniCogDocumented),
+        threshold=4
     ),
 )
 

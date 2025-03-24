@@ -3,6 +3,7 @@ from execution_engine.omop.vocabulary import LOINC, SNOMEDCT
 from execution_engine.util import logic
 from execution_engine.util.value.value import ValueScalar
 
+from digipod.criterion import PostOperativePatientsUntilDay0
 from digipod.terminology import vocabulary
 
 #  $loinc#67782-3 "Surgical operation date"
@@ -163,7 +164,8 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
         """
         assert self._value is not None
         if (
-            self._value.value_min == -1008
+            self._value.value_min is not None
+            and self._value.value_min % 24 == 0
             and self._value.value_max == 0
             and self._value.unit.concept_code == "h"
         ):
@@ -172,7 +174,15 @@ class PreOrIntraOperativeDigipod(TimeFromEvent):
                 PreOperativePatientsBeforeEndOfSurgery,
             )
 
-            return PreOperativePatientsBeforeEndOfSurgery()
+            return PreOperativePatientsBeforeEndOfSurgery(
+                max_days_before_surgery=-self._value.value_min // 24
+            )
+        elif (
+            self._value.value_min is None
+            and self._value.value_max == 1
+            and self._value.unit.concept_code == "d"
+        ):
+            return PostOperativePatientsUntilDay0()
 
         raise NotImplementedError(
             "Currently, only pre/intraoperative patients before end of surgery are implemented"

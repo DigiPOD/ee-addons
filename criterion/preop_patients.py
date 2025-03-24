@@ -89,6 +89,15 @@ class PreOperativePatientsBeforeEndOfSurgery(SurgicalPatients):
     Select patients who are pre-operative in the timeframe between 42 days before the surgery and the end of the surgery.
     """
 
+    _max_days_before_surgery: int
+
+    def __init__(
+        self,
+        max_days_before_surgery: int = 42,
+    ) -> None:
+        super().__init__()
+        self._max_days_before_surgery = max_days_before_surgery
+
     def _create_query(self) -> Select:
         """
         Get the SQL Select query for data required by this criterion.
@@ -101,7 +110,7 @@ class PreOperativePatientsBeforeEndOfSurgery(SurgicalPatients):
             column_interval_type(IntervalType.POSITIVE),
             (
                 func.date_trunc("day", subquery.c.procedure_datetime)
-                - func.cast(func.concat(42, "day"), Interval)
+                - func.cast(func.concat(self._max_days_before_surgery, "day"), Interval)
             ).label("interval_start"),
             subquery.c.procedure_end_datetime.label("interval_end"),
         ).where(
