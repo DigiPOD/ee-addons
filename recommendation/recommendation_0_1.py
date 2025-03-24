@@ -22,17 +22,16 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPairExpr(
     url="",
     base_criterion=base_criterion,
     population_expr=adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
-    intervention_expr=temporal_logic_util.AnyTime(
+    intervention_expr=
         logic.MinCount(
-            NUDESC_documented,
-            DRS_documented,
-            DOS_documented,
-            CAM_documented,
-            AT4_documented,
-            TDCAM_documented,
+            temporal_logic_util.AnyTime(NUDESC_documented),
+            temporal_logic_util.AnyTime(DRS_documented),
+            temporal_logic_util.AnyTime(DOS_documented),
+            temporal_logic_util.AnyTime(CAM_documented),
+            temporal_logic_util.AnyTime(AT4_documented),
+            temporal_logic_util.AnyTime(TDCAM_documented),
             threshold=1,
         )
-    ),
 )
 
 rec_0_1_Delirium_Screening = Recommendation(

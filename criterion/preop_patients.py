@@ -78,9 +78,9 @@ class IntensiveCarePatients(VisitOccurrence):
         )
 
 
-MMSEgte3 = PointInTimeCriterion(
+MMSElt3 = PointInTimeCriterion(
     concept=concepts.MMSE,
-    value=ValueScalar(value_min=3),
+    value=ValueScalar(value_max=2),
 )
 
 
@@ -158,10 +158,10 @@ preOperativeAdultBeforeDayOfSurgeryPatients = logic.And(
 - 42 days until end of day before surgery
 - MMSE >= 3
 """
-preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3 = logic.And(
+preOperativeAdultBeforeDayOfSurgeryPatientsMMSElt3 = logic.And(
     AdultPatients(),
     PreOperativePatientsBeforeDayOfSurgery(),
-    MMSEgte3,
+    MMSElt3,
 )
 
 

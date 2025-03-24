@@ -1,12 +1,12 @@
 from execution_engine.omop.cohort import PopulationInterventionPairExpr, Recommendation
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
-from execution_engine.omop.vocabulary import SNOMEDCT, standard_vocabulary
+from execution_engine.omop.vocabulary import LOINC, SNOMEDCT, standard_vocabulary
 from execution_engine.util import logic, temporal_logic_util
 
 from digipod.criterion.preop_patients import (
     preOperativeAdultBeforeDayOfSurgeryPatients,
-    preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
+    preOperativeAdultBeforeDayOfSurgeryPatientsMMSElt3,
 )
 from digipod.recommendation import package_version
 from digipod.terminology import vocabulary
@@ -43,11 +43,11 @@ miniCogDocumented = PointInTimeCriterion(
     value_required=False,
 )
 
-# $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
+# $loinc#72172-0 "Total score [MoCA]"
 mocaDocumented = PointInTimeCriterion(
     concept=standard_vocabulary.get_concept(
-        SNOMEDCT.system_uri, "1255891005"
-    ),  # $sct#1255891005 "Montreal Cognitive Assessment version 8.1 score (observable entity)"
+        LOINC.system_uri, "72172-0"
+    ),  # #72172-0 "Total score [MoCA]"
     value_required=False,
 )
 
@@ -77,13 +77,11 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPairExpr(
     url="",
     base_criterion=base_criterion,
     population_expr=preOperativeAdultBeforeDayOfSurgeryPatients,
-    intervention_expr=temporal_logic_util.AnyTime(
-        logic.Or(
-            ageDocumented,
-            asaDocumented,
-            cciDocumented,
-            miniCogDocumented,
-        ),
+    intervention_expr=logic.And(
+        temporal_logic_util.AnyTime(ageDocumented),
+        temporal_logic_util.AnyTime(asaDocumented),
+        temporal_logic_util.AnyTime(cciDocumented),
+        temporal_logic_util.AnyTime(miniCogDocumented),
     ),
 )
 
@@ -91,14 +89,12 @@ _RecPlanCheckRiskFactorsMoCAACERMMSE = PopulationInterventionPairExpr(
     name="RecPlanCheckRiskFactorsMoCAACERMMSE",
     url="",
     base_criterion=base_criterion,
-    population_expr=preOperativeAdultBeforeDayOfSurgeryPatientsMMSEgte3,
-    intervention_expr=temporal_logic_util.AnyTime(
-        logic.MinCount(
-            mocaDocumented,
-            acerDocumented,
-            mmseDocumented,
-            threshold=1,
-        ),
+    population_expr=preOperativeAdultBeforeDayOfSurgeryPatientsMMSElt3,
+    intervention_expr=logic.MinCount(
+        temporal_logic_util.AnyTime(mocaDocumented),
+        temporal_logic_util.AnyTime(acerDocumented),
+        temporal_logic_util.AnyTime(mmseDocumented),
+        threshold=1,
     ),
 )
 

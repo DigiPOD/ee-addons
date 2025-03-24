@@ -1,6 +1,7 @@
 import datetime
 from abc import ABC
 
+from dateutil.relativedelta import relativedelta
 from execution_engine.omop.criterion.abstract import (
     Criterion,
     column_interval_type,
@@ -47,8 +48,8 @@ class AgeLimitPatient(Criterion):
         Get the SQL Select query for data required by this criterion.
         """
         # Current date minus 18 years to find the maximum birth date for 18-year-olds
-        eighteen_years_ago = datetime.datetime.now() - datetime.timedelta(
-            days=self._min_age_years * 365.25
+        eighteen_years_ago = datetime.datetime.now() - relativedelta(
+            years=self._min_age_years
         )
 
         query = select(
