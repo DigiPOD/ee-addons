@@ -21,10 +21,6 @@ from digipod.recommendation import package_version
 base_criterion = PatientsActiveDuringPeriod()
 
 #############
-# Day0
-#############
-
-#############
 # PI Pairs
 #############
 
@@ -44,98 +40,43 @@ icu_scores = logic.Or(
     ICDSC_documented,  # CAM Morning
 )
 
-pi_normalward_double_screening = PopulationInterventionPairExpr(
-    name="RecCollDeliriumScreeningOnSurgeryDay_NormalWard",
+
+normalward_scores_filtered = logic.ConditionalFilter(
+    left=InpatientPatients(),
+    right=normalward_scores
+)
+
+icu_scores_filtered = logic.ConditionalFilter(
+    left=IntensiveCarePatients(),
+    right=icu_scores
+)
+
+scores = logic.Or(normalward_scores_filtered, icu_scores_filtered)
+
+
+pi_double_screening = PopulationInterventionPairExpr(
+    name="RecCollDeliriumScreeningOnSurgeryDay",
     url="",
     base_criterion=base_criterion,
     population_expr=logic.And(
         AdultPatients(),
         PostOperativePatientsUntilDay5(),
-        InpatientPatients(),
     ),
     intervention_expr=logic.CappedMinCount(
-        Day(NightShiftAfterMidnight(normalward_scores)),
-        Day(MorningShift(normalward_scores)),
-        Day(AfternoonShift(normalward_scores)),
-        Day(NightShiftBeforeMidnight(normalward_scores)),
+        Day(NightShiftAfterMidnight(scores)),
+        Day(MorningShift(scores)),
+        Day(AfternoonShift(scores)),
+        Day(NightShiftBeforeMidnight(scores)),
         threshold=2,
     ),
 )
-#
-# pi_normalward_single_screening = PopulationInterventionPairExpr(
-#     name="RecCollDeliriumScreeningOnSurgeryDay_NormalWard",
-#     url="",
-#     base_criterion=base_criterion,
-#     population_expr=logic.And(
-#         AdultPatients(),
-#         PostOperativePatientsUntilDay5(),
-#         InpatientPatients(),
-#     ),
-#     intervention_expr=logic.CappedMinCount(
-#         Day(NightShiftAfterMidnight(normalward_scores)),
-#         Day(MorningShift(normalward_scores)),
-#         Day(AfternoonShift(normalward_scores)),
-#         Day(NightShiftBeforeMidnight(normalward_scores)),
-#         threshold=1,
-#     ),
-# )
-
-
-pi_icu_double_screening = PopulationInterventionPairExpr(
-    name="RecCollDeliriumScreeningOnSurgeryDay_ICU",
-    url="",
-    base_criterion=base_criterion,
-    population_expr=logic.And(
-        AdultPatients(),
-        PostOperativePatientsUntilDay5(),
-        IntensiveCarePatients(),
-    ),
-    intervention_expr=logic.CappedMinCount(
-        Day(NightShiftAfterMidnight(icu_scores)),
-        Day(MorningShift(icu_scores)),
-        Day(AfternoonShift(icu_scores)),
-        Day(NightShiftBeforeMidnight(icu_scores)),
-        threshold=2,
-    ),
-)
-
-# pi_icu_single_screening = PopulationInterventionPairExpr(
-#     name="RecCollDeliriumScreeningOnSurgeryDay_ICU",
-#     url="",
-#     base_criterion=base_criterion,
-#     population_expr=logic.And(
-#         AdultPatients(),
-#         PostOperativePatientsUntilDay5(),
-#         IntensiveCarePatients(),
-#     ),
-#     intervention_expr=logic.MinCount(
-#         Day(NightShiftAfterMidnight(icu_scores)),
-#         Day(MorningShift(icu_scores)),
-#         Day(AfternoonShift(icu_scores)),
-#         Day(NightShiftBeforeMidnight(icu_scores)),
-#         threshold=1,
-#     ),
-# )
-
 
 #############################
 # Recommendation collections
 #############################
-# rec_0_2_Delirium_Screening_single = Recommendation(
-#     expr=logic.Or(pi_normalward_single_screening, pi_icu_single_screening),
-#     base_criterion=base_criterion,
-#     name="Rec 0.2: PostoperativeDeliriumScreening (Single)",
-#     title="Recommendation 0.2: Postoperative Screening of Delirium",
-#     url="https://fhir.charite.de/digipod/PlanDefinition/RecCollDeliriumScreeningPostoperatively_single",
-#     version="0.2.0",
-#     description="Adult patients that had a surgical intervention of any type independently of the type of anesthesia: "
-#     "Perform delirium screening from surgery day to the fifth postoperative day, "
-#     "ideally once a shift and at least twice a day.",
-#     package_version=package_version,
-# )
 
 rec_0_2_Delirium_Screening_double = Recommendation(
-    expr=logic.Or(pi_normalward_double_screening, pi_icu_double_screening),
+    expr=pi_double_screening,
     base_criterion=base_criterion,
     name="Rec 0.2: PostoperativeDeliriumScreening (Double)",
     title="Recommendation 0.2: Postoperative Screening of Delirium",
