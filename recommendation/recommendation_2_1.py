@@ -1,8 +1,13 @@
+
 from execution_engine.omop.cohort import PopulationInterventionPairExpr, Recommendation
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 from execution_engine.omop.vocabulary import LOINC, SNOMEDCT, standard_vocabulary
+from execution_engine.task.process import IntervalWithCount, interval_like
+from execution_engine.task.task import Task
 from execution_engine.util import logic, temporal_logic_util
+from execution_engine.util.interval import IntervalType
+from execution_engine.util.types import PersonIntervals
 
 from digipod.criterion.preop_patients import (
     preOperativeAdultBeforeDayOfSurgeryPatients,
@@ -99,11 +104,71 @@ _RecPlanCheckRiskFactorsMoCAACERMMSE = PopulationInterventionPairExpr(
     ),
 )
 
+class CombineRecommendation2_1(logic.Or):
+    """
+    Combines the two distinct population/intervention pairs in this recommendation and calculates
+    a weighted sum of the counts.
+    """
+
+    @staticmethod
+    def prepare_data(task: Task, data: list[PersonIntervals]) -> list[PersonIntervals]:
+        """
+        Selects and returns the PersonIntervals in the order
+        - result of _RecPlanCheckRiskFactorsAgeASACCIMiniCog
+        - result of _RecPlanCheckRiskFactorsMoCAACERMMSE
+
+        This function is used in task.Task to sort the incoming data such that the `count_intervals` function
+        can rely on this order.
+        """
+        assert task.expr.args[0].name == _RecPlanCheckRiskFactorsAgeASACCIMiniCog.name
+        assert task.expr.args[1].name == _RecPlanCheckRiskFactorsMoCAACERMMSE.name
+
+        idx_check_risk_factors = task.get_predecessor_data_index(task.expr.args[0])
+        idx_mmse = task.get_predecessor_data_index(task.expr.args[1])
+
+        if len(data) != 2:
+            raise ValueError('Expected exactly 2 inputs')
+
+        return [data[idx_check_risk_factors], data[idx_mmse]]
+
+
+    @staticmethod
+    def count_intervals(start: int, end: int, intervals: list[IntervalWithCount]
+    ) -> IntervalWithCount:
+        """
+        Combines two intervals into a single IntervalWithCount, handling special cases.
+
+        This function is used as a callback in `process.find_rectangles`.
+
+        Due to ` prepare_data`, the intervals are expected to be (in that order):
+        - index 0: result of _RecPlanCheckRiskFactorsAgeASACCIMiniCog
+        - index 1: result of _RecPlanCheckRiskFactorsMoCAACERMMSE
+
+        If the second interval is NOT_APPLICABLE - i.e. the patient is not part of the population of the second
+        PI pair, the first interval is returned directly.
+        Otherwise, a union of both intervals is created, and the count value is
+        calculated based on the notion that there are 4 items to be fulfilled in
+        _RecPlanCheckRiskFactorsAgeASACCIMiniCog, and 1 item in _RecPlanCheckRiskFactorsMoCAACERMMSE.
+        Accordingly, a weighted count is calculated.
+        """
+        left, right = intervals
+
+        if right.type is IntervalType.NOT_APPLICABLE:
+            # the second PI Pair is not applicable, so we just return the count of #1
+            return interval_like(left, start, end)
+
+        # otherwise, we return the union of both intervals
+        result_type = left.type | right.type
+        right_count = (1 if right.type == IntervalType.POSITIVE else 0)
+        result_count = (4 * left.count + right_count) / 5
+
+        return IntervalWithCount(start, end, result_type, result_count)
+
 #############################
 # Recommendation collections
 #############################
 RecCollCheckRFAdultSurgicalPatientsPreoperatively = Recommendation(
-    expr=logic.Or(
+    expr=CombineRecommendation2_1(
         _RecPlanCheckRiskFactorsAgeASACCIMiniCog,
         _RecPlanCheckRiskFactorsMoCAACERMMSE,
     ),
