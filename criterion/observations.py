@@ -2,8 +2,11 @@ from execution_engine.omop.criterion.abstract import (
     SQL_ONE_SECOND,
     Criterion,
     column_interval_type,
+    observation_end_datetime,
+    observation_start_datetime,
 )
 from execution_engine.omop.criterion.concept import ConceptCriterion
+from execution_engine.omop.db.omop.tables import Person
 from execution_engine.omop.vocabulary import SNOMEDCT, standard_vocabulary
 from execution_engine.util.interval import IntervalType
 from sqlalchemy import Interval, func, select
@@ -147,3 +150,39 @@ class Deglutition(ConceptCriterion):
             system_uri=SNOMEDCT.system_uri, concept="54731003"
         )
         super().__init__(concept)
+
+
+class AgeDocumented(Criterion):
+    """
+    Select patients whose birthdate is documented (in the person table).
+    """
+
+    _static = True
+
+    def __init__(
+        self,
+    ) -> None:
+        super().__init__()
+        self._table = Person.__table__.alias("p")
+
+    def description(self) -> str:
+        """
+        Get a description of the criterion.
+        """
+        return "AgeDocumented"
+
+    def _create_query(self) -> Select:
+        """
+        Get the SQL Select query for data required by this criterion.
+        """
+        query = select(
+            self._table.c.person_id,
+            observation_start_datetime.label("interval_start"),
+            observation_end_datetime.label("interval_end"),
+            column_interval_type(IntervalType.POSITIVE),
+        ).where(self._table.c.birth_datetime is not None)
+
+        query = self._filter_base_persons(query)
+        query = self._filter_datetime(query)
+
+        return query

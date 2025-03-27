@@ -1,4 +1,3 @@
-
 from execution_engine.omop.cohort import PopulationInterventionPairExpr, Recommendation
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
@@ -9,6 +8,7 @@ from execution_engine.util import logic, temporal_logic_util
 from execution_engine.util.interval import IntervalType
 from execution_engine.util.types import PersonIntervals
 
+from digipod.criterion import AgeDocumented
 from digipod.criterion.preop_patients import (
     preOperativeAdultBeforeDayOfSurgeryPatients,
     preOperativeAdultBeforeDayOfSurgeryPatientsMMSElt3,
@@ -21,12 +21,7 @@ from digipod.terminology import vocabulary
 #############
 base_criterion = PatientsActiveDuringPeriod()
 
-ageDocumented = PointInTimeCriterion(
-    concept=standard_vocabulary.get_concept(
-        SNOMEDCT.system_uri, "424144002"
-    ),  # $sct#424144002 "Current chronological age (observable entity)"
-    value_required=False,
-)
+ageDocumented = AgeDocumented()
 
 # $sct#302132005 "American Society of Anesthesiologists physical status class (observable entity)"
 asaDocumented = PointInTimeCriterion(
