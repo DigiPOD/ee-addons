@@ -128,8 +128,8 @@ MASSAGE_OF_TONGUE_CHEEK_OR_GINGIVA = Concept(
 INTERVENTION_TO_SUPPORT_THE_CIRCADIAN_RHYTHM = Concept(
     concept_id=DIGIPOD_CONCEPT_OFFSET + 14,
     concept_name="Intervention to support the circadian rhythm",
-    concept_code="",
-    domain_id="",
+    concept_code="014",
+    domain_id="Procedure",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
@@ -508,6 +508,15 @@ CONFUSION_ASSESSMENT_METHOD_SCORE = Concept(
     concept_name="Confusion Assessment Method score",
     concept_code="056",
     domain_id="Measurement",
+    vocabulary_id=vocab_id,
+    concept_class_id="Custom",
+)
+
+PROVISION_OF_COMMUNICATION_AND_INFORMATION_ASSISTIVE_DEVICE = Concept(
+    concept_id=DIGIPOD_CONCEPT_OFFSET + 57,
+    concept_name="Provision of communication and information assistive device",
+    concept_code="14",
+    domain_id="Procedure",
     vocabulary_id=vocab_id,
     concept_class_id="Custom",
 )
