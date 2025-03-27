@@ -332,7 +332,7 @@ mocaLt26 = Observation(
     timing=None,
 )
 
-anyCognitiveImpairment = Or(
+anyCognitiveImpairmentBeforeDayOfSurgery = Or(
     PreOperativeBeforeDayOfSurgery(AgeLimitPatient(min_age_years=70)),
     PreOperativeBeforeDayOfSurgery(asaGTe2),
     PreOperativeBeforeDayOfSurgery(cciGte2),
@@ -355,19 +355,19 @@ facesAnxietyScoreAssessed = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
+    # timing=Timing(
+    #     count={"unit": None, "value": None, "value_min": 1, "value_max": None},
+    #     duration=None,
+    #     frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
+    #     interval={
+    #         "unit": TimeUnit.DAY,
+    #         "value": 1,
+    #         "value_min": None,
+    #         "value_max": None,
+    #     },
+    # ),
 )
 
 nuDescGte2 = Measurement(
