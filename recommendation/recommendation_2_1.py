@@ -148,14 +148,22 @@ class CombineRecommendation2_1(logic.Or):
         """
         left, right = intervals
 
-        if right.type is IntervalType.NOT_APPLICABLE:
+        # we need to take special care, unfortunately, that:
+        # - left or right can be None (equivalent to NEGATIVE interval)
+        # - left and right be with or without count (if without, .count is the namedtuple build-in method)
+
+        left_type = left.type if left is not None else IntervalType.NEGATIVE
+        right_type = right.type if right is not None else IntervalType.NEGATIVE
+
+        if right_type is IntervalType.NOT_APPLICABLE:
             # the second PI Pair is not applicable, so we just return the count of #1
             return interval_like(left, start, end)
 
         # otherwise, we return the union of both intervals
-        result_type = left.type | right.type
-        right_count = (1 if right.type == IntervalType.POSITIVE else 0)
-        result_count = (4 * left.count + right_count) / 5
+        result_type = left_type | right_type
+        right_count = (1 if right_type == IntervalType.POSITIVE else 0)
+        left_count = left.count if left is not None and left.type is not IntervalType.NOT_APPLICABLE else 0
+        result_count = (4 * left_count + right_count) / 5
 
         return IntervalWithCount(start, end, result_type, result_count)
 
