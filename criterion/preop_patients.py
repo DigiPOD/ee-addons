@@ -1,4 +1,7 @@
-from execution_engine.omop.criterion.abstract import column_interval_type
+from execution_engine.omop.criterion.abstract import (
+    SQL_ONE_SECOND,
+    column_interval_type,
+)
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import VisitOccurrence
 from execution_engine.util import logic
@@ -31,8 +34,7 @@ class PreOperativePatientsBeforeDayOfSurgery(SurgicalPatients):
                 - func.cast(func.concat(42, "day"), Interval)
             ).label("interval_start"),
             (
-                func.date_trunc("day", subquery.c.procedure_datetime)
-                - func.cast(func.concat(1, "day"), Interval)
+                func.date_trunc("day", subquery.c.procedure_datetime) - SQL_ONE_SECOND
             ).label("interval_end"),
         ).where(
             subquery.c.rn == 1
