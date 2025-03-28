@@ -1012,18 +1012,8 @@ facesAnxietyScoreGte2 = Measurement(
 
 nonPharmaAnxietyIntervention = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
-    concept=custom_concepts.PHARMACOLOGICAL_INTERVENTION_FOR_ANXIETY_MANAGEMENT,
+    timing=None,
+    concept=custom_concepts.NON_PHARMACOLOGICAL_INTERVENTION_FOR_ANXIETY_MANAGEMENT,
     value=None,
 )
 
@@ -1315,17 +1305,7 @@ cognitiveAssessment = ProcedureOccurrence(
 
 communicationAidProvision = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
+    timing=None,
     concept=Concept(
         concept_id=4043216,
         concept_name="Provision of communication aid",
