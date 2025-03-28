@@ -99,7 +99,7 @@ _RecPlanCheckRiskFactorsMoCAACERMMSE = PopulationInterventionPairExpr(
     ),
 )
 
-class CombineRecommendation2_1(logic.Or):
+class CombineRecommendation2_1(logic.And):
     """
     Combines the two distinct population/intervention pairs in this recommendation and calculates
     a weighted sum of the counts.

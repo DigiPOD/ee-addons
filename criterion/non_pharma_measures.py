@@ -20,6 +20,7 @@ from digipod.criterion.preop_patients import (
     PreOperativePatientsBeforeDayOfSurgery,
     PreOperativePatientsBeforeSurgery,
 )
+from digipod.terminology import custom_concepts
 
 
 def PostOperative(arg: logic.BaseExpr) -> logic.TemporalMinCount:
@@ -239,16 +240,7 @@ asaGTe2 = Measurement(
 cciGte2 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000009,
-        concept_name="Result of Charlson Comorbidity Index",
-        concept_code="009",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.RESULT_OF_CHARLSON_COMORBIDITY_INDEX,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=2.0, value_max=None),
     timing=None,
@@ -339,16 +331,7 @@ anyCognitiveImpairmentBeforeDayOfSurgery = Or(
 facesAnxietyScoreAssessed = Measurement(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=2000000035,
-        concept_name="Faces Anxiety Scale score",
-        concept_code="035",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.FACES_ANXIETY_SCALE_SCORE,
     forward_fill=False,
     value=None,
     # timing=Timing(
@@ -367,16 +350,7 @@ facesAnxietyScoreAssessed = Measurement(
 nuDescGte2 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000016,
-        concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
-        concept_code="016",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=2.0, value_max=None),
     timing=None,
@@ -385,16 +359,7 @@ nuDescGte2 = Measurement(
 nudescLt2 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000016,
-        concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
-        concept_code="016",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=1.99998),
     timing=None,
@@ -403,16 +368,7 @@ nudescLt2 = Measurement(
 nuDescPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000016,
-        concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
-        concept_code="016",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -432,16 +388,7 @@ nuDescPositive = Measurement(
 nudescNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000016,
-        concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
-        concept_code="016",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -461,16 +408,7 @@ nudescNegative = Measurement(
 nudescWeaklyPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000016,
-        concept_name="Nursing Delirium Screening Scale (NU-DESC) score",
-        concept_code="016",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -490,16 +428,7 @@ nudescWeaklyPositive = Measurement(
 icdscGte4 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000055,
-        concept_name="Intensive Care Delirium Screening Checklist score",
-        concept_code="055",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=4.0, value_max=None),
     timing=None,
@@ -508,16 +437,7 @@ icdscGte4 = Measurement(
 icdscPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000055,
-        concept_name="Intensive Care Delirium Screening Checklist score",
-        concept_code="055",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -537,16 +457,7 @@ icdscPositive = Measurement(
 icdscLt4 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000055,
-        concept_name="Intensive Care Delirium Screening Checklist score",
-        concept_code="055",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=3.99996),
     timing=None,
@@ -555,16 +466,7 @@ icdscLt4 = Measurement(
 icdscNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000055,
-        concept_name="Intensive Care Delirium Screening Checklist score",
-        concept_code="055",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -584,16 +486,7 @@ icdscNegative = Measurement(
 icdscWeaklyPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000055,
-        concept_name="Intensive Care Delirium Screening Checklist score",
-        concept_code="055",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -613,16 +506,7 @@ icdscWeaklyPositive = Measurement(
 camPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000056,
-        concept_name="Confusion Assessment Method score",
-        concept_code="056",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -642,16 +526,7 @@ camPositive = Measurement(
 camNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000056,
-        concept_name="Confusion Assessment Method score",
-        concept_code="056",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -671,16 +546,7 @@ camNegative = Measurement(
 drsGte12 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000019,
-        concept_name="Delirium Rating Scale score",
-        concept_code="019",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=12.0, value_max=None),
     timing=None,
@@ -689,16 +555,7 @@ drsGte12 = Measurement(
 drsPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000019,
-        concept_name="Delirium Rating Scale score",
-        concept_code="019",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -718,16 +575,7 @@ drsPositive = Measurement(
 drsLt12 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000019,
-        concept_name="Delirium Rating Scale score",
-        concept_code="019",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=11.99988),
     timing=None,
@@ -736,16 +584,7 @@ drsLt12 = Measurement(
 drsNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000019,
-        concept_name="Delirium Rating Scale score",
-        concept_code="019",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -765,16 +604,7 @@ drsNegative = Measurement(
 drsWeaklyPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000019,
-        concept_name="Delirium Rating Scale score",
-        concept_code="019",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -794,16 +624,7 @@ drsWeaklyPositive = Measurement(
 dosGte3 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000020,
-        concept_name="Delirium Observation Scale score",
-        concept_code="020",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=3.0, value_max=None),
     timing=None,
@@ -812,16 +633,7 @@ dosGte3 = Measurement(
 dosPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000020,
-        concept_name="Delirium Observation Scale score",
-        concept_code="020",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -841,16 +653,7 @@ dosPositive = Measurement(
 dosLt3 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000020,
-        concept_name="Delirium Observation Scale score",
-        concept_code="020",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=2.99997),
     timing=None,
@@ -859,16 +662,7 @@ dosLt3 = Measurement(
 dosNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000020,
-        concept_name="Delirium Observation Scale score",
-        concept_code="020",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -888,16 +682,7 @@ dosNegative = Measurement(
 dosWeaklyPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000020,
-        concept_name="Delirium Observation Scale score",
-        concept_code="020",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -917,16 +702,7 @@ dosWeaklyPositive = Measurement(
 tdcamPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000021,
-        concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
-        concept_code="021",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -946,16 +722,7 @@ tdcamPositive = Measurement(
 tdcamNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000021,
-        concept_name="3-minute Diagnostic Interview for CAM-defined Delirium score",
-        concept_code="021",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -976,16 +743,7 @@ tdcamNegative = Measurement(
 camicuPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000022,
-        concept_name="Confusion Assessment Method for the Intensive Care Unit score",
-        concept_code="022",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -1005,16 +763,7 @@ camicuPositive = Measurement(
 camicuNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000022,
-        concept_name="Confusion Assessment Method for the Intensive Care Unit score",
-        concept_code="022",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -1034,16 +783,7 @@ camicuNegative = Measurement(
 ddsGte7 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000023,
-        concept_name="Delirium Detection Score score",
-        concept_code="023",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=7.0, value_max=None),
     timing=None,
@@ -1052,16 +792,7 @@ ddsGte7 = Measurement(
 ddsLt8 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000023,
-        concept_name="Delirium Detection Score score",
-        concept_code="023",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=7.99992),
     timing=None,
@@ -1070,16 +801,7 @@ ddsLt8 = Measurement(
 ddsPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000023,
-        concept_name="Delirium Detection Score score",
-        concept_code="023",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -1099,16 +821,7 @@ ddsPositive = Measurement(
 ddsNegative = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000023,
-        concept_name="Delirium Detection Score score",
-        concept_code="023",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -1128,16 +841,7 @@ ddsNegative = Measurement(
 ddsWeaklyPositive = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000023,
-        concept_name="Delirium Detection Score score",
-        concept_code="023",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
     forward_fill=True,
     value=ValueConcept(
         value={
@@ -1299,16 +1003,7 @@ anyPositiveDeliriumTest = Or(
 facesAnxietyScoreGte2 = Measurement(
     static=False,
     value_required=True,
-    concept=Concept(
-        concept_id=2000000035,
-        concept_name="Faces Anxiety Scale score",
-        concept_code="035",
-        domain_id="Measurement",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.FACES_ANXIETY_SCALE_SCORE,
     forward_fill=True,
     value=ValueScalar(unit=None, value=None, value_min=2.0, value_max=None),
     timing=None,
@@ -1328,16 +1023,7 @@ nonPharmaAnxietyIntervention = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000010,
-        concept_name="Non-pharmacological intervention for anxiety management",
-        concept_code="010",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.PHARMACOLOGICAL_INTERVENTION_FOR_ANXIETY_MANAGEMENT,
     value=None,
 )
 
@@ -1354,16 +1040,7 @@ verbalAnxietyManagement = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000011,
-        concept_name="Verbal management of anxiety",
-        concept_code="011",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.VERBAL_MANAGEMENT_OF_ANXIETY,
     value=None,
 )
 
@@ -1380,16 +1057,7 @@ triggerAvoidanceForAnxiety = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000018,
-        concept_name="Avoidance of trigger factors for anxiety",
-        concept_code="018",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.AVOIDANCE_OF_TRIGGER_FACTORS_FOR_ANXIETY,
     value=None,
 )
 
@@ -1564,16 +1232,7 @@ readingActivity = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000036,
-        concept_name="Reading or reading to somebody",
-        concept_code="036",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.READING_OR_READING_TO_SOMEBODY,
     value=None,
 )
 
@@ -1590,16 +1249,7 @@ conversationForCognition = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000037,
-        concept_name="Conversation to stimulate cognition",
-        concept_code="037",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.CONVERSATION_TO_STIMULATE_COGNITION,
     value=None,
 )
 
@@ -1616,16 +1266,7 @@ boardGamesOrPuzzles = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000038,
-        concept_name="Playing board games or puzzles",
-        concept_code="038",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.PLAYING_BOARD_GAMES_OR_PUZZLES,
     value=None,
 )
 
@@ -1642,16 +1283,7 @@ singingActivity = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000039,
-        concept_name="Singing",
-        concept_code="039",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.SINGING,
     value=None,
 )
 
@@ -1880,16 +1512,7 @@ supportCircadianRhythm = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000012,
-        concept_name="Non-pharmacological intervention to support the circadian rhythm",
-        concept_code="012",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.NON_PHARMACOLOGICAL_INTERVENTION_TO_SUPPORT_THE_CIRCADIAN_RHYTHM,
     value=None,
 )
 
@@ -1906,16 +1529,7 @@ sleepingMaskProvision = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000040,
-        concept_name="Provision of sleeping mask",
-        concept_code="040",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.PROVISION_OF_SLEEPING_MASK,
     value=None,
 )
 
@@ -1932,16 +1546,7 @@ earplugsAtNight = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000041,
-        concept_name="Provision of earplugs at night",
-        concept_code="041",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.PROVISION_OF_EARPLUGS_AT_NIGHT,
     value=None,
 )
 
@@ -1958,16 +1563,7 @@ noiseReduction = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000042,
-        concept_name="Reduction of noise",
-        concept_code="042",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.REDUCTION_OF_NOISE,
     value=None,
 )
 
@@ -1984,16 +1580,7 @@ lightExposureDaytime = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000043,
-        concept_name="Light exposure during daytime",
-        concept_code="043",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.LIGHT_EXPOSURE_DURING_DAYTIME,
     value=None,
 )
 
@@ -2010,16 +1597,7 @@ reduceNightLight = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000044,
-        concept_name="Reduction of light exposure at nighttime",
-        concept_code="044",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.REDUCTION_OF_LIGHT_EXPOSURE_AT_NIGHTTIME,
     value=None,
 )
 
@@ -2036,16 +1614,7 @@ closePatientRoomDoor = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000045,
-        concept_name="Closing the door of the patient room",
-        concept_code="045",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.CLOSING_THE_DOOR_OF_THE_PATIENT_ROOM,
     value=None,
 )
 
@@ -2088,16 +1657,7 @@ onlyEmergencyAtNight = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000046,
-        concept_name="Performs only emergency procedures at nighttime",
-        concept_code="046",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.PERFORMS_ONLY_EMERGENCY_PROCEDURES_AT_NIGHTTIME,
     value=None,
 )
 
@@ -2114,16 +1674,7 @@ otherSleepHygieneInterventions = ProcedureOccurrence(
             "value_max": None,
         },
     ),
-    concept=Concept(
-        concept_id=2000000047,
-        concept_name="Other non-pharmacological interventions to promote sleep hygiene",
-        concept_code="047",
-        domain_id="Procedure",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.OTHER_NON_PHARMACOLOGICAL_INTERVENTIONS_TO_PROMOTE_SLEEP_HYGIENE,
     value=None,
 )
 
@@ -2156,16 +1707,7 @@ realityOrientation = ProcedureOccurrence(
 wearableWatch = DeviceExposure(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=2000000048,
-        concept_name="Watch",
-        concept_code="048",
-        domain_id="Device",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.WATCH,
     value=None,
     timing=Timing(
         count={"unit": None, "value": None, "value_min": 1, "value_max": None},
@@ -2183,16 +1725,7 @@ wearableWatch = DeviceExposure(
 calendarDevice = DeviceExposure(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=2000000049,
-        concept_name="Calendar",
-        concept_code="049",
-        domain_id="Device",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.CALENDAR,
     value=None,
     timing=Timing(
         count={"unit": None, "value": None, "value_min": 1, "value_max": None},
@@ -2292,16 +1825,7 @@ radioDevice = DeviceExposure(
 otherMediaExposure = DeviceExposure(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=2000000050,
-        concept_name="Other media",
-        concept_code="050",
-        domain_id="Device",
-        vocabulary_id="DIGIPOD",
-        concept_class_id="Custom",
-        standard_concept=None,
-        invalid_reason=None,
-    ),
+    concept=custom_concepts.OTHER_MEDIA,
     value=None,
     timing=Timing(
         count={"unit": None, "value": None, "value_min": 1, "value_max": None},

@@ -1,247 +1,154 @@
 from execution_engine.omop.cohort import PopulationInterventionPairExpr, Recommendation
-from execution_engine.omop.concepts import Concept
-from execution_engine.omop.criterion.measurement import Measurement
-from execution_engine.omop.criterion.observation import Observation
-from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
+from execution_engine.task.process import IntervalWithCount, interval_like
+from execution_engine.task.task import Task
+from execution_engine.util import logic
+from execution_engine.util.interval import IntervalType
 from execution_engine.util.logic import *
-from execution_engine.util.types import Timing
-from execution_engine.util.value import ValueConcept
+from execution_engine.util.temporal_logic_util import AnyTime
+from execution_engine.util.types import PersonIntervals
 
+from digipod.criterion.assessments import *
+from digipod.criterion.non_pharma_measures import PreOperativeBeforeDayOfSurgery
 from digipod.criterion.patients import AgeLimitPatient
-from digipod.criterion.preop_patients import PreOperativePatientsBeforeDayOfSurgery
+
+_piScreeningOfRFInOlderPatientsPreOP = PopulationInterventionPairExpr(
+            population_expr=PreOperativeBeforeDayOfSurgery(
+                AgeLimitPatient(min_age_years=70),
+            ),
+            intervention_expr=MinCount(
+                AnyTime(assessmentForRiskOfPostOperativeDelirium),
+                And(
+                    And(
+                        cardiacAssessment,
+                        neurologicalAssessment,
+                        cardiovascularEvaluation,
+                        diabetesScreening,
+                        anemiaScreening,
+                        depressedMoodAssessment,
+                        painAssessment,
+                        anxietyAssessment,
+                        cognitiveFunctionAssessment,
+                        dementiaAssessment,
+                        frailtyAssessment,
+                        sensoryImpairmentAssessment,
+                        nutritionalAssessment,
+                        medicationAdministrationAssessment,
+                        electrolytesMeasurement,
+                        swallowingFunctionEvaluation,
+                        anticholinergicBurdenScale,
+                    ),
+                    Or(
+                        preAnestheticAssessment,
+                        dehydrationRiskAssessment,
+                        impairedNutritionRiskAssessment,
+                        hypovolemiaRiskAssessment,
+                    ),
+                ),
+                threshold=1,
+            ),
+            name="RecPlanScreeningOfRFInOlderPatientsPreOP",
+            url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanScreeningOfRFInOlderPatientsPreOP",
+            base_criterion=PatientsActiveDuringPeriod(),
+        )
+
+_piOptimizationOfPreOPStatusInOlderPatPreoperatively = PopulationInterventionPairExpr(
+            population_expr=And(
+                PreOperativeBeforeDayOfSurgery(
+                    AgeLimitPatient(min_age_years=70),
+                ),
+                PreOperativeBeforeDayOfSurgery(
+                    assessmentForRiskOfPostOperativeDelirium,
+                ),
+                PreOperativeBeforeDayOfSurgery(
+                    optimizablePreopRiskFactorPresent,
+                ),
+            ),
+            intervention_expr=MinCount(AnyTime(preoperativeRiskFactorOptimization), threshold=1),
+            name="RecPlanOptimizationOfPreOPStatusInOlderPatPreoperatively",
+            url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanOptimizationOfPreOPStatusInOlderPatPreoperatively",
+            base_criterion=PatientsActiveDuringPeriod(),
+        )
+
+
+class CombineRecommendation4_1(logic.And):
+    """
+    Combines the two distinct population/intervention pairs in this recommendation and calculates
+    a weighted sum of the counts.
+    """
+
+    @staticmethod
+    def prepare_data(task: Task, data: list[PersonIntervals]) -> list[PersonIntervals]:
+        """
+        Selects and returns the PersonIntervals in the order
+        - result of _piScreeningOfRFInOlderPatientsPreOP
+        - result of _piOptimizationOfPreOPStatusInOlderPatPreoperatively
+
+        This function is used in task.Task to sort the incoming data such that the `count_intervals` function
+        can rely on this order.
+        """
+        assert task.expr.args[0].name == _piScreeningOfRFInOlderPatientsPreOP.name
+        assert task.expr.args[1].name == _piOptimizationOfPreOPStatusInOlderPatPreoperatively.name
+
+        idx_risk_screening = task.get_predecessor_data_index(task.expr.args[0])
+        idx_risk_optimization = task.get_predecessor_data_index(task.expr.args[1])
+
+        if len(data) != 2:
+            raise ValueError('Expected exactly 2 inputs')
+
+        return [data[idx_risk_screening], data[idx_risk_optimization]]
+
+
+    @staticmethod
+    def count_intervals(start: int, end: int, intervals: list[IntervalWithCount]
+    ) -> IntervalWithCount:
+        """
+        Combines two intervals into a single IntervalWithCount, handling special cases.
+
+        This function is used as a callback in `process.find_rectangles`.
+
+        Due to ` prepare_data`, the intervals are expected to be (in that order):
+        - index 0: result of _piScreeningOfRFInOlderPatientsPreOP
+        - index 1: result of _piOptimizationOfPreOPStatusInOlderPatPreoperatively
+
+        If the second interval is NOT_APPLICABLE - i.e. the patient is not part of the population of the second
+        PI pair, the first interval is returned directly.
+        Otherwise, a union of both intervals is created, and the count value is
+        calculated based on the notion that there are 4 items to be fulfilled in
+        _RecPlanCheckRiskFactorsAgeASACCIMiniCog, and 1 item in _RecPlanCheckRiskFactorsMoCAACERMMSE.
+        Accordingly, a weighted count is calculated.
+        """
+        left, right = intervals
+
+        # we need to take special care, unfortunately, that:
+        # - left or right can be None (equivalent to NEGATIVE interval)
+        # - left and right be with or without count (if without, .count is the namedtuple build-in method)
+
+        left_type = left.type if left is not None else IntervalType.NEGATIVE
+        right_type = right.type if right is not None else IntervalType.NEGATIVE
+
+        if right_type is IntervalType.NOT_APPLICABLE:
+            # the second PI Pair is not applicable, so we just return the count of #1
+            return interval_like(left, start, end)
+
+        # otherwise, we return the union of both intervals
+        result_type = left_type & right_type
+        right_count = (1 if right_type == IntervalType.POSITIVE else 0)
+        left_count = (1 if left_type == IntervalType.POSITIVE else 0)
+        result_count = (left_count + right_count) / 2
+
+        return IntervalWithCount(start, end, result_type, result_count)
+
 
 recommendation = Recommendation(
-  expr=And(
-  PopulationInterventionPairExpr(
-      population_expr=TemporalMinCount(
-          AgeLimitPatient(
-              min_age_years=70
-            ),
-          start_time=None,
-          end_time=None,
-          interval_type=None,
-          interval_criterion=PreOperativePatientsBeforeDayOfSurgery(),
-          threshold=1
-        ),
-      intervention_expr=MinCount(
-          ProcedureOccurrence(
-              static=False,
-              timing=None,
-              concept=Concept(concept_id=2000000017, concept_name='Assessment for risk of post-operative delirium', concept_code='017', domain_id='Procedure', vocabulary_id='DIGIPOD', concept_class_id='Custom', standard_concept=None, invalid_reason=None),
-              value=None
-            ),
-          And(
-              And(
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4314723, concept_name='Cardiac assessment', concept_code='425315000', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4021179, concept_name='Neurological assessment', concept_code='225398001', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4181638, concept_name='Cardiovascular examination and evaluation', concept_code='43038000', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  Measurement(
-                      static=False,
-                      value_required=False,
-                      concept=Concept(concept_id=4064918, concept_name='Diabetes mellitus screening', concept_code='171183004', domain_id='Measurement', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      forward_fill=True,
-                      value=None,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None)
-                    ),
-                  Measurement(
-                      static=False,
-                      value_required=False,
-                      concept=Concept(concept_id=4062491, concept_name='Anemia screening', concept_code='171201007', domain_id='Measurement', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      forward_fill=True,
-                      value=None,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None)
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=46273905, concept_name='Assessment of depressed mood', concept_code='710846002', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4021323, concept_name='Pain assessment', concept_code='225399009', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=46272472, concept_name='Assessment of anxiety', concept_code='710841007', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=762506, concept_name='Assessment of substance use', concept_code='428211000124100', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4012466, concept_name='Assessment and interpretation of higher cerebral function, cognitive testing', concept_code='113024001', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=43021483, concept_name='Assessment of dementia', concept_code='473203000', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4046889, concept_name='Frail elderly assessment', concept_code='134427001', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4158084, concept_name='Determination of existing sensory impairments', concept_code='370837004', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4149297, concept_name='Nutritional assessment', concept_code='310243009', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4244831, concept_name='Medication administration assessment', concept_code='396073008', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  Measurement(
-                      static=False,
-                      value_required=False,
-                      concept=Concept(concept_id=4193783, concept_name='Electrolytes measurement', concept_code='79301008', domain_id='Measurement', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      forward_fill=True,
-                      value=None,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None)
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4258123, concept_name='Evaluation of oral and pharyngeal swallowing function', concept_code='440363007', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  Measurement(
-                      static=False,
-                      value_required=False,
-                      concept=Concept(concept_id=35621948, concept_name='Anticholinergic Cognitive Burden Scale', concept_code='763240001', domain_id='Measurement', vocabulary_id='SNOMED', concept_class_id='Staging / Scales', standard_concept='S', invalid_reason=None),
-                      forward_fill=True,
-                      value=None,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None)
-                    )
-                ),
-              Or(
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4057399, concept_name='Pre-anesthetic assessment', concept_code='182770003', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=46272237, concept_name='Assessment of risk for dehydration', concept_code='710567009', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=46272234, concept_name='Assessment of risk for impaired nutritional status', concept_code='710563008', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    ),
-                  ProcedureOccurrence(
-                      static=False,
-                      timing=Timing(count={'unit': None, 'value': None, 'value_min': 1, 'value_max': None}, duration=None, frequency=None, interval=None),
-                      concept=Concept(concept_id=4155294, concept_name='Assessment of hypovolemia risk factors', concept_code='372114004', domain_id='Procedure', vocabulary_id='SNOMED', concept_class_id='Procedure', standard_concept='S', invalid_reason=None),
-                      value=None
-                    )
-                )
-            ),
-          threshold=1
-        ),
-      name='RecPlanScreeningOfRFInOlderPatientsPreOP',
-      url='https://fhir.charite.de/digipod/PlanDefinition/RecPlanScreeningOfRFInOlderPatientsPreOP',
-      base_criterion=PatientsActiveDuringPeriod()
+    expr=CombineRecommendation4_1(_piScreeningOfRFInOlderPatientsPreOP
+        , _piOptimizationOfPreOPStatusInOlderPatPreoperatively
     ),
-  PopulationInterventionPairExpr(
-      population_expr=And(
-          TemporalMinCount(
-              AgeLimitPatient(
-                  min_age_years=70
-                ),
-              start_time=None,
-              end_time=None,
-              interval_type=None,
-              interval_criterion=PreOperativePatientsBeforeDayOfSurgery(),
-              threshold=1
-            ),
-          TemporalMinCount(
-              ProcedureOccurrence(
-                  static=False,
-                  timing=None,
-                  concept=Concept(concept_id=2000000017, concept_name='Assessment for risk of post-operative delirium', concept_code='017', domain_id='Procedure', vocabulary_id='DIGIPOD', concept_class_id='Custom', standard_concept=None, invalid_reason=None),
-                  value=None
-                ),
-              start_time=None,
-              end_time=None,
-              interval_type=None,
-              interval_criterion=PreOperativePatientsBeforeDayOfSurgery(),
-              threshold=1
-            ),
-          TemporalMinCount(
-              Observation(
-                  static=False,
-                  value_required=False,
-                  concept=Concept(concept_id=2000000007, concept_name='Optimizable preoperative risk factor', concept_code='007', domain_id='Observation', vocabulary_id='DIGIPOD', concept_class_id='Custom', standard_concept=None, invalid_reason=None),
-                  forward_fill=True,
-                  value=ValueConcept(value={'concept_id': 4181412, 'concept_name': 'Present', 'concept_code': '52101004', 'domain_id': 'Meas Value', 'vocabulary_id': 'SNOMED', 'concept_class_id': 'Qualifier Value', 'standard_concept': 'S', 'invalid_reason': None}),
-                  timing=None
-                ),
-              start_time=None,
-              end_time=None,
-              interval_type=None,
-              interval_criterion=PreOperativePatientsBeforeDayOfSurgery(),
-              threshold=1
-            )
-        ),
-      intervention_expr=Observation(
-          static=False,
-          value_required=False,
-          concept=Concept(concept_id=2000000008, concept_name='Preoperative risk factor optimization', concept_code='008', domain_id='Observation', vocabulary_id='DIGIPOD', concept_class_id='Custom', standard_concept=None, invalid_reason=None),
-          forward_fill=True,
-          value=None,
-          timing=None
-        ),
-      name='RecPlanOptimizationOfPreOPStatusInOlderPatPreoperatively',
-      url='https://fhir.charite.de/digipod/PlanDefinition/RecPlanOptimizationOfPreOPStatusInOlderPatPreoperatively',
-      base_criterion=PatientsActiveDuringPeriod()
-    )
-),
-  base_criterion=PatientsActiveDuringPeriod(),
-  name='RecCollPreoperativeRFAssessmentAndOptimization',
-  title="Recommendation Collection: Assess risk factors for postoperative delirium and address patient's needs to optimize the preoperative status in 'Older Adult Surgical Patients Preoperatively' & 'Older Adult Surgical Patients With Optimizable Risk Factors Identified Preoperatively'",
-  url='https://fhir.charite.de/digipod/PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization',
-  version='0.3.0',
-  description="Recommendation collection for older adult patients before undergoing a surgical intervention of any type independently of the type of anesthesia: Assess risk factors for postoperative delirium (POD) and address patient's needs to optimize the preoperative status",
-  package_version='latest',
+    base_criterion=PatientsActiveDuringPeriod(),
+    name="RecCollPreoperativeRFAssessmentAndOptimization",
+    title="Recommendation Collection: Assess risk factors for postoperative delirium and address patient's needs to optimize the preoperative status in 'Older Adult Surgical Patients Preoperatively' & 'Older Adult Surgical Patients With Optimizable Risk Factors Identified Preoperatively'",
+    url="https://fhir.charite.de/digipod/PlanDefinition/RecCollPreoperativeRFAssessmentAndOptimization",
+    version="0.3.0",
+    description="Recommendation collection for older adult patients before undergoing a surgical intervention of any type independently of the type of anesthesia: Assess risk factors for postoperative delirium (POD) and address patient's needs to optimize the preoperative status",
+    package_version="latest",
 )
