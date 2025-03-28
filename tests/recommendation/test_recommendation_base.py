@@ -3,7 +3,7 @@ import pytest
 from execution_engine.constants import CohortCategory
 from execution_engine.omop import cohort
 from execution_engine.omop.db.celida.views import interval_result
-from execution_engine.util.types import TimeRange
+from execution_engine.util.types.timerange import TimeRange
 from sqlalchemy import select
 
 from digipod.tests.recommendation.resultset import ResultSet

@@ -34,7 +34,6 @@ def PostOperative(arg: logic.BaseExpr) -> logic.TemporalMinCount:
         interval_type=None,
         interval_criterion=PostOperativePatients(),
         threshold=1,
-        result_for_not_applicable=IntervalType.NEGATIVE,
     )
 
 
@@ -49,7 +48,6 @@ def PreOperativeBeforeDayOfSurgery(arg: logic.BaseExpr) -> logic.TemporalMinCoun
         interval_type=None,
         interval_criterion=PreOperativePatientsBeforeDayOfSurgery(),
         threshold=1,
-        result_for_not_applicable=IntervalType.NEGATIVE,
     )
 
 
@@ -64,7 +62,6 @@ def PreOperativeBeforeSurgery(arg: logic.BaseExpr) -> logic.TemporalMinCount:
         interval_type=None,
         interval_criterion=PreOperativePatientsBeforeSurgery(),
         threshold=1,
-        result_for_not_applicable=IntervalType.NEGATIVE,
     )
 
 
@@ -81,7 +78,6 @@ def OnFacesScaleAssessmentDayPostOp(arg: logic.BaseExpr) -> logic.TemporalMinCou
             PostOperativePatients(), OnFacesAnxietyScaleAssessmentDay()
         ),
         threshold=1,
-        result_for_not_applicable=IntervalType.NEGATIVE,
     )
 
 
@@ -98,7 +94,6 @@ def PreFacesScalePostOp(arg: logic.BaseExpr) -> logic.TemporalMinCount:
             PostOperativePatients(), BeforeDailyFacesAnxietyScaleAssessment()
         ),
         threshold=1,
-        result_for_not_applicable=IntervalType.NEGATIVE,
     )
 
 
@@ -118,7 +113,6 @@ def PreFacesScaleOnAssessmentDayPostOp(arg: logic.BaseExpr) -> logic.TemporalMin
             BeforeDailyFacesAnxietyScaleAssessment(),
         ),
         threshold=1,
-        result_for_not_applicable=IntervalType.NEGATIVE,
     )
 
 
