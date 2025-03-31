@@ -18,7 +18,7 @@ from execution_engine.util.interval import IntervalType
 from sqlalchemy import func, select
 from sqlalchemy.sql import Select
 
-from digipod.concepts import OMOP_DEXMEDETOMIDINE
+from digipod.concepts import Dexmedetomidine
 
 
 class AgeLimitPatient(Criterion):
@@ -141,7 +141,7 @@ class FirstDexmedetomidineAdministration(PatientsInTimeFrame):
                 )
                 .label("rn"),
             )
-            .where(self._table.c.drug_concept_id == OMOP_DEXMEDETOMIDINE)
+            .where(self._table.c.drug_concept_id == Dexmedetomidine.concept_id)
             .alias("first_dexmedetomidine")
         )
 

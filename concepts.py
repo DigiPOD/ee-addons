@@ -26,7 +26,7 @@ OMOP_ASSESSMENT_OF_DELIRIUM = 37116854
 OMOP_RISK_ASSESSMENT_DONE = 37018976
 OMOP_POSITIVE = 9191
 OMOP_NOT_PERFORMED = 4118638
-OMOP_DEXMEDETOMIDINE = 4229996
+OMOP_DEXMEDETOMIDINE = 19061088
 OMOP_BASELINE_BRADYCARDIA = 4082927
 OMOP_LOW_BLOOD_PRESSURE = 317002
 OMOP_DRUG_INDUCED_BRADYCARDIA = 4262316
@@ -152,11 +152,11 @@ NotPerformed = Concept(
 
 Dexmedetomidine = Concept(
     concept_id=OMOP_DEXMEDETOMIDINE,
-    concept_name="Dexmedetomidine",
-    concept_code="437750002",
+    concept_name="dexmedetomidine",
+    concept_code="48937",
     domain_id="Drug",
-    vocabulary_id="SNOMED",
-    concept_class_id="Substance",
+    vocabulary_id="RxNorm",
+    concept_class_id="Ingredient",
 )
 
 # Before Dexmedetomidine started
