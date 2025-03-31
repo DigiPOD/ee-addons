@@ -18,7 +18,7 @@ recommendation = Recommendation(
             ),
             intervention_expr=MinCount(
                     AnyTime(healthcareInformationExchange),
-                And(AnyTime(multidisciplinaryCareConference), AnyTime(multidisciplinaryCaseManagement)),
+                Or(AnyTime(multidisciplinaryCareConference), AnyTime(multidisciplinaryCaseManagement)),
                 threshold=1
             ),
             name="RecPlanExchangeHealthcareInformation",
