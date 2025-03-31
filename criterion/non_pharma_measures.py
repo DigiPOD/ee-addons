@@ -5,14 +5,14 @@ from execution_engine.omop.criterion.measurement import Measurement
 from execution_engine.omop.criterion.observation import Observation
 from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurrence
 from execution_engine.util import logic
-from execution_engine.util.enum import TimeUnit
 from execution_engine.util.logic import *
-from execution_engine.util.types import Timing
 from execution_engine.util.value import ValueConcept, ValueScalar
 
 from digipod.criterion import (
     BeforeDailyFacesAnxietyScaleAssessment,
+    IntraOrPostOperativePatients,
     OnFacesAnxietyScaleAssessmentDay,
+    PatientsBeforeFirstDexAdministration,
     PostOperativePatients,
 )
 from digipod.criterion.patients import AgeLimitPatient
@@ -21,6 +21,21 @@ from digipod.criterion.preop_patients import (
     PreOperativePatientsBeforeSurgery,
 )
 from digipod.terminology import custom_concepts
+
+
+def IntraOrPostOperative(arg: logic.BaseExpr) -> logic.TemporalMinCount:
+    """
+    Applies an intra or post-operative temporal constraint ensuring that the given argument
+    occurred at least once during the intra or post-operative period.
+    """
+    return logic.TemporalMinCount(
+        arg,
+        start_time=None,
+        end_time=None,
+        interval_type=None,
+        interval_criterion=IntraOrPostOperativePatients(),
+        threshold=1,
+    )
 
 
 def PostOperative(arg: logic.BaseExpr) -> logic.TemporalMinCount:
@@ -113,6 +128,21 @@ def PreFacesScaleOnAssessmentDayPostOp(arg: logic.BaseExpr) -> logic.TemporalMin
             OnFacesAnxietyScaleAssessmentDay(),
             BeforeDailyFacesAnxietyScaleAssessment(),
         ),
+        threshold=1,
+    )
+
+
+def BeforeFirstDexAdministration(arg: logic.BaseExpr) -> logic.TemporalMinCount:
+    """
+    Applies a constraint for criterion occurring before the first administration
+    of dexametheasone
+    """
+    return TemporalMinCount(
+        arg,
+        start_time=None,
+        end_time=None,
+        interval_type=None,
+        interval_criterion=PatientsBeforeFirstDexAdministration(),
         threshold=1,
     )
 
@@ -318,7 +348,7 @@ mocaLt26 = Observation(
     timing=None,
 )
 
-anyCognitiveImpairmentBeforeDayOfSurgery = Or(
+anyHighRiskForDelirium = Or(
     PreOperativeBeforeDayOfSurgery(AgeLimitPatient(min_age_years=70)),
     PreOperativeBeforeDayOfSurgery(asaGTe2),
     PreOperativeBeforeDayOfSurgery(cciGte2),
@@ -347,7 +377,7 @@ facesAnxietyScoreAssessed = Measurement(
     # ),
 )
 
-nuDescGte2 = Measurement(
+nudescGte2 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
@@ -365,7 +395,7 @@ nudescLt2 = Measurement(
     timing=None,
 )
 
-nuDescPositive = Measurement(
+nudescPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
@@ -983,8 +1013,8 @@ FourAtWeaklyPositive = Measurement(
 
 
 anyPositiveDeliriumTest = Or(
-    PostOperative(nuDescGte2),
-    PostOperative(nuDescPositive),
+    PostOperative(nudescGte2),
+    PostOperative(nudescPositive),
     PostOperative(icdscGte4),
     PostOperative(icdscPositive),
     PostOperative(camPositive),
@@ -1019,51 +1049,18 @@ nonPharmaAnxietyIntervention = ProcedureOccurrence(
 
 verbalAnxietyManagement = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.VERBAL_MANAGEMENT_OF_ANXIETY,
     value=None,
 )
 
 triggerAvoidanceForAnxiety = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.AVOIDANCE_OF_TRIGGER_FACTORS_FOR_ANXIETY,
     value=None,
 )
 
 socialServiceInterview = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4131661,
         concept_name="Social service interview of patient",
@@ -1079,17 +1076,6 @@ socialServiceInterview = ProcedureOccurrence(
 
 palliativeCareConsultation = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=37018932,
         concept_name="Consultation for palliative care",
@@ -1105,17 +1091,6 @@ palliativeCareConsultation = ProcedureOccurrence(
 
 familyInvolvementInCare = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4021023,
         concept_name="Involving family and friends in care",
@@ -1144,32 +1119,10 @@ individualizedPatientEducation = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 identificationOfCarePreferences = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4158828,
         concept_name="Identification of individual values and wishes concerning care",
@@ -1185,17 +1138,6 @@ identificationOfCarePreferences = ProcedureOccurrence(
 
 cognitiveStimulationProcedure = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4301075,
         concept_name="Cognitive stimulation",
@@ -1211,85 +1153,30 @@ cognitiveStimulationProcedure = ProcedureOccurrence(
 
 readingActivity = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.READING_OR_READING_TO_SOMEBODY,
     value=None,
 )
 
 conversationForCognition = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.CONVERSATION_TO_STIMULATE_COGNITION,
     value=None,
 )
 
 boardGamesOrPuzzles = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.PLAYING_BOARD_GAMES_OR_PUZZLES,
     value=None,
 )
 
 singingActivity = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.SINGING,
     value=None,
 )
 
 cognitiveAssessment = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4012466,
         concept_name="Assessment and interpretation of higher cerebral function, cognitive testing",
@@ -1321,17 +1208,6 @@ communicationAidProvision = ProcedureOccurrence(
 
 spectacleSupply = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4322820,
         concept_name="Supply of spectacles",
@@ -1347,17 +1223,6 @@ spectacleSupply = ProcedureOccurrence(
 
 hearingAidProvision = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4085698,
         concept_name="Hearing aid provision",
@@ -1385,32 +1250,10 @@ assistiveWritingDevice = DeviceExposure(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 removableDentureProvision = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4082890,
         concept_name="Provision of removable denture",
@@ -1439,17 +1282,6 @@ interpreterServiceRequest = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 communicationAssistiveDevice = DeviceExposure(
@@ -1466,151 +1298,52 @@ communicationAssistiveDevice = DeviceExposure(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 supportCircadianRhythm = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.NON_PHARMACOLOGICAL_INTERVENTION_TO_SUPPORT_THE_CIRCADIAN_RHYTHM,
     value=None,
 )
 
 sleepingMaskProvision = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.PROVISION_OF_SLEEPING_MASK,
     value=None,
 )
 
 earplugsAtNight = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.PROVISION_OF_EARPLUGS_AT_NIGHT,
     value=None,
 )
 
 noiseReduction = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.REDUCTION_OF_NOISE,
     value=None,
 )
 
 lightExposureDaytime = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.LIGHT_EXPOSURE_DURING_DAYTIME,
     value=None,
 )
 
 reduceNightLight = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.REDUCTION_OF_LIGHT_EXPOSURE_AT_NIGHTTIME,
     value=None,
 )
 
 closePatientRoomDoor = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.CLOSING_THE_DOOR_OF_THE_PATIENT_ROOM,
     value=None,
 )
 
 promoteSleepHygiene = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=37156352,
         concept_name="Promotion of sleep hygiene",
@@ -1626,51 +1359,18 @@ promoteSleepHygiene = ProcedureOccurrence(
 
 onlyEmergencyAtNight = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.PERFORMS_ONLY_EMERGENCY_PROCEDURES_AT_NIGHTTIME,
     value=None,
 )
 
 otherSleepHygieneInterventions = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=custom_concepts.OTHER_NON_PHARMACOLOGICAL_INTERVENTIONS_TO_PROMOTE_SLEEP_HYGIENE,
     value=None,
 )
 
 realityOrientation = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4038867,
         concept_name="Reality orientation",
@@ -1689,17 +1389,6 @@ wearableWatch = DeviceExposure(
     value_required=False,
     concept=custom_concepts.WATCH,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 calendarDevice = DeviceExposure(
@@ -1707,17 +1396,6 @@ calendarDevice = DeviceExposure(
     value_required=False,
     concept=custom_concepts.CALENDAR,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 printedMaterial = Observation(
@@ -1735,17 +1413,6 @@ printedMaterial = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 televisionDevice = DeviceExposure(
@@ -1762,17 +1429,6 @@ televisionDevice = DeviceExposure(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 radioDevice = DeviceExposure(
@@ -1789,17 +1445,6 @@ radioDevice = DeviceExposure(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 otherMediaExposure = DeviceExposure(
@@ -1807,17 +1452,6 @@ otherMediaExposure = DeviceExposure(
     value_required=False,
     concept=custom_concepts.OTHER_MEDIA,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 mobilizationAbilityObservation = Observation(
@@ -1835,32 +1469,10 @@ mobilizationAbilityObservation = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 physiatricJointMobilization = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4251052,
         concept_name="Physiatric mobilization of joint",
@@ -1889,17 +1501,6 @@ contraindicationObservation = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 patientNonCompliance = Observation(
@@ -1917,17 +1518,6 @@ patientNonCompliance = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 lackOfEnergyCondition = ConditionOccurrence(
@@ -1944,17 +1534,6 @@ lackOfEnergyCondition = ConditionOccurrence(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 anxietyCondition = ConditionOccurrence(
@@ -1971,17 +1550,6 @@ anxietyCondition = ConditionOccurrence(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 painCondition = ConditionOccurrence(
@@ -1998,17 +1566,6 @@ painCondition = ConditionOccurrence(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 exhaustionObservation = Observation(
@@ -2026,17 +1583,6 @@ exhaustionObservation = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 dizzinessCondition = ConditionOccurrence(
@@ -2053,17 +1599,6 @@ dizzinessCondition = ConditionOccurrence(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 reasonAndJustificationObservation = Observation(
@@ -2081,17 +1616,6 @@ reasonAndJustificationObservation = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 ##############################
 selfFeedingAbility = Observation(
@@ -2109,32 +1633,10 @@ selfFeedingAbility = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 enteralFeeding = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4042005,
         concept_name="Enteral feeding",
@@ -2150,17 +1652,6 @@ enteralFeeding = ProcedureOccurrence(
 
 ivFeeding = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4096831,
         concept_name="Intravenous feeding of patient",
@@ -2189,17 +1680,6 @@ aspirationRisk = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 abnormalDeglutition = Observation(
@@ -2217,17 +1697,6 @@ abnormalDeglutition = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 
@@ -2246,17 +1715,6 @@ lossOfAppetite = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 digestiveReflux = ConditionOccurrence(
@@ -2273,17 +1731,6 @@ digestiveReflux = ConditionOccurrence(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 nauseaAndVomiting = ConditionOccurrence(
@@ -2300,20 +1747,9 @@ nauseaAndVomiting = ConditionOccurrence(
         invalid_reason=None,
     ),
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
-deglutitionMeasurement = Measurement(
+difficultySwallowing = Measurement(
     static=False,
     value_required=False,
     concept=Concept(
@@ -2329,9 +1765,9 @@ deglutitionMeasurement = Measurement(
     forward_fill=True,
     value=ValueConcept(
         value={
-            "concept_id": 4166234,
-            "concept_name": "Abnormal deglutition",
-            "concept_code": "47717004",
+            "concept_id": 4125274,
+            "concept_name": "Difficulty swallowing",
+            "concept_code": "288939007",
             "domain_id": "Observation",
             "vocabulary_id": "SNOMED",
             "concept_class_id": "Clinical Finding",
@@ -2342,19 +1778,9 @@ deglutitionMeasurement = Measurement(
     timing=None,
 )
 
+
 dysphagiaTherapy = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=4210275,
         concept_name="Dysphagia therapy regime",
@@ -2370,17 +1796,6 @@ dysphagiaTherapy = ProcedureOccurrence(
 
 nutritionalRegimeModification = ProcedureOccurrence(
     static=False,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
     concept=Concept(
         concept_id=763733,
         concept_name="Modification of nutritional regime",
@@ -2394,32 +1809,19 @@ nutritionalRegimeModification = ProcedureOccurrence(
     value=None,
 )
 
-mouthCare = Observation(
+mouthCareManagement = ProcedureOccurrence(
     static=False,
-    value_required=False,
     concept=Concept(
-        concept_id=37397340,
-        concept_name="Mouth care",
-        concept_code="717778001",
-        domain_id="Observation",
+        concept_id=4301571,
+        concept_name="Mouth care management",
+        concept_code="385937007",
+        domain_id="Procedure",
         vocabulary_id="SNOMED",
         concept_class_id="Procedure",
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
 deglutition = Observation(
@@ -2437,20 +1839,9 @@ deglutition = Observation(
     ),
     forward_fill=True,
     value=None,
-    timing=Timing(
-        count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        duration=None,
-        frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-        interval={
-            "unit": TimeUnit.DAY,
-            "value": 1,
-            "value_min": None,
-            "value_max": None,
-        },
-    ),
 )
 
-selfFeeding = Measurement(
+doesNotFeedSelf = Measurement(
     static=False,
     value_required=False,
     concept=Concept(
@@ -2479,7 +1870,7 @@ selfFeeding = Measurement(
     timing=None,
 )
 
-mobility = Measurement(
+doesNotMobilize = Measurement(
     static=False,
     value_required=False,
     concept=Concept(
