@@ -6,40 +6,40 @@ from digipod.criterion import PostOperativePatientsUntilDay5
 from digipod.criterion.non_pharma_measures import *
 
 #######################################################################################################################
-PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery = And(AnyTime(anyCognitiveImpairmentBeforeDayOfSurgery), PostOperativePatientsUntilDay5())
+PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery = And(AnyTime(anyHighRiskForDelirium), PostOperativePatientsUntilDay5())
 
 recommendation = Recommendation(
     expr=MinCount(
         #####################################################
-        # BUNDLE 1
+        # BUNDLE 1 - Anxiety
         #####################################################
         And(
             PopulationInterventionPairExpr(
                 population_expr=And(
-                PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
+                PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                     Not(AnyTime(anyDementiaBeforeDayOfSurgery)),
                 ),
-                intervention_expr=PostOperative(facesAnxietyScoreAssessed),
+                intervention_expr=Day(facesAnxietyScoreAssessed),
                 name="RecPlanAssessFASPostoperatively",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanAssessFASPostoperatively",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
                 population_expr=And(
-                    AnyTime(anyCognitiveImpairmentBeforeDayOfSurgery),
+                    AnyTime(anyHighRiskForDelirium),
                     Or(AnyTime(anyDementiaBeforeSurgery), AnyTime(anyPositiveDeliriumTest)),
                     PostOperativePatientsUntilDay5()
                 ),
                 intervention_expr=And(
-                    PostOperative(nonPharmaAnxietyIntervention),
+                    Day(nonPharmaAnxietyIntervention),
                     Or(
-                        PostOperative(verbalAnxietyManagement),
-                        PostOperative(triggerAvoidanceForAnxiety),
-                        PostOperative(socialServiceInterview),
-                        PostOperative(palliativeCareConsultation),
-                        PostOperative(familyInvolvementInCare),
-                        PostOperative(individualizedPatientEducation),
-                        PostOperative(identificationOfCarePreferences),
+                        Day(verbalAnxietyManagement),
+                        Day(triggerAvoidanceForAnxiety),
+                        Day(socialServiceInterview),
+                        Day(palliativeCareConsultation),
+                        Day(familyInvolvementInCare),
+                        Day(individualizedPatientEducation),
+                        Day(identificationOfCarePreferences),
                     ),
                 ),
                 name="RecPlanNonPharmaAnxietyMeasuresInPatWithDementiaOrDeliriumPostOP",
@@ -48,9 +48,9 @@ recommendation = Recommendation(
             ),
             PopulationInterventionPairExpr(
                 population_expr=And(
-                    PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
-                        Not(AnyTime(anyDementiaBeforeDayOfSurgery)),
-                        Day(Or(
+                    PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
+                    Not(AnyTime(anyDementiaBeforeDayOfSurgery)),
+                    Day(Or(
                         PreFacesScalePostOp(nudescLt2),
                         PreFacesScalePostOp(nudescNegative),
                         PreFacesScalePostOp(nudescWeaklyPositive),
@@ -72,10 +72,10 @@ recommendation = Recommendation(
                         PreFacesScalePostOp(FourAtLt4),
                         PreFacesScalePostOp(FourAtNegative),
                         PreFacesScalePostOp(FourAtWeaklyPositive),
-                        )),
-                        Day(Or(
-                        Not(PreFacesScaleOnAssessmentDayPostOp(nuDescGte2)),
-                        Not(PreFacesScaleOnAssessmentDayPostOp(nuDescPositive)),
+                    )),
+                    Day(Or(
+                        Not(PreFacesScaleOnAssessmentDayPostOp(nudescGte2)),
+                        Not(PreFacesScaleOnAssessmentDayPostOp(nudescPositive)),
                         Not(PreFacesScaleOnAssessmentDayPostOp(icdscGte4)),
                         Not(PreFacesScaleOnAssessmentDayPostOp(icdscPositive)),
                         Not(PreFacesScaleOnAssessmentDayPostOp(camPositive)),
@@ -89,10 +89,10 @@ recommendation = Recommendation(
                         Not(PreFacesScaleOnAssessmentDayPostOp(ddsPositive)),
                         Not(PreFacesScaleOnAssessmentDayPostOp(FourAtGte4)),
                         Not(PreFacesScaleOnAssessmentDayPostOp(FourAtPositive)),
-                        )),
-                        Day(facesAnxietyScoreGte2),
-                        ),
-                intervention_expr=And(
+                    )),
+                    Day(facesAnxietyScoreGte2),
+                ),
+                intervention_expr=MinCount(
                     OnFacesScaleAssessmentDayPostOp(nonPharmaAnxietyIntervention),
                     Or(
                         OnFacesScaleAssessmentDayPostOp(verbalAnxietyManagement),
@@ -105,6 +105,7 @@ recommendation = Recommendation(
                             identificationOfCarePreferences
                         ),
                     ),
+                    threshold=1
                 ),
                 name="RecPlanNonPharmaMeasuresForAnxietyInPatWithPositiveFASPostOP",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanNonPharmaMeasuresForAnxietyInPatWithPositiveFASPostOP",
@@ -112,38 +113,39 @@ recommendation = Recommendation(
             ),
         ),
         #####################################################
-        # BUNDLE 2
+        # BUNDLE 2 - Cognition
         #####################################################
-        And(
+        MinCount(
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
-                    PostOperative(cognitiveStimulationProcedure),
-                    Or(
-                        PostOperative(readingActivity),
-                        PostOperative(conversationForCognition),
-                        PostOperative(boardGamesOrPuzzles),
-                        PostOperative(singingActivity),
-                        PostOperative(cognitiveAssessment),
-                    ),
+                    Day(cognitiveStimulationProcedure),
+                    # Or(
+                    #     Day(readingActivity),
+                    #     Day(conversationForCognition),
+                    #     Day(boardGamesOrPuzzles),
+                    #     Day(singingActivity),
+                    #     Day(cognitiveAssessment),
+                    # ),
                     threshold=1,
                 ),
                 name="RecPlanCognitiveStimulationPostOP",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanCognitiveStimulationPostOP",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
+            # todo: should start at the actual day where this is provided
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
                     PostOperative(communicationAidProvision),
-                    Or(
-                        PostOperative(spectacleSupply),
-                        PostOperative(hearingAidProvision),
-                        PostOperative(assistiveWritingDevice),
-                        PostOperative(removableDentureProvision),
-                        PostOperative(interpreterServiceRequest),
-                        PostOperative(communicationAssistiveDevice),
-                    ),
+                    # Or(
+                    #     PostOperative(spectacleSupply),
+                    #     PostOperative(hearingAidProvision),
+                    #     PostOperative(assistiveWritingDevice),
+                    #     PostOperative(removableDentureProvision),
+                    #     PostOperative(interpreterServiceRequest),
+                    #     PostOperative(communicationAssistiveDevice),
+                    # ),
                     threshold=1,
                 ),
                 name="RecPlanProvisionOfCommunicationAidsPostOP",
@@ -151,69 +153,71 @@ recommendation = Recommendation(
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
-                    PostOperative(supportCircadianRhythm),
-                    Or(
-                        PostOperative(sleepingMaskProvision),
-                        PostOperative(earplugsAtNight),
-                        PostOperative(noiseReduction),
-                        PostOperative(lightExposureDaytime),
-                        PostOperative(reduceNightLight),
-                        PostOperative(closePatientRoomDoor),
-                        PostOperative(promoteSleepHygiene),
-                        PostOperative(onlyEmergencyAtNight),
-                        PostOperative(otherSleepHygieneInterventions),
-                    ),
+                    Day(supportCircadianRhythm),
+                    # Or(
+                    #     Day(sleepingMaskProvision),
+                    #     Day(earplugsAtNight),
+                    #     Day(noiseReduction),
+                    #     Day(lightExposureDaytime),
+                    #     Day(reduceNightLight),
+                    #     Day(closePatientRoomDoor),
+                    #     Day(promoteSleepHygiene),
+                    #     Day(onlyEmergencyAtNight),
+                    #     Day(otherSleepHygieneInterventions),
+                    # ),
                     threshold=1,
                 ),
                 name="RecPlanNonPharmaInterventionsSupportingCircardianRhythmPostOP",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanNonPharmaInterventionsSupportingCircardianRhythmPostOP",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
+            # todo: should start at the actual day where this is provided
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
                     PostOperative(realityOrientation),
-                    Or(
-                        PostOperative(wearableWatch),
-                        PostOperative(calendarDevice),
-                        PostOperative(printedMaterial),
-                        PostOperative(televisionDevice),
-                        PostOperative(radioDevice),
-                        PostOperative(otherMediaExposure),
-                    ),
+                    # Or(
+                    #     PostOperative(wearableWatch),
+                    #     PostOperative(calendarDevice),
+                    #     PostOperative(printedMaterial),
+                    #     PostOperative(televisionDevice),
+                    #     PostOperative(radioDevice),
+                    #     PostOperative(otherMediaExposure),
+                    # ),
                     threshold=1,
                 ),
                 name="RecPlanDocumentProvisionOrientationAidPostOP",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanDocumentProvisionOrientationAidPostOP",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
+            threshold=4
         ),
         #####################################################
-        # BUNDLE 3
+        # BUNDLE 3 - Mobilization
         #####################################################
         And(
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
-                intervention_expr=PostOperative(mobilizationAbilityObservation),
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
+                intervention_expr=Day(mobilizationAbilityObservation),
                 name="RecPlanDocumentMobilizationAbilitiesPostoperatively",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanDocumentMobilizationAbilitiesPostoperatively",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
-                population_expr=And(PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery, PostOperative(mobility)),
-                intervention_expr=ExactCount(
-                    PostOperative(physiatricJointMobilization),
+                population_expr=And(PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery, PostOperative(doesNotMobilize)),
+                intervention_expr=MinCount(
+                    Day(physiatricJointMobilization),
                     Or(
-                        PostOperative(contraindicationObservation),
-                        PostOperative(patientNonCompliance),
-                        PostOperative(lackOfEnergyCondition),
-                        PostOperative(anxietyCondition),
-                        PostOperative(painCondition),
-                        PostOperative(exhaustionObservation),
-                        PostOperative(dizzinessCondition),
-                        PostOperative(reasonAndJustificationObservation),
+                        Day(contraindicationObservation),
+                        Day(patientNonCompliance),
+                        Day(lackOfEnergyCondition),
+                        Day(anxietyCondition),
+                        Day(painCondition),
+                        Day(exhaustionObservation),
+                        Day(dizzinessCondition),
+                        Day(reasonAndJustificationObservation),
                     ),
                     threshold=1,
                 ),
@@ -223,29 +227,29 @@ recommendation = Recommendation(
             ),
         ),
         #####################################################
-        # BUNDLE 4
+        # BUNDLE 4 - Feeding
         #####################################################
         And(
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
-                intervention_expr=PostOperative(selfFeedingAbility),
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
+                intervention_expr=Day(selfFeedingAbility),
                 name="RecPlanDocumentFeedingAbilitiesPostoperatively",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanDocumentFeedingAbilitiesPostoperatively",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
-                population_expr=And(PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery, PostOperative(selfFeeding)),
+                population_expr=And(PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery, PostOperative(doesNotFeedSelf)),
                 intervention_expr=ExactCount(
-                    PostOperative(enteralFeeding),
+                    Day(enteralFeeding),
                     Or(
-                        PostOperative(contraindicationObservation),
-                        PostOperative(ivFeeding),
-                        PostOperative(aspirationRisk),
-                        PostOperative(abnormalDeglutition),
-                        PostOperative(painCondition),
-                        PostOperative(lossOfAppetite),
-                        PostOperative(digestiveReflux),
-                        PostOperative(nauseaAndVomiting),
+                        Day(contraindicationObservation),
+                        Day(ivFeeding),
+                        Day(aspirationRisk),
+                        Day(abnormalDeglutition),
+                        Day(painCondition),
+                        Day(lossOfAppetite),
+                        Day(digestiveReflux),
+                        Day(nauseaAndVomiting),
                     ),
                     threshold=1,
                 ),
@@ -254,25 +258,25 @@ recommendation = Recommendation(
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
-                intervention_expr=PostOperative(deglutition),
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
+                intervention_expr=Day(deglutition),
                 name="RecPlanDocumentDeglutitionAbilitiesPostoperatively",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanDocumentDeglutitionAbilitiesPostoperatively",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
-                population_expr=And(PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery, PostOperative(deglutitionMeasurement)),
+                population_expr=And(PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery, difficultySwallowing),
                 intervention_expr=And(
-                    OnFacesScaleAssessmentDayPostOp(dysphagiaTherapy),
-                    OnFacesScaleAssessmentDayPostOp(nutritionalRegimeModification),
+                    Day(dysphagiaTherapy),
+                    PostOperative(nutritionalRegimeModification),
                 ),
                 name="RecPlanDeglutitionRelatedInterventionsPostoperatively",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanDeglutitionRelatedInterventionsPostoperatively",
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
-                population_expr=PostOperativePatientsWithCognitiveImpairmentBeforeDayOfSurgery,
-                intervention_expr=PostOperative(mouthCare),
+                population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
+                intervention_expr=Day(mouthCareManagement),
                 name="RecPlanOralCareRelatedInterventionsPostoperatively",
                 url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanOralCareRelatedInterventionsPostoperatively",
                 base_criterion=PatientsActiveDuringPeriod(),
