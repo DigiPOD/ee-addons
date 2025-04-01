@@ -27,7 +27,7 @@ recommendation = Recommendation(
             PopulationInterventionPairExpr(
                 population_expr=And(
                     AnyTime(anyHighRiskForDelirium),
-                    Or(AnyTime(anyDementiaBeforeSurgery), AnyTime(anyPositiveDeliriumTest)),
+                    Or(AnyTime(anyDementiaBeforeSurgery), Day(anyPositiveDeliriumTest)),
                     PostOperativePatientsUntilDay5()
                 ),
                 intervention_expr=And(

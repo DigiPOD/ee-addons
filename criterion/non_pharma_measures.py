@@ -364,17 +364,6 @@ facesAnxietyScoreAssessed = Measurement(
     concept=custom_concepts.FACES_ANXIETY_SCALE_SCORE,
     forward_fill=False,
     value=None,
-    # timing=Timing(
-    #     count={"unit": None, "value": None, "value_min": 1, "value_max": None},
-    #     duration=None,
-    #     frequency={"unit": None, "value": None, "value_min": 1, "value_max": None},
-    #     interval={
-    #         "unit": TimeUnit.DAY,
-    #         "value": 1,
-    #         "value_min": None,
-    #         "value_max": None,
-    #     },
-    # ),
 )
 
 nudescGte2 = Measurement(
@@ -1013,21 +1002,21 @@ FourAtWeaklyPositive = Measurement(
 
 
 anyPositiveDeliriumTest = Or(
-    PostOperative(nudescGte2),
-    PostOperative(nudescPositive),
-    PostOperative(icdscGte4),
-    PostOperative(icdscPositive),
-    PostOperative(camPositive),
-    PostOperative(drsGte12),
-    PostOperative(drsPositive),
-    PostOperative(dosGte3),
-    PostOperative(dosPositive),
-    PostOperative(tdcamPositive),
-    PostOperative(camicuPositive),
-    PostOperative(ddsGte7),
-    PostOperative(ddsPositive),
-    PostOperative(FourAtGte4),
-    PostOperative(FourAtPositive),
+    nudescGte2,
+    nudescPositive,
+    icdscGte4,
+    icdscPositive,
+    camPositive,
+    drsGte12,
+    drsPositive,
+    dosGte3,
+    dosPositive,
+    tdcamPositive,
+    camicuPositive,
+    ddsGte7,
+    ddsPositive,
+    FourAtGte4,
+    FourAtPositive,
 )
 
 facesAnxietyScoreGte2 = Measurement(
