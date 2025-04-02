@@ -14,20 +14,16 @@ from execution_engine.util import logic
 from fhir.resources.evidencevariable import EvidenceVariableCharacteristic
 
 from digipod.concepts import MMSE
-from digipod.terminology.custom_concepts import (
-    CONFUSION_ASSESSMENT_METHOD_SCORE,
-    FACES_ANXIETY_SCALE_SCORE,
-    INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
-)
 from digipod.terminology.vocabulary import (
     ACE_R,
     ASA,
-    CAM,
     CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
+    CONFUSION_ASSESSMENT_METHOD_SCORE,
     DELIRIUM_DETECTION_SCORE_SCORE,
     DELIRIUM_OBSERVATION_SCALE_SCORE,
     DELIRIUM_RATING_SCALE_SCORE,
-    ICDSC,
+    FACES_ANXIETY_SCALE_SCORE,
+    INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     MINICOG,
     MOCA,
     MOCA_LOINC,
@@ -65,14 +61,22 @@ class ObservationCharacteristicConverter(AbstractValueCharacteristic):
             "vocabulary": DigiPOD,
         },
         # Intensive Care Delirium Screening Checklist score (observable entity)
-        {"code": "1351995008", "vocabulary": SNOMEDCT, "replace": ICDSC},
+        {
+            "code": "1351995008",
+            "vocabulary": SNOMEDCT,
+            "replace": INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
+        },
         # Intensive Care Delirium Screening Checklist score (observable entity)
         {
             "code": INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE.concept_code,
             "vocabulary": DigiPOD,
         },
         # Confusion Assessment Method score (observable entity)
-        {"code": "1351493007", "vocabulary": SNOMEDCT, "replace": CAM},
+        {
+            "code": "1351493007",
+            "vocabulary": SNOMEDCT,
+            "replace": CONFUSION_ASSESSMENT_METHOD_SCORE,
+        },
         # Confusion Assessment Method score
         {"code": CONFUSION_ASSESSMENT_METHOD_SCORE.concept_code, "vocabulary": DigiPOD},
         # Delirium Rating Scale score

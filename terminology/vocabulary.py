@@ -8,12 +8,6 @@ from execution_engine.omop.vocabulary import (
 
 from .custom_concepts import *
 
-# DIGIPOD_CONCEPT_OFFSET = 2000000000
-# UNMAPPED_CONCEPT_ID = DIGIPOD_CONCEPT_OFFSET + 99999999
-
-
-# vocab_id = "DIGIPOD"
-
 # $sct-uk#711061000000109 "Addenbrooke's cognitive examination revised - score (observable entity)"
 ACE_R = standard_vocabulary.get_concept(
     SNOMEDCT.system_uri, "711061000000109", standard=False
@@ -31,28 +25,6 @@ ASA = standard_vocabulary.get_concept(SNOMEDCT.system_uri, "302132005")
 # $sct#713408000 "Mini-Cog brief cognitive screening test score (observable entity)"
 MINICOG = standard_vocabulary.get_concept(
     SNOMEDCT.system_uri, "713408000", standard=False
-)
-
-# as of 25-03-10 this SNOMEDCT concept hasn't been integrated into the OMOP standard vocabulary
-# hence, we define it ourselves with a custom concept code.
-CAM = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 13,
-    concept_name="Confusion Assessment Method score (observable entity)",
-    concept_code="1351493007",
-    domain_id="Measurement",
-    vocabulary_id=SNOMEDCT.omop_vocab_name,
-    concept_class_id="Custom",
-)
-
-# as of 25-03-10 this SNOMEDCT concept hasn't been integrated into the OMOP standard vocabulary
-# hence, we define it ourselves with a custom concept code.
-ICDSC = Concept(
-    concept_id=DIGIPOD_CONCEPT_OFFSET + 18,
-    concept_name="Intensive Care Delirium Screening Checklist score (observable entity)",
-    concept_code="1351995008",
-    domain_id="Measurement",
-    vocabulary_id=SNOMEDCT.omop_vocab_name,
-    concept_class_id="Custom",
 )
 
 

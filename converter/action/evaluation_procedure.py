@@ -14,12 +14,12 @@ from execution_engine.util import logic
 
 from digipod.converter.characteristic.observation import ConceptEntry
 from digipod.terminology.vocabulary import (
-    CAM,
     CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
+    CONFUSION_ASSESSMENT_METHOD_SCORE,
     DELIRIUM_DETECTION_SCORE_SCORE,
     DELIRIUM_OBSERVATION_SCALE_SCORE,
     DELIRIUM_RATING_SCALE_SCORE,
-    ICDSC,
+    INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
     THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
     DigiPOD,
@@ -99,9 +99,17 @@ class AssessmentActionConverter(AssessmentAction):
             "vocabulary": DigiPOD,
         },
         # "Intensive Care Delirium Screening Checklist score (observable entity)"
-        {"code": "1351995008", "vocabulary": SNOMEDCT, "replace": ICDSC},
+        {
+            "code": "1351995008",
+            "vocabulary": SNOMEDCT,
+            "replace": INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
+        },
         # "Confusion Assessment Method score (observable entity)"
-        {"code": "1351493007", "vocabulary": SNOMEDCT, "replace": CAM},
+        {
+            "code": "1351493007",
+            "vocabulary": SNOMEDCT,
+            "replace": CONFUSION_ASSESSMENT_METHOD_SCORE,
+        },
         # "Delirium Rating Scale score"
         {"code": DELIRIUM_RATING_SCALE_SCORE.concept_code, "vocabulary": DigiPOD},
         # "Delirium Observation Scale score"

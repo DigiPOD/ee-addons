@@ -14,13 +14,13 @@ from digipod.tests.functions import (
 DELIR_SCREENING_ICU_SCORES = {
     "CAMICU": digipod_vocab.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE.concept_id,
     "DDS": digipod_vocab.DELIRIUM_DETECTION_SCORE_SCORE.concept_id,
-    "ICDSC": digipod_vocab.ICDSC.concept_id,
+    "ICDSC": digipod_vocab.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE.concept_id,
 }
 
 DELIR_SCREENING_NORMALWARD_SCORES = {
     "3DCAM": digipod_vocab.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE.concept_id,
     "4AT": digipod_vocab.FourAT.concept_id,
-    "CAM": digipod_vocab.CAM.concept_id,
+    "CAM": digipod_vocab.CONFUSION_ASSESSMENT_METHOD_SCORE.concept_id,
     "DRS": digipod_vocab.DELIRIUM_RATING_SCALE_SCORE.concept_id,
     "DOS": digipod_vocab.DELIRIUM_OBSERVATION_SCALE_SCORE.concept_id,
     "NuDESC": digipod_vocab.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE.concept_id,
@@ -150,19 +150,19 @@ class Patient:
         """
         Add a Confusion Assessment Method (CAM) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.CAM.concept_id, datetime, score)
+        self.add_measurement(digipod_vocab.CONFUSION_ASSESSMENT_METHOD_SCORE.concept_id, datetime, score)
 
     def add_DRS(self, datetime: str, score: int) -> None:
         """
         Add a Delirium Rating Scale (DRS) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.DRS.concept_id, datetime, score)
+        self.add_measurement(digipod_vocab.DELIRIUM_RATING_SCALE_SCORE.concept_id, datetime, score)
 
     def add_DOS(self, datetime: str, score: int) -> None:
         """
         Add a Delirium Observation Scale (DOS) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.DOS.concept_id, datetime, score)
+        self.add_measurement(digipod_vocab.DELIRIUM_OBSERVATION_SCALE_SCORE.concept_id, datetime, score)
 
     def add_CAMICU(self, datetime: str, score: int) -> None:
         """
@@ -186,7 +186,7 @@ class Patient:
         """
         Add an Intensive Care Delirium Screening Checklist (ICDSC) measurement to the patient's record
         """
-        self.add_measurement(digipod_vocab.ICDSC.concept_id, datetime, score)
+        self.add_measurement(digipod_vocab.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE.concept_id, datetime, score)
 
     def add_3DCAM(self, datetime: str, score: int) -> None:
         """

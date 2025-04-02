@@ -5,7 +5,7 @@ from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurr
 from execution_engine.util.types import Timing
 from execution_engine.util.value import ValueConcept
 
-from digipod.terminology.custom_concepts import (
+from digipod.terminology.vocabulary import (
     OPTIMIZABLE_PREOPERATIVE_RISK_FACTOR,
     PREOPERATIVE_RISK_FACTOR_OPTIMIZATION,
 )

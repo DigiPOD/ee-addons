@@ -2,8 +2,7 @@ from execution_engine.converter.time_from_event.abstract import TimeFromEvent
 from execution_engine.util import logic
 from execution_engine.util.value import ValueScalar
 
-from digipod.terminology.custom_concepts import FACES_ANXIETY_SCALE_SCORE
-from digipod.terminology.vocabulary import DigiPOD
+from digipod.terminology.vocabulary import FACES_ANXIETY_SCALE_SCORE, DigiPOD
 
 
 class BeforeDailyFacesAnxietyScaleAssessment(TimeFromEvent):

@@ -3,8 +3,7 @@ from execution_engine.omop.vocabulary import standard_vocabulary
 from execution_engine.util import logic
 from execution_engine.util.value import ValueNumber, ValueScalar
 
-from digipod.terminology.custom_concepts import FACES_ANXIETY_SCALE_SCORE
-from digipod.terminology.vocabulary import DigiPOD
+from digipod.terminology.vocabulary import FACES_ANXIETY_SCALE_SCORE, DigiPOD
 
 
 class OnDayOfFacesAnxietyScaleAssessment(RelativeTime):

@@ -50,7 +50,7 @@ from digipod.criterion.non_pharma_measures import (
     tdcamPositive,
 )
 from digipod.criterion.patients import AdultPatients
-from digipod.terminology.custom_concepts import (
+from digipod.terminology.vocabulary import (
     ADMINISTRATION_OF_PROPHYLACTIC_DEXMEDETOMIDINE,
 )
 

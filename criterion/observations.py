@@ -12,7 +12,7 @@ from execution_engine.util.interval import IntervalType
 from sqlalchemy import Interval, func, select
 from sqlalchemy.sql import Select
 
-from digipod.terminology.custom_concepts import FACES_ANXIETY_SCALE_SCORE
+from digipod.terminology.vocabulary import FACES_ANXIETY_SCALE_SCORE
 
 
 class AfterDailyFacesAnxietyScaleAssessment(Criterion):

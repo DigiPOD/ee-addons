@@ -20,7 +20,7 @@ DOS_documented = PointInTimeCriterion(
     forward_fill=False,
 )
 CAM_documented = PointInTimeCriterion(
-    concept=concepts.CAM,
+    concept=concepts.CONFUSION_ASSESSMENT_METHOD_SCORE,
     value_required=False,
     forward_fill=False,
 )
@@ -48,7 +48,7 @@ DDS_documented = PointInTimeCriterion(
 )
 
 ICDSC_documented = PointInTimeCriterion(
-    concept=concepts.ICDSC,
+    concept=concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
     value_required=False,
     forward_fill=False,
 )
