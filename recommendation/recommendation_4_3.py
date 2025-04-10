@@ -120,6 +120,7 @@ recommendation = Recommendation(
                 population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
                     Day(cognitiveStimulationProcedure),
+                    # gl 25-30-31: commented out because this is equivalent to the above, and Laerson didn't map these
                     # Or(
                     #     Day(readingActivity),
                     #     Day(conversationForCognition),
@@ -138,6 +139,7 @@ recommendation = Recommendation(
                 population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
                     PostOperative(communicationAidProvision),
+                    # gl 25-30-31: commented out because this is equivalent to the above, and Laerson didn't map these
                     # Or(
                     #     PostOperative(spectacleSupply),
                     #     PostOperative(hearingAidProvision),
@@ -156,6 +158,7 @@ recommendation = Recommendation(
                 population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
                     Day(supportCircadianRhythm),
+                    # gl 25-30-31: commented out because this is equivalent to the above, and Laerson didn't map these
                     # Or(
                     #     Day(sleepingMaskProvision),
                     #     Day(earplugsAtNight),
@@ -178,6 +181,7 @@ recommendation = Recommendation(
                 population_expr=PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery,
                 intervention_expr=MinCount(
                     PostOperative(realityOrientation),
+                    # gl 25-30-31: commented out because this is equivalent to the above, and Laerson didn't map these
                     # Or(
                     #     PostOperative(wearableWatch),
                     #     PostOperative(calendarDevice),
@@ -238,7 +242,7 @@ recommendation = Recommendation(
                 base_criterion=PatientsActiveDuringPeriod(),
             ),
             PopulationInterventionPairExpr(
-                population_expr=And(PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery, PostOperative(doesNotFeedSelf)),
+                population_expr=And(PostOperativePatientsWithHighRiskForDeliriumBeforeDayOfSurgery, Day(doesNotFeedSelf)),
                 intervention_expr=ExactCount(
                     Day(enteralFeeding),
                     Or(
