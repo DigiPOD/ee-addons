@@ -9,11 +9,13 @@ from execution_engine.util.temporal_logic_util import AnyTime
 from execution_engine.util.types import PersonIntervals
 
 from digipod.criterion.assessments import *
-from digipod.criterion.non_pharma_measures import PreOperativeBeforeDayOfSurgery
+from digipod.criterion.non_pharma_measures import (
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery,
+)
 from digipod.criterion.patients import AgeLimitPatient
 
 _piScreeningOfRFInOlderPatientsPreOP = PopulationInterventionPairExpr(
-            population_expr=PreOperativeBeforeDayOfSurgery(
+            population_expr=PreOperativeUntilTwoHoursBeforeDayOfSurgery(
                 AgeLimitPatient(min_age_years=70),
             ),
             intervention_expr=MinCount(
@@ -54,13 +56,13 @@ _piScreeningOfRFInOlderPatientsPreOP = PopulationInterventionPairExpr(
 
 _piOptimizationOfPreOPStatusInOlderPatPreoperatively = PopulationInterventionPairExpr(
             population_expr=And(
-                PreOperativeBeforeDayOfSurgery(
+                PreOperativeUntilTwoHoursBeforeDayOfSurgery(
                     AgeLimitPatient(min_age_years=70),
                 ),
-                PreOperativeBeforeDayOfSurgery(
+                PreOperativeUntilTwoHoursBeforeDayOfSurgery(
                     assessmentForRiskOfPostOperativeDelirium,
                 ),
-                PreOperativeBeforeDayOfSurgery(
+                PreOperativeUntilTwoHoursBeforeDayOfSurgery(
                     optimizablePreopRiskFactorPresent,
                 ),
             ),

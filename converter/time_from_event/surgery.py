@@ -38,10 +38,10 @@ class SurgicalOperationDate(TimeFromEvent):
         ):
 
             from digipod.criterion.preop_patients import (
-                PreOperativePatientsBeforeDayOfSurgery,
+                PreOperativePatientsUntilTwoHoursBeforeDayOfSurgery,
             )
 
-            return PreOperativePatientsBeforeDayOfSurgery()
+            return PreOperativePatientsUntilTwoHoursBeforeDayOfSurgery()
 
         raise NotImplementedError(
             "Currently, only preoperative patients are implemented"

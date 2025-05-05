@@ -17,8 +17,8 @@ from digipod.criterion import (
 )
 from digipod.criterion.patients import AgeLimitPatient
 from digipod.criterion.preop_patients import (
-    PreOperativePatientsBeforeDayOfSurgery,
     PreOperativePatientsBeforeSurgery,
+    PreOperativePatientsUntilTwoHoursBeforeDayOfSurgery,
 )
 from digipod.terminology import custom_concepts
 
@@ -53,7 +53,9 @@ def PostOperative(arg: logic.BaseExpr) -> logic.TemporalMinCount:
     )
 
 
-def PreOperativeBeforeDayOfSurgery(arg: logic.BaseExpr) -> logic.TemporalMinCount:
+def PreOperativeUntilTwoHoursBeforeDayOfSurgery(
+    arg: logic.BaseExpr,
+) -> logic.TemporalMinCount:
     """
     Applies a temporal constraint for the pre-operative period before the day of surgery.
     """
@@ -62,7 +64,7 @@ def PreOperativeBeforeDayOfSurgery(arg: logic.BaseExpr) -> logic.TemporalMinCoun
         start_time=None,
         end_time=None,
         interval_type=None,
-        interval_criterion=PreOperativePatientsBeforeDayOfSurgery(),
+        interval_criterion=PreOperativePatientsUntilTwoHoursBeforeDayOfSurgery(),
         threshold=1,
     )
 
@@ -233,11 +235,11 @@ dementiaUnspecified = ConditionOccurrence(
 )
 
 anyDementiaBeforeDayOfSurgery = Or(
-    PreOperativeBeforeDayOfSurgery(dementia),
-    PreOperativeBeforeDayOfSurgery(vascularDementia),
-    PreOperativeBeforeDayOfSurgery(dementiaInOtherDiseases),
-    PreOperativeBeforeDayOfSurgery(dementiaInOtherDiseasesUnspecSeverity),
-    PreOperativeBeforeDayOfSurgery(dementiaUnspecified),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(dementia),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(vascularDementia),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(dementiaInOtherDiseases),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(dementiaInOtherDiseasesUnspecSeverity),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(dementiaUnspecified),
 )
 
 anyDementiaBeforeSurgery = Or(
@@ -349,13 +351,13 @@ mocaLt26 = Observation(
 )
 
 anyHighRiskForDelirium = Or(
-    PreOperativeBeforeDayOfSurgery(AgeLimitPatient(min_age_years=70)),
-    PreOperativeBeforeDayOfSurgery(asaGTe2),
-    PreOperativeBeforeDayOfSurgery(cciGte2),
-    PreOperativeBeforeDayOfSurgery(minicogLt3),
-    PreOperativeBeforeDayOfSurgery(mmseLt25),
-    PreOperativeBeforeDayOfSurgery(acerLt88),
-    PreOperativeBeforeDayOfSurgery(mocaLt26),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(AgeLimitPatient(min_age_years=70)),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(asaGTe2),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(cciGte2),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(minicogLt3),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(mmseLt25),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(acerLt88),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(mocaLt26),
 )
 
 facesAnxietyScoreAssessed = Measurement(

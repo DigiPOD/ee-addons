@@ -1,5 +1,4 @@
 from execution_engine.omop.criterion.abstract import (
-    SQL_ONE_SECOND,
     column_interval_type,
 )
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
@@ -7,14 +6,16 @@ from execution_engine.omop.criterion.visit_occurrence import VisitOccurrence
 from execution_engine.util import logic
 from execution_engine.util.interval import IntervalType
 from execution_engine.util.value.value import ValueScalar
-from sqlalchemy import Interval, func, select
+from sqlalchemy import Interval, func, literal_column, select
 from sqlalchemy.sql import Select
 
 from digipod import concepts
 from digipod.criterion.patients import AdultPatients, SurgicalPatients
 
+SQL_TWO_HOUR_ONE_SECOND = literal_column("interval '2 hour 1 second'")
 
-class PreOperativePatientsBeforeDayOfSurgery(SurgicalPatients):
+
+class PreOperativePatientsUntilTwoHoursBeforeDayOfSurgery(SurgicalPatients):
     """
     Select patients who are pre-surgical in the timeframe between 42 days before the surgery and the day of the surgery.
     """
@@ -34,7 +35,8 @@ class PreOperativePatientsBeforeDayOfSurgery(SurgicalPatients):
                 - func.cast(func.concat(42, "day"), Interval)
             ).label("interval_start"),
             (
-                func.date_trunc("day", subquery.c.procedure_datetime) - SQL_ONE_SECOND
+                func.date_trunc("day", subquery.c.procedure_datetime)
+                - SQL_TWO_HOUR_ONE_SECOND
             ).label("interval_end"),
         ).where(
             subquery.c.rn == 1
@@ -161,7 +163,7 @@ class PreOperativePatientsBeforeSurgery(SurgicalPatients):
 """
 preOperativeAdultBeforeDayOfSurgeryPatients = logic.And(
     AdultPatients(),
-    PreOperativePatientsBeforeDayOfSurgery(),
+    PreOperativePatientsUntilTwoHoursBeforeDayOfSurgery(),
 )
 
 """
@@ -171,7 +173,7 @@ preOperativeAdultBeforeDayOfSurgeryPatients = logic.And(
 """
 preOperativeAdultBeforeDayOfSurgeryPatientsMMSElt3 = logic.And(
     AdultPatients(),
-    PreOperativePatientsBeforeDayOfSurgery(),
+    PreOperativePatientsUntilTwoHoursBeforeDayOfSurgery(),
     MMSElt3,
 )
 

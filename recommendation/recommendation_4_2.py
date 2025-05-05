@@ -5,7 +5,7 @@ from execution_engine.util.temporal_logic_util import AnyTime
 
 from digipod.criterion.assessments import *
 from digipod.criterion.non_pharma_measures import (
-    PreOperativeBeforeDayOfSurgery,
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery,
 )
 from digipod.criterion.patients import AgeLimitPatient
 
@@ -14,7 +14,7 @@ recommendation = Recommendation(
         PopulationInterventionPairExpr(
             population_expr=And(
                 AgeLimitPatient(min_age_years=70),
-                PreOperativeBeforeDayOfSurgery(assessmentForRiskOfPostOperativeDelirium),
+                PreOperativeUntilTwoHoursBeforeDayOfSurgery(assessmentForRiskOfPostOperativeDelirium),
             ),
             intervention_expr=MinCount(
                     AnyTime(healthcareInformationExchange),
