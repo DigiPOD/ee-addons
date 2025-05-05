@@ -4,6 +4,7 @@ from execution_engine.omop.criterion.procedure_occurrence import ProcedureOccurr
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
 from execution_engine.util.interval import IntervalType
 from execution_engine.util.logic import *
+from execution_engine.util.logic import NonSimplifiableAnd
 from execution_engine.util.temporal_logic_util import AnyTime
 from sqlalchemy import Select, select
 
@@ -109,57 +110,58 @@ dexmedetomidineAdministered = DexmedetomidineAdministration()
 
 recommendation = Recommendation(
     expr=And(
-        PopulationInterventionPairExpr(
+        PopulationInterventionPairExpr( # WITHOUT dementia
             population_expr=And(
-                AdultPatients(),
-                Not(AnyTime(anyDementiaBeforeSurgery)),
-                IntraOrPostOperative(dexmedetomidineAdministered),
-                dexmedetomidineAdministered
+                And(
+                    AdultPatients(),
+                    Not(AnyTime(anyDementiaBeforeSurgery)),
+                    #IntraOrPostOperative(dexmedetomidineAdministered), # gl 25-05-05: removed, isn't part of the recommendation
+                    dexmedetomidineAdministered
+                ),
+                # Delirscreening erfolgt & keins davon positiv
+                Or( # Negatives Delirscreening erfolgt
+                    BeforeFirstDexAdministration(nudescLt2),
+                    BeforeFirstDexAdministration(nudescNegative),
+                    BeforeFirstDexAdministration(nudescWeaklyPositive),
+                    BeforeFirstDexAdministration(icdscLt4),
+                    BeforeFirstDexAdministration(icdscNegative),
+                    BeforeFirstDexAdministration(icdscWeaklyPositive),
+                    BeforeFirstDexAdministration(camNegative),
+                    BeforeFirstDexAdministration(drsLt12),
+                    BeforeFirstDexAdministration(drsNegative),
+                    BeforeFirstDexAdministration(drsWeaklyPositive),
+                    BeforeFirstDexAdministration(dosLt3),
+                    BeforeFirstDexAdministration(dosNegative),
+                    BeforeFirstDexAdministration(dosWeaklyPositive),
+                    BeforeFirstDexAdministration(tdcamNegative),
+                    BeforeFirstDexAdministration(camicuNegative),
+                    BeforeFirstDexAdministration(ddsLt8),
+                    BeforeFirstDexAdministration(ddsNegative),
+                    BeforeFirstDexAdministration(ddsWeaklyPositive),
+                    BeforeFirstDexAdministration(FourAtLt4),
+                    BeforeFirstDexAdministration(FourAtNegative),
+                    BeforeFirstDexAdministration(FourAtWeaklyPositive),
+                ),
+                Or( # NOT(Positives Delirscreening erfolgt)
+                    Not(BeforeFirstDexAdministration(nudescGte2)),
+                    Not(BeforeFirstDexAdministration(nudescPositive)),
+                    Not(BeforeFirstDexAdministration(icdscGte4)),
+                    Not(BeforeFirstDexAdministration(icdscPositive)),
+                    Not(BeforeFirstDexAdministration(camPositive)),
+                    Not(BeforeFirstDexAdministration(drsGte12)),
+                    Not(BeforeFirstDexAdministration(drsPositive)),
+                    Not(BeforeFirstDexAdministration(dosGte3)),
+                    Not(BeforeFirstDexAdministration(dosPositive)),
+                    Not(BeforeFirstDexAdministration(tdcamPositive)),
+                    Not(BeforeFirstDexAdministration(camicuPositive)),
+                    Not(BeforeFirstDexAdministration(ddsGte7)),
+                    Not(BeforeFirstDexAdministration(ddsPositive)),
+                    Not(BeforeFirstDexAdministration(FourAtGte4)),
+                    Not(BeforeFirstDexAdministration(FourAtPositive)),
+                ),
             ),
-            intervention_expr=And(
-                AnyTime(prophylacticDexmedetomidine),
-                Or(
-                    Or(
-                        BeforeFirstDexAdministration(nudescLt2),
-                        BeforeFirstDexAdministration(nudescNegative),
-                        BeforeFirstDexAdministration(nudescWeaklyPositive),
-                        BeforeFirstDexAdministration(icdscLt4),
-                        BeforeFirstDexAdministration(icdscNegative),
-                        BeforeFirstDexAdministration(icdscWeaklyPositive),
-                        BeforeFirstDexAdministration(camNegative),
-                        BeforeFirstDexAdministration(drsLt12),
-                        BeforeFirstDexAdministration(drsNegative),
-                        BeforeFirstDexAdministration(drsWeaklyPositive),
-                        BeforeFirstDexAdministration(dosLt3),
-                        BeforeFirstDexAdministration(dosNegative),
-                        BeforeFirstDexAdministration(dosWeaklyPositive),
-                        BeforeFirstDexAdministration(tdcamNegative),
-                        BeforeFirstDexAdministration(camicuNegative),
-                        BeforeFirstDexAdministration(ddsLt8),
-                        BeforeFirstDexAdministration(ddsNegative),
-                        BeforeFirstDexAdministration(ddsWeaklyPositive),
-                        BeforeFirstDexAdministration(FourAtLt4),
-                        BeforeFirstDexAdministration(FourAtNegative),
-                        BeforeFirstDexAdministration(FourAtWeaklyPositive),
-                    ),
-                    Or(
-                        Not(BeforeFirstDexAdministration(nudescGte2)),
-                        Not(BeforeFirstDexAdministration(nudescPositive)),
-                        Not(BeforeFirstDexAdministration(icdscGte4)),
-                        Not(BeforeFirstDexAdministration(icdscPositive)),
-                        Not(BeforeFirstDexAdministration(camPositive)),
-                        Not(BeforeFirstDexAdministration(drsGte12)),
-                        Not(BeforeFirstDexAdministration(drsPositive)),
-                        Not(BeforeFirstDexAdministration(dosGte3)),
-                        Not(BeforeFirstDexAdministration(dosPositive)),
-                        Not(BeforeFirstDexAdministration(tdcamPositive)),
-                        Not(BeforeFirstDexAdministration(camicuPositive)),
-                        Not(BeforeFirstDexAdministration(ddsGte7)),
-                        Not(BeforeFirstDexAdministration(ddsPositive)),
-                        Not(BeforeFirstDexAdministration(FourAtGte4)),
-                        Not(BeforeFirstDexAdministration(FourAtPositive)),
-                    ),
-                )
+            intervention_expr=NonSimplifiableAnd(
+                IntraOrPostOperative(prophylacticDexmedetomidine),
             ),
             name="RecPlanSelectProphylacticDexAdministrationInPatsWithoutDementia",
             url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanSelectProphylacticDexAdministrationInPatsWithoutDementia",
@@ -167,7 +169,9 @@ recommendation = Recommendation(
         ),
         PopulationInterventionPairExpr(
             population_expr=NonSimplifiableAnd(AdultPatients(), anyDementiaBeforeSurgery),
-            intervention_expr=IntraOrPostOperative(dexmedetomidineAdministered),
+            intervention_expr=NonSimplifiableAnd(
+                IntraOrPostOperative(prophylacticDexmedetomidine),
+            ),
             name="RecPlanSelectProphylacticDexAdministrationInPatsWithDementia",
             url="https://fhir.charite.de/digipod/PlanDefinition/RecPlanSelectProphylacticDexAdministrationInPatsWithDementia",
             base_criterion=PatientsActiveDuringPeriod(),
