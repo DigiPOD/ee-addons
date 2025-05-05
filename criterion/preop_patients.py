@@ -192,5 +192,7 @@ preAdmissionOrInpatientPatients = logic.Or(
 adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = logic.And(
     AdultPatients(),
     PreOperativePatientsBeforeEndOfSurgery(),
-    preAdmissionOrInpatientPatients,
+    # preAdmissionOrInpatientPatients,  # gl 25-05-05: removed after email from Fatima (25-04-29):
+    # "Recommendation 0.1 und 0.2: Ortsgebundenes Delirscreening bitte raus.
+    # Wir bewerten vor der OP und nach der OP die Zeiträume."
 )
