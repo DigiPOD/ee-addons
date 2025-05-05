@@ -22,6 +22,166 @@ from digipod.criterion.preop_patients import (
 )
 from digipod.terminology import custom_concepts
 
+COGNITIVE_STIMULATION = Concept(
+    concept_id=4301075,
+    concept_name="Cognitive stimulation",
+    concept_code="386241007",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+COMMUNICATION_AID_PROVISION = Concept(
+    concept_id=4043216,
+    concept_name="Provision of communication aid",
+    concept_code="228620008",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+REALITY_ORIENTATION = Concept(
+    concept_id=4038867,
+    concept_name="Reality orientation",
+    concept_code="228547007",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+ABILITY_TO_MOBILIZE = Concept(
+    concept_id=4103497,
+    concept_name="Ability to mobilize",
+    concept_code="301438001",
+    domain_id="Observation",
+    vocabulary_id="SNOMED",
+    concept_class_id="Observable Entity",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+DOES_NOT_MOBILIZE = Concept(
+    **{
+        "concept_id": 4200193,
+        "concept_name": "Does not mobilize",
+        "concept_code": "302045007",
+        "domain_id": "Observation",
+        "vocabulary_id": "SNOMED",
+        "concept_class_id": "Clinical Finding",
+        "standard_concept": "S",
+        "invalid_reason": None,
+    }
+)
+
+PHYSIATRIC_JOINT_MOBILIZATION = Concept(
+    concept_id=4251052,
+    concept_name="Physiatric mobilization of joint",
+    concept_code="74251004",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+ABILITY_TO_FEED_SELF = Concept(
+    concept_id=4128668,
+    concept_name="Ability to feed self",
+    concept_code="288999009",
+    domain_id="Observation",
+    vocabulary_id="SNOMED",
+    concept_class_id="Observable Entity",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+DOES_NOT_FEED_SELF = Concept(
+    **{
+        "concept_id": 4122440,
+        "concept_name": "Does not feed self",
+        "concept_code": "289003008",
+        "domain_id": "Observation",
+        "vocabulary_id": "SNOMED",
+        "concept_class_id": "Clinical Finding",
+        "standard_concept": "S",
+        "invalid_reason": None,
+    }
+)
+
+ENTERAL_FEEDING = Concept(
+    concept_id=4042005,
+    concept_name="Enteral feeding",
+    concept_code="229912004",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+DEGLUTITION = Concept(
+    concept_id=4185237,
+    concept_name="Deglutition",
+    concept_code="54731003",
+    domain_id="Observation",
+    vocabulary_id="SNOMED",
+    concept_class_id="Observable Entity",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+DIFFICULTY_SWALLOWING = Concept(
+    **{
+        "concept_id": 4125274,
+        "concept_name": "Difficulty swallowing",
+        "concept_code": "288939007",
+        "domain_id": "Observation",
+        "vocabulary_id": "SNOMED",
+        "concept_class_id": "Clinical Finding",
+        "standard_concept": "S",
+        "invalid_reason": None,
+    }
+)
+
+DYSPHAGIA_THERAPY = Concept(
+    concept_id=4210275,
+    concept_name="Dysphagia therapy regime",
+    concept_code="311569007",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+NUTRITIONAL_REGIME_MODIFICATION = Concept(
+    concept_id=763733,
+    concept_name="Modification of nutritional regime",
+    concept_code="445341000124100",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
+MOUTH_CARE_MANAGEMENT = Concept(
+    concept_id=4301571,
+    concept_name="Mouth care management",
+    concept_code="385937007",
+    domain_id="Procedure",
+    vocabulary_id="SNOMED",
+    concept_class_id="Procedure",
+    standard_concept="S",
+    invalid_reason=None,
+)
+
 
 def IntraOrPostOperative(arg: logic.BaseExpr) -> logic.TemporalMinCount:
     """
@@ -264,7 +424,7 @@ asaGt2 = Measurement(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=2.0005, value_max=None),
     timing=None,
 )
@@ -273,7 +433,7 @@ cciGte2 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.RESULT_OF_CHARLSON_COMORBIDITY_INDEX,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=2.0, value_max=None),
     timing=None,
 )
@@ -291,7 +451,7 @@ minicogLt3 = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=2.99997),
     timing=None,
 )
@@ -309,7 +469,7 @@ mmseLt25 = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=24.99975),
     timing=None,
 )
@@ -327,7 +487,7 @@ acerLt88 = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=87.99912),
     timing=None,
 )
@@ -345,7 +505,7 @@ mocaLt26 = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=25.99974),
     timing=None,
 )
@@ -372,7 +532,7 @@ nudescGte2 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=2.0, value_max=None),
     timing=None,
 )
@@ -381,7 +541,7 @@ nudescLt2 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=1.99998),
     timing=None,
 )
@@ -390,7 +550,7 @@ nudescPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -410,7 +570,7 @@ nudescNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -430,7 +590,7 @@ nudescWeaklyPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.NURSING_DELIRIUM_SCREENING_SCALE_NU_DESC_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 4127785,
@@ -450,7 +610,7 @@ icdscGte4 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=4.0, value_max=None),
     timing=None,
 )
@@ -459,7 +619,7 @@ icdscPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -479,7 +639,7 @@ icdscLt4 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=3.99996),
     timing=None,
 )
@@ -488,7 +648,7 @@ icdscNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -508,7 +668,7 @@ icdscWeaklyPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.INTENSIVE_CARE_DELIRIUM_SCREENING_CHECKLIST_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 4127785,
@@ -528,7 +688,7 @@ camPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -548,7 +708,7 @@ camNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -568,7 +728,7 @@ drsGte12 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=12.0, value_max=None),
     timing=None,
 )
@@ -577,7 +737,7 @@ drsPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -597,7 +757,7 @@ drsLt12 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=11.99988),
     timing=None,
 )
@@ -606,7 +766,7 @@ drsNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -626,7 +786,7 @@ drsWeaklyPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_RATING_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 4127785,
@@ -646,7 +806,7 @@ dosGte3 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=3.0, value_max=None),
     timing=None,
 )
@@ -655,7 +815,7 @@ dosPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -675,7 +835,7 @@ dosLt3 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=2.99997),
     timing=None,
 )
@@ -684,7 +844,7 @@ dosNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -704,7 +864,7 @@ dosWeaklyPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_OBSERVATION_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 4127785,
@@ -724,7 +884,7 @@ tdcamPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -744,7 +904,7 @@ tdcamNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -765,7 +925,7 @@ camicuPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -785,7 +945,7 @@ camicuNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.CONFUSION_ASSESSMENT_METHOD_FOR_THE_INTENSIVE_CARE_UNIT_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -805,7 +965,7 @@ ddsGte7 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=7.0, value_max=None),
     timing=None,
 )
@@ -814,7 +974,7 @@ ddsLt8 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=7.99992),
     timing=None,
 )
@@ -823,7 +983,7 @@ ddsPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -843,7 +1003,7 @@ ddsNegative = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -863,7 +1023,7 @@ ddsWeaklyPositive = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.DELIRIUM_DETECTION_SCORE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 4127785,
@@ -892,7 +1052,7 @@ FourAtGte4 = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=4.0, value_max=None),
     timing=None,
 )
@@ -910,7 +1070,7 @@ FourAtLt4 = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=None, value_max=3.99996),
     timing=None,
 )
@@ -928,7 +1088,7 @@ FourAtPositive = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9191,
@@ -957,7 +1117,7 @@ FourAtNegative = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 9189,
@@ -986,7 +1146,7 @@ FourAtWeaklyPositive = Measurement(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=ValueConcept(
         value={
             "concept_id": 4127785,
@@ -1025,7 +1185,7 @@ facesAnxietyScoreGte2 = Measurement(
     static=False,
     value_required=True,
     concept=custom_concepts.FACES_ANXIETY_SCALE_SCORE,
-    forward_fill=True,
+    forward_fill=False,
     value=ValueScalar(unit=None, value=None, value_min=2.0, value_max=None),
     timing=None,
 )
@@ -1108,7 +1268,7 @@ individualizedPatientEducation = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1129,16 +1289,7 @@ identificationOfCarePreferences = ProcedureOccurrence(
 
 cognitiveStimulationProcedure = ProcedureOccurrence(
     static=False,
-    concept=Concept(
-        concept_id=4301075,
-        concept_name="Cognitive stimulation",
-        concept_code="386241007",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=COGNITIVE_STIMULATION,
     value=None,
 )
 
@@ -1184,16 +1335,7 @@ cognitiveAssessment = ProcedureOccurrence(
 communicationAidProvision = ProcedureOccurrence(
     static=False,
     timing=None,
-    concept=Concept(
-        concept_id=4043216,
-        concept_name="Provision of communication aid",
-        concept_code="228620008",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=COMMUNICATION_AID_PROVISION,
     value=None,
 )
 
@@ -1271,7 +1413,7 @@ interpreterServiceRequest = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1362,16 +1504,7 @@ otherSleepHygieneInterventions = ProcedureOccurrence(
 
 realityOrientation = ProcedureOccurrence(
     static=False,
-    concept=Concept(
-        concept_id=4038867,
-        concept_name="Reality orientation",
-        concept_code="228547007",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=REALITY_ORIENTATION,
     value=None,
 )
 
@@ -1402,7 +1535,7 @@ printedMaterial = Observation(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1448,32 +1581,14 @@ otherMediaExposure = DeviceExposure(
 mobilizationAbilityObservation = Observation(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=4103497,
-        concept_name="Ability to mobilize",
-        concept_code="301438001",
-        domain_id="Observation",
-        vocabulary_id="SNOMED",
-        concept_class_id="Observable Entity",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
-    forward_fill=True,
+    concept=ABILITY_TO_MOBILIZE,
+    forward_fill=False,
     value=None,
 )
 
 physiatricJointMobilization = ProcedureOccurrence(
     static=False,
-    concept=Concept(
-        concept_id=4251052,
-        concept_name="Physiatric mobilization of joint",
-        concept_code="74251004",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=PHYSIATRIC_JOINT_MOBILIZATION,
     value=None,
 )
 
@@ -1490,7 +1605,7 @@ contraindicationObservation = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1507,7 +1622,7 @@ patientNonCompliance = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1572,7 +1687,7 @@ exhaustionObservation = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1605,39 +1720,22 @@ reasonAndJustificationObservation = Observation(
         standard_concept=None,
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
+
 ##############################
 selfFeedingAbility = Observation(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=4128668,
-        concept_name="Ability to feed self",
-        concept_code="288999009",
-        domain_id="Observation",
-        vocabulary_id="SNOMED",
-        concept_class_id="Observable Entity",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
-    forward_fill=True,
+    concept=ABILITY_TO_FEED_SELF,
+    forward_fill=False,
     value=None,
 )
 
 enteralFeeding = ProcedureOccurrence(
     static=False,
-    concept=Concept(
-        concept_id=4042005,
-        concept_name="Enteral feeding",
-        concept_code="229912004",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=ENTERAL_FEEDING,
     value=None,
 )
 
@@ -1669,7 +1767,7 @@ aspirationRisk = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1686,7 +1784,7 @@ abnormalDeglutition = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1704,7 +1802,7 @@ lossOfAppetite = Observation(
         standard_concept="S",
         invalid_reason=None,
     ),
-    forward_fill=True,
+    forward_fill=False,
     value=None,
 )
 
@@ -1743,28 +1841,10 @@ nauseaAndVomiting = ConditionOccurrence(
 difficultySwallowing = Measurement(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=4185237,
-        concept_name="Deglutition",
-        concept_code="54731003",
-        domain_id="Observation",
-        vocabulary_id="SNOMED",
-        concept_class_id="Observable Entity",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
-    forward_fill=True,
+    concept=DEGLUTITION,
+    forward_fill=False,
     value=ValueConcept(
-        value={
-            "concept_id": 4125274,
-            "concept_name": "Difficulty swallowing",
-            "concept_code": "288939007",
-            "domain_id": "Observation",
-            "vocabulary_id": "SNOMED",
-            "concept_class_id": "Clinical Finding",
-            "standard_concept": "S",
-            "invalid_reason": None,
-        }
+        value=DIFFICULTY_SWALLOWING,
     ),
     timing=None,
 )
@@ -1772,120 +1852,44 @@ difficultySwallowing = Measurement(
 
 dysphagiaTherapy = ProcedureOccurrence(
     static=False,
-    concept=Concept(
-        concept_id=4210275,
-        concept_name="Dysphagia therapy regime",
-        concept_code="311569007",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=DYSPHAGIA_THERAPY,
     value=None,
 )
 
 nutritionalRegimeModification = ProcedureOccurrence(
     static=False,
-    concept=Concept(
-        concept_id=763733,
-        concept_name="Modification of nutritional regime",
-        concept_code="445341000124100",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=NUTRITIONAL_REGIME_MODIFICATION,
     value=None,
 )
 
 mouthCareManagement = ProcedureOccurrence(
     static=False,
-    concept=Concept(
-        concept_id=4301571,
-        concept_name="Mouth care management",
-        concept_code="385937007",
-        domain_id="Procedure",
-        vocabulary_id="SNOMED",
-        concept_class_id="Procedure",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
+    concept=MOUTH_CARE_MANAGEMENT,
     value=None,
 )
 
 deglutition = Observation(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=4185237,
-        concept_name="Deglutition",
-        concept_code="54731003",
-        domain_id="Observation",
-        vocabulary_id="SNOMED",
-        concept_class_id="Observable Entity",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
-    forward_fill=True,
+    concept=DEGLUTITION,
+    forward_fill=False,
     value=None,
 )
 
 doesNotFeedSelf = Measurement(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=4128668,
-        concept_name="Ability to feed self",
-        concept_code="288999009",
-        domain_id="Observation",
-        vocabulary_id="SNOMED",
-        concept_class_id="Observable Entity",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
-    forward_fill=True,
-    value=ValueConcept(
-        value={
-            "concept_id": 4122440,
-            "concept_name": "Does not feed self",
-            "concept_code": "289003008",
-            "domain_id": "Observation",
-            "vocabulary_id": "SNOMED",
-            "concept_class_id": "Clinical Finding",
-            "standard_concept": "S",
-            "invalid_reason": None,
-        }
-    ),
+    concept=ABILITY_TO_FEED_SELF,
+    forward_fill=False,
+    value=ValueConcept(value=DOES_NOT_FEED_SELF),
     timing=None,
 )
 
 doesNotMobilize = Measurement(
     static=False,
     value_required=False,
-    concept=Concept(
-        concept_id=4103497,
-        concept_name="Ability to mobilize",
-        concept_code="301438001",
-        domain_id="Observation",
-        vocabulary_id="SNOMED",
-        concept_class_id="Observable Entity",
-        standard_concept="S",
-        invalid_reason=None,
-    ),
-    forward_fill=True,
-    value=ValueConcept(
-        value={
-            "concept_id": 4200193,
-            "concept_name": "Does not mobilize",
-            "concept_code": "302045007",
-            "domain_id": "Observation",
-            "vocabulary_id": "SNOMED",
-            "concept_class_id": "Clinical Finding",
-            "standard_concept": "S",
-            "invalid_reason": None,
-        }
-    ),
+    concept=ABILITY_TO_MOBILIZE,
+    forward_fill=False,
+    value=ValueConcept(value=DOES_NOT_MOBILIZE),
     timing=None,
 )
