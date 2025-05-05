@@ -11,7 +11,6 @@ from execution_engine.util.temporal_logic_util import (
 
 from digipod.criterion.patients import AdultPatients
 from digipod.criterion.postop_patients import PostOperativePatientsUntilDay5
-from digipod.criterion.preop_patients import InpatientPatients, IntensiveCarePatients
 from digipod.criterion.scores import *
 from digipod.recommendation import package_version
 
@@ -40,18 +39,22 @@ icu_scores = logic.Or(
     ICDSC_documented,  # CAM Morning
 )
 
+# gl 25-05-05: removed after email from Fatima (25-04-29):
+# "Recommendation 0.1 und 0.2: Ortsgebundenes Delirscreening bitte raus.
+# Wir bewerten vor der OP und nach der OP die Zeiträume."
+# normalward_scores_filtered = logic.ConditionalFilter(
+#     left=InpatientPatients(),
+#     right=normalward_scores
+# )
+#
+# icu_scores_filtered = logic.ConditionalFilter(
+#     left=IntensiveCarePatients(),
+#     right=icu_scores
+# )
+#
+#scores = logic.Or(normalward_scores_filtered, icu_scores_filtered)
 
-normalward_scores_filtered = logic.ConditionalFilter(
-    left=InpatientPatients(),
-    right=normalward_scores
-)
-
-icu_scores_filtered = logic.ConditionalFilter(
-    left=IntensiveCarePatients(),
-    right=icu_scores
-)
-
-scores = logic.Or(normalward_scores_filtered, icu_scores_filtered)
+scores = logic.Or(normalward_scores, icu_scores)
 
 
 pi_double_screening = PopulationInterventionPairExpr(
