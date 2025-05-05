@@ -14,6 +14,7 @@ class ResultSet:
                     "interval_start": self._to_datetime_with_tz(i["interval_start"]),
                     "interval_end": self._to_datetime_with_tz(i["interval_end"]),
                     "interval_type": i["interval_type"],
+                    "interval_ratio": i["interval_ratio"],
                 }
                 for i in intervals
             ],
@@ -35,6 +36,8 @@ class ResultSet:
             return pendulum.parse(
                 dt
             ).astimezone()  # Parse strings as pendulum, then convert
+        elif isinstance(dt, int):
+            return datetime.fromtimestamp(dt).astimezone()
         else:
             raise ValueError(f"Unsupported datetime type: {type(dt)}")
 
@@ -46,6 +49,7 @@ class ResultSet:
                 "interval_start": row["interval_start"],
                 "interval_end": row["interval_end"],
                 "interval_type": row["interval_type"],
+                "interval_ratio": row["interval_ratio"],
             }
             for _, row in df.iterrows()
         ]
@@ -59,6 +63,7 @@ class ResultSet:
                 "interval_start": t[0],
                 "interval_end": t[1],
                 "interval_type": t[2],
+                "interval_ratio": t[3],
             }
             for t in tuples
         ]
@@ -66,18 +71,21 @@ class ResultSet:
 
     def pretty_print(self):
         """Pretty print the contents of the ResultSet as a table with vertical separators and local timezone formatting."""
-        headers = ["Interval Start", "Interval End", "Interval Type"]
-        col_widths = [25, 25, 20]
+        headers = ["Interval Start", "Interval End", "Type", "Ratio"]
+        col_widths = [25, 25, 14, 6]
 
-        header_row = f"{headers[0]:<{col_widths[0]}} | {headers[1]:<{col_widths[1]}} | {headers[2]:<{col_widths[2]}}"
+        header_row = f"{headers[0]:<{col_widths[0]}} | {headers[1]:<{col_widths[1]}} | {headers[2]:<{col_widths[2]}} | {headers[3]:<{col_widths[3]}}"
         print(header_row)
-        print("-" * (sum(col_widths) + 6))
+        print("-" * (sum(col_widths) + 8))
 
         for interval in self.intervals:
+            ratio = interval["interval_ratio"]
+            ratio_display = f"{ratio:.2f}" if ratio is not None else "-"
             row = (
                 f"{interval['interval_start'].isoformat():<{col_widths[0]}} | "
                 f"{interval['interval_end'].isoformat():<{col_widths[1]}} | "
-                f"{interval['interval_type']:<{col_widths[2]}}"
+                f"{interval['interval_type']:<{col_widths[2]}} | "
+                f"{ratio_display:<{col_widths[3]}}"
             )
             print(row)
 
@@ -91,6 +99,7 @@ class ResultSet:
                 interval["interval_start"],
                 interval["interval_end"],
                 interval["interval_type"],
+                interval["interval_ratio"],
             )
 
         self_set = set(interval_to_tuple(interval) for interval in self.intervals)
@@ -112,6 +121,7 @@ class ResultSet:
                 interval["interval_start"],
                 interval["interval_end"],
                 interval["interval_type"],
+                interval["interval_ratio"],
             )
 
         # Build dictionaries for quick lookup
@@ -132,12 +142,14 @@ class ResultSet:
         headers = [
             "Interval Start (left)",
             "Interval End (left)",
-            "Interval Type (left)",
+            "Type (left)",
+            "Ratio (left)",
             "Interval Start (right)",
             "Interval End (right)",
-            "Interval Type (right)",
+            "Type (right)",
+            "Ratio (right)",
         ]
-        col_widths = [25, 25, 20, 25, 25, 20]
+        col_widths = [25, 25, 14, 13, 25, 25, 14, 13]
 
         # Create header row
         header_row = " | ".join(
@@ -150,11 +162,12 @@ class ResultSet:
         # Function to format interval values
         def format_interval(interval):
             if interval is None:
-                return [""] * 3
+                return [""] * 4
             return [
                 interval["interval_start"].isoformat(),
                 interval["interval_end"].isoformat(),
                 interval["interval_type"],
+                interval["interval_ratio"],
             ]
 
         # Add rows to the report
@@ -163,7 +176,7 @@ class ResultSet:
             other_values = format_interval(other_interval)
             row_values = self_values + other_values
             row = " | ".join(
-                f"{value:<{width}}" for value, width in zip(row_values, col_widths)
+                f"{str(value):<{width}}" for value, width in zip(row_values, col_widths)
             )
             report.append(row)
 

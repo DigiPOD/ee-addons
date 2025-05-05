@@ -7,7 +7,7 @@ from urllib.parse import quote
 import pandas as pd
 import pytest
 import sqlalchemy
-from execution_engine.util.types import TimeRange
+from execution_engine.util.types.timerange import TimeRange
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.orm.session import sessionmaker
 
@@ -88,6 +88,8 @@ def db_setup():
                     table, con, schema=OMOP_SCHEMA_NAME, if_exists="append", index=False
                 )
 
+    with engine.begin() as con:
+        with disable_postgres_trigger(con):
             from digipod.terminology.vocabulary import DigiPOD
 
             for concept in DigiPOD.map.values():

@@ -95,12 +95,6 @@ def pytest_sessionstart(session):  # type: ignore
     """
     init_postgres(session.config)
 
-    from execution_engine.omop.vocabulary import standard_vocabulary
-
-    from digipod.terminology.vocabulary import DigiPOD
-
-    standard_vocabulary.register(DigiPOD)
-
 
 def pytest_sessionfinish(session):  # type: ignore
     """

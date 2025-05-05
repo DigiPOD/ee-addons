@@ -1,3 +1,4 @@
+
 import pandas as pd
 import pytest
 from execution_engine.constants import CohortCategory
@@ -7,7 +8,6 @@ from execution_engine.util.types.timerange import TimeRange
 from sqlalchemy import select
 
 from digipod.tests.recommendation.resultset import ResultSet
-from digipod.tests.recommendation.utils import Patient
 
 
 class TestRecommendationBase:
@@ -33,9 +33,9 @@ class TestRecommendationBase:
         e.register_recommendation(self.recommendation)
 
     def teardown_method(self, method):
-        self.recommendation.reset_state()
+       self.recommendation.reset_state()
 
-    def commit_patient(self, pat: Patient):
+    def commit_patient(self, pat):
 
         person = pat.person
         person.person_id = None  # reset person id
@@ -113,7 +113,7 @@ class TestRecommendationBase:
             cohort: ResultSet.from_dataframe(
                 df.query("cohort_category==@cohort").sort_values(
                     by=["person_id", "interval_start"]
-                )[["person_id", "interval_start", "interval_end", "interval_type"]]
+                )[["person_id", "interval_start", "interval_end", "interval_type", "interval_ratio"]]
             )
             for cohort in CohortCategory
         }

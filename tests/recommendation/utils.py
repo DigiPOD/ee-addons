@@ -6,6 +6,7 @@ from digipod.concepts import OMOP_GENDER_FEMALE
 from digipod.terminology import vocabulary as digipod_vocab
 from digipod.tests.functions import (
     create_measurement,
+    create_observation,
     create_person,
     create_procedure,
     create_visit,
@@ -19,7 +20,6 @@ DELIR_SCREENING_ICU_SCORES = {
 
 DELIR_SCREENING_NORMALWARD_SCORES = {
     "3DCAM": digipod_vocab.THREE_MINUTE_DIAGNOSTIC_INTERVIEW_FOR_CAM_DEFINED_DELIRIUM_SCORE.concept_id,
-    "4AT": digipod_vocab.FourAT.concept_id,
     "CAM": digipod_vocab.CONFUSION_ASSESSMENT_METHOD_SCORE.concept_id,
     "DRS": digipod_vocab.DELIRIUM_RATING_SCALE_SCORE.concept_id,
     "DOS": digipod_vocab.DELIRIUM_OBSERVATION_SCALE_SCORE.concept_id,
@@ -39,6 +39,7 @@ class Patient:
         self._visits = []
         self._measurements = []
         self._procedures = []
+        self._observations = []
 
     @property
     def person(self):
@@ -49,6 +50,8 @@ class Patient:
             yield visit
         for measurement in self._measurements:
             yield measurement
+        for observation in self._observations:
+            yield observation
         for procedure in self._procedures:
             yield procedure
 
@@ -95,13 +98,10 @@ class Patient:
         """
         Add a surgical procedure to the patient's record
         """
-        self._procedures.append(
-            create_procedure(
-                person_id=self._person.person_id,
-                start_datetime=pendulum.parse(start),
-                end_datetime=pendulum.parse(end),
-                procedure_concept_id=OMOP_SURGICAL_PROCEDURE,
-            )
+        self.add_procedure(
+            concept_id=OMOP_SURGICAL_PROCEDURE,
+            datetime=start,
+            end_datetime=end
         )
 
     def add_measurement(
@@ -121,6 +121,46 @@ class Patient:
                 measurement_datetime=pendulum.parse(datetime),
                 value_as_number=value,
                 unit_concept_id=unit_concept_id,
+            )
+        )
+
+    def add_observation(
+        self,
+        concept_id: int,
+        datetime: str,
+        value_as_number: float | None = None,
+        value_as_concept: int | None = None,
+        unit_concept_id: int | None = None,
+    ) -> None:
+        """
+        Add an observation to the patient's record
+        """
+        self._observations.append(
+            create_observation(
+                person_id=self._person.person_id,
+                observation_concept_id=concept_id,
+                observation_datetime=pendulum.parse(datetime),
+                value_as_number=value_as_number,
+                value_as_concept_id=value_as_concept,
+                unit_concept_id=unit_concept_id,
+            )
+        )
+
+    def add_procedure(
+        self,
+        concept_id: int,
+        datetime: str,
+        end_datetime: str | None = None,
+    ) -> None:
+        """
+        Add a measurement to the patient's record
+        """
+        self._procedures.append(
+            create_procedure(
+                person_id=self._person.person_id,
+                procedure_concept_id=concept_id,
+                start_datetime=pendulum.parse(datetime),
+                end_datetime=pendulum.parse(datetime) if end_datetime is None else pendulum.parse(end_datetime),
             )
         )
 
@@ -242,3 +282,11 @@ class AdultPatient(Patient):
 
     def __init__(self):
         super().__init__(gender_concept_id=OMOP_GENDER_FEMALE, birth_date="1990-05-12")
+
+class ElderlyPatient(Patient):
+    """
+    A patient with an age of 75 years
+    """
+
+    def __init__(self):
+        super().__init__(gender_concept_id=OMOP_GENDER_FEMALE, birth_date="1950-05-12")
