@@ -251,7 +251,7 @@ anyDementiaBeforeSurgery = Or(
 )
 
 
-asaGTe2 = Measurement(
+asaGt2 = Measurement(
     static=False,
     value_required=True,
     concept=Concept(
@@ -265,7 +265,7 @@ asaGTe2 = Measurement(
         invalid_reason=None,
     ),
     forward_fill=True,
-    value=ValueScalar(unit=None, value=None, value_min=2.0, value_max=None),
+    value=ValueScalar(unit=None, value=None, value_min=2.0005, value_max=None),
     timing=None,
 )
 
@@ -352,7 +352,7 @@ mocaLt26 = Observation(
 
 anyHighRiskForDelirium = Or(
     PreOperativeUntilTwoHoursBeforeDayOfSurgery(AgeLimitPatient(min_age_years=70)),
-    PreOperativeUntilTwoHoursBeforeDayOfSurgery(asaGTe2),
+    PreOperativeUntilTwoHoursBeforeDayOfSurgery(asaGt2),
     PreOperativeUntilTwoHoursBeforeDayOfSurgery(cciGte2),
     PreOperativeUntilTwoHoursBeforeDayOfSurgery(minicogLt3),
     PreOperativeUntilTwoHoursBeforeDayOfSurgery(mmseLt25),
