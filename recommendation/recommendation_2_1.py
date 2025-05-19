@@ -1,7 +1,7 @@
 from execution_engine.omop.cohort import PopulationInterventionPairExpr, Recommendation
 from execution_engine.omop.criterion.point_in_time import PointInTimeCriterion
 from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDuringPeriod
-from execution_engine.omop.vocabulary import LOINC, SNOMEDCT, standard_vocabulary
+from execution_engine.omop.vocabulary import SNOMEDCT, standard_vocabulary
 from execution_engine.task.process import IntervalWithCount, interval_like
 from execution_engine.task.task import Task
 from execution_engine.util import logic, temporal_logic_util
@@ -44,10 +44,11 @@ miniCogDocumented = PointInTimeCriterion(
 )
 
 # $loinc#72172-0 "Total score [MoCA]"
+# SNOMED CT #1255891005 "Montreal Cognitive Assessment version 8.1 score"
 mocaDocumented = PointInTimeCriterion(
     concept=standard_vocabulary.get_concept(
-        LOINC.system_uri, "72172-0"
-    ),  # #72172-0 "Total score [MoCA]"
+        SNOMEDCT.system_uri, "1255891005"
+    ),  # 1255891005 "Montreal Cognitive Assessment version 8.1 score"
     value_required=False,
 )
 
@@ -81,7 +82,11 @@ _RecPlanCheckRiskFactorsAgeASACCIMiniCog = PopulationInterventionPairExpr(
         temporal_logic_util.AnyTime(ageDocumented),
         temporal_logic_util.AnyTime(asaDocumented),
         temporal_logic_util.AnyTime(cciDocumented),
-        temporal_logic_util.AnyTime(miniCogDocumented),
+        temporal_logic_util.AnyTime(
+            logic.Or(
+                miniCogDocumented, mocaDocumented, acerDocumented, mmseDocumented
+            ),
+        ),
         threshold=4
     ),
 )
