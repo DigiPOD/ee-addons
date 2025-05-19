@@ -191,7 +191,7 @@ preAdmissionOrInpatientPatients = logic.Or(
 - 42 days before day of surgery until end of surgery
 - vorstationär OR normalstationär
 """
-adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore = logic.And(
+adultPatientsPreoperativelyOnSurgeryDayAndBefore = logic.And(
     AdultPatients(),
     PreOperativePatientsBeforeEndOfSurgery(),
     # preAdmissionOrInpatientPatients,  # gl 25-05-05: removed after email from Fatima (25-04-29):

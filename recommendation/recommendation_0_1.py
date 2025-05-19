@@ -3,17 +3,10 @@ from execution_engine.omop.criterion.visit_occurrence import PatientsActiveDurin
 from execution_engine.util import logic, temporal_logic_util
 
 from digipod.criterion.preop_patients import (
-    adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
-)
-from digipod.criterion.scores import (
-    AT4_documented,
-    CAM_documented,
-    DOS_documented,
-    DRS_documented,
-    NUDESC_documented,
-    TDCAM_documented,
+    adultPatientsPreoperativelyOnSurgeryDayAndBefore,
 )
 from digipod.recommendation import package_version
+from digipod.recommendation.recommendation_0_2 import icu_scores, normalward_scores
 
 base_criterion = PatientsActiveDuringPeriod()
 
@@ -21,18 +14,17 @@ _RecPlanPreoperativeDeliriumScreening = PopulationInterventionPairExpr(
     name="",
     url="",
     base_criterion=base_criterion,
-    population_expr=adultPatientsPreoperativelyGeneralOnSurgeryDayAndBefore,
+    population_expr=adultPatientsPreoperativelyOnSurgeryDayAndBefore,
     intervention_expr=
         logic.MinCount(
-            temporal_logic_util.AnyTime(NUDESC_documented),
-            temporal_logic_util.AnyTime(DRS_documented),
-            temporal_logic_util.AnyTime(DOS_documented),
-            temporal_logic_util.AnyTime(CAM_documented),
-            temporal_logic_util.AnyTime(AT4_documented),
-            temporal_logic_util.AnyTime(TDCAM_documented),
+            temporal_logic_util.AnyTime(logic.Or(
+                normalward_scores, icu_scores
+            )),
             threshold=1,
         )
 )
+
+
 
 rec_0_1_Delirium_Screening = Recommendation(
     expr=_RecPlanPreoperativeDeliriumScreening,

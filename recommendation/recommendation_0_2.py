@@ -25,18 +25,18 @@ base_criterion = PatientsActiveDuringPeriod()
 
 
 normalward_scores = logic.Or(
-    TDCAM_documented,  # 3DCAM Morning
-    AT4_documented,  # AT4 Morning
-    CAM_documented,  # CAM Morning
-    DRS_documented,  # DRS Morning
-    DOS_documented,  # DOS Morning
-    NUDESC_documented,  # NuDESC Morning
+    TDCAM_documented,
+    AT4_documented,
+    CAM_documented,
+    DRS_documented,
+    DOS_documented,
+    NUDESC_documented,
 )
 
 icu_scores = logic.Or(
-    CAMICU_documented,  # CAM ICU Morning
-    DDS_documented,  # AT4 Morning
-    ICDSC_documented,  # CAM Morning
+    CAMICU_documented,
+    DDS_documented,
+    ICDSC_documented,
 )
 
 # gl 25-05-05: removed after email from Fatima (25-04-29):
